@@ -1,0 +1,39 @@
+# Java / Spring Boot
+*.class
+*.jar
+*.war
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.gradle/
+target/
+
+# Node.js
+node_modules/
+dist/
+.next/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+
+# Others
+.dmap/
+.omc/
+.temp/
