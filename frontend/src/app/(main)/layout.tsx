@@ -33,12 +33,12 @@ export default function MainLayout({
         className="sticky top-0 z-40 flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-[var(--margin-mobile)]"
         style={{ height: 'var(--header-height)' }}
       >
-        <div className="flex items-center gap-1.5 min-w-[72px]">
+        <Link href="/home" className="flex items-center gap-1.5 min-w-[72px]">
           <img src="/images/logo.png" alt="런치픽" className="h-7 w-7 rounded-[var(--radius-xs)]" />
           <span className="text-[var(--font-size-body2)] font-bold text-[var(--color-primary)]">
             런치픽
           </span>
-        </div>
+        </Link>
         <span className="text-[var(--font-size-body1)] font-semibold text-[var(--color-text-primary)]">
           {pageTitle}
         </span>
