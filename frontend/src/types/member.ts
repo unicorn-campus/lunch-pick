@@ -16,6 +16,7 @@ export interface AuthResponse {
   memberId: string
   isNewUser: boolean
   onboardingCompleted: boolean
+  nickname: string
 }
 
 /** 카드 스와이프 결과 */

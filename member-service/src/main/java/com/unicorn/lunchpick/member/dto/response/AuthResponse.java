@@ -48,6 +48,11 @@ public record AuthResponse(
         /**
          * 온보딩 완료 여부
          */
-        boolean onboardingCompleted
+        boolean onboardingCompleted,
+
+        /**
+         * 회원 닉네임
+         */
+        String nickname
 ) {
 }

@@ -29,7 +29,7 @@ export function useKakaoLogin() {
       setAuth(
         data.accessToken,
         data.memberId,
-        '',
+        data.nickname || '',
         data.isNewUser,
       )
     },

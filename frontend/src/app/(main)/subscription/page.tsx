@@ -81,7 +81,7 @@ export default function SubscriptionPage() {
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null)
   const [justSubscribed, setJustSubscribed] = useState(false)
 
-  const isPremium = justSubscribed || subStatus?.plan === 'PREMIUM' || effectivePlans?.currentPlan?.startsWith('PREMIUM')
+  const isPremium = justSubscribed || subStatus?.plan === 'PREMIUM'
 
   function handlePayment() {
     const rawCard = cardNumber.replace(/-/g, '')
@@ -108,6 +108,7 @@ export default function SubscriptionPage() {
 
     if (isDemo) {
       setSubscriptionId(`demo-sub-${Date.now()}`)
+      setJustSubscribed(true)
       setShowPaymentSheet(false)
       toast.success('프리미엄 구독이 시작되었어요! (데모)')
       return
@@ -141,6 +142,8 @@ export default function SubscriptionPage() {
   function handleCancelConfirm() {
     setShowCancelModal(false)
     if (isDemo) {
+      setJustSubscribed(false)
+      setSubscriptionId(null)
       toast.info('구독이 해지되었어요. (데모)')
       return
     }
@@ -153,6 +156,8 @@ export default function SubscriptionPage() {
       { subscriptionId: subId, data: { cancelReason: 'COST' } },
       {
         onSuccess: (data) => {
+          setJustSubscribed(false)
+          setSubscriptionId(null)
           toast.info(data.message)
         },
         onError: () => toast.error('해지 처리 중 오류가 발생했어요.'),

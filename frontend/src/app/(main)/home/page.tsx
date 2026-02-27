@@ -20,6 +20,7 @@ import {
   useRefreshRecommendations,
 } from '@/hooks/useRecommendation'
 import { useAuthStore } from '@/store/authStore'
+import { useProfile } from '@/hooks/useMember'
 import { useToast } from '@/hooks/useToast'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import type { RecommendationCard } from '@/types/recommendation'
@@ -250,8 +251,16 @@ function getMealGreeting(): string {
 export default function HomePage() {
   const router = useRouter()
   const toast = useToast()
-  const { nickname } = useAuthStore()
+  const { nickname, setNickname } = useAuthStore()
+  const { data: profile } = useProfile()
   const geo = useGeolocation()
+
+  // 프로필 API 닉네임으로 authStore 동기화
+  useEffect(() => {
+    if (profile?.nickname && profile.nickname !== nickname) {
+      setNickname(profile.nickname)
+    }
+  }, [profile?.nickname, nickname, setNickname])
 
   const [reasonSheet, setReasonSheet] = useState<RecommendationCard | null>(null)
   const [rejectSheet, setRejectSheet] = useState<RecommendationCard | null>(null)

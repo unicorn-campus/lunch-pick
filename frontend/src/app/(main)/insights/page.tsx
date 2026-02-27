@@ -243,6 +243,16 @@ const DEMO_HISTORY: MealHistoryResponse = {
   message: null,
 }
 
+/** 현재 ISO 주차 번호 계산 */
+function getCurrentISOWeek(): number {
+  const now = new Date()
+  const jan4 = new Date(now.getFullYear(), 0, 4)
+  const diff = now.getTime() - jan4.getTime()
+  return Math.ceil((diff / 86400000 + jan4.getDay() + 1) / 7)
+}
+const CURRENT_WEEK = getCurrentISOWeek()
+const CURRENT_YEAR = new Date().getFullYear()
+
 /** 데모 인사이트 데이터 */
 const DEMO_INSIGHTS: InsightsResponse = {
   hasEnoughData: false,
@@ -261,9 +271,10 @@ const DEMO_INSIGHTS: InsightsResponse = {
     { dayOfWeek: 'FRI', topCategory: '아시안', averageSatisfaction: 0.7 },
   ],
   satisfactionTrend: [
-    { week: '1주차', satisfactionRate: 70 },
-    { week: '2주차', satisfactionRate: 80 },
-    { week: '3주차', satisfactionRate: 85 },
+    { week: `${CURRENT_YEAR}-${String(CURRENT_WEEK - 3).padStart(2, '0')}`, satisfactionRate: 65 },
+    { week: `${CURRENT_YEAR}-${String(CURRENT_WEEK - 2).padStart(2, '0')}`, satisfactionRate: 70 },
+    { week: `${CURRENT_YEAR}-${String(CURRENT_WEEK - 1).padStart(2, '0')}`, satisfactionRate: 78 },
+    { week: `${CURRENT_YEAR}-${String(CURRENT_WEEK).padStart(2, '0')}`, satisfactionRate: 85 },
   ],
   weeklySummary: '이번 주는 한식과 일식을 골고루 드셨어요. 만족도가 점점 올라가고 있네요!',
   milestone: { achieved: true, count: 3, message: '3끼 기록 달성!', accuracyImprovement: 12 },
@@ -339,6 +350,26 @@ function MealBalanceCard({ diversityScore, diagnosis, coachingComment }: { diver
 
 /** 만족도 패턴 분석 카드 */
 function SatisfactionPatternCard({ satisfactionRate, patterns, patternComment }: { satisfactionRate: number; patterns: string[]; patternComment: string }) {
+  const radius = 50
+  const circumference = Math.PI * radius
+  const offset = circumference - (satisfactionRate / 100) * circumference
+  const rateColor = satisfactionRate >= 80 ? '#10B981' : satisfactionRate >= 60 ? '#F59E0B' : satisfactionRate >= 40 ? '#F97316' : '#EF4444'
+
+  function getPatternDetail(p: string) {
+    // 패턴 문자열에서 주제와 만족도 수준을 파싱
+    const isHigh = p.includes('높음')
+    const isLow = p.includes('낮음')
+    const barPercent = isHigh ? 85 : isLow ? 25 : 55
+    const barColor = isHigh ? '#10B981' : isLow ? '#EF4444' : '#3B82F6'
+    const bg = isHigh ? '#ECFDF5' : isLow ? '#FEF2F2' : '#F0F9FF'
+    const text = isHigh ? '#065F46' : isLow ? '#991B1B' : '#0369A1'
+    const icon = isHigh ? '👍' : isLow ? '👎' : '💡'
+    const label = isHigh ? '높음' : isLow ? '낮음' : '보통'
+    // "한식 만족도 높음" → subject = "한식"
+    const subject = p.replace(/\s*만족도\s*(높음|낮음|보통)?\s*/g, '').trim() || p
+    return { barPercent, barColor, bg, text, icon, label, subject }
+  }
+
   return (
     <div className="rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
       <div className="mb-[var(--space-s)] flex items-center gap-[var(--space-xs)]">
@@ -346,18 +377,57 @@ function SatisfactionPatternCard({ satisfactionRate, patterns, patternComment }:
         <h3 className="text-[var(--font-size-label)] font-medium">만족도 패턴 분석</h3>
         <span className="ml-auto rounded-full bg-[#EDE9FE] px-2 py-0.5 text-[10px] font-medium text-[#7C3AED]">AI</span>
       </div>
-      <div className="mb-[var(--space-s)] flex items-center gap-[var(--space-s)]">
-        <span className="text-[var(--font-size-h2)] font-bold text-[var(--color-primary)]">{satisfactionRate}%</span>
-        <span className="text-[var(--font-size-caption)] text-[var(--color-text-secondary)]">전체 만족률</span>
+      {/* 반원형 게이지 */}
+      <div className="mb-[var(--space-s)] flex justify-center">
+        <div className="relative" style={{ width: 140, height: 80 }}>
+          <svg width="140" height="80" viewBox="0 0 140 80" overflow="visible">
+            <path
+              d="M 20 70 A 50 50 0 0 1 120 70"
+              fill="none" stroke="#E5E7EB" strokeWidth="10" strokeLinecap="round"
+            />
+            <path
+              d="M 20 70 A 50 50 0 0 1 120 70"
+              fill="none" stroke={rateColor} strokeWidth="10" strokeLinecap="round"
+              strokeDasharray={circumference} strokeDashoffset={offset}
+              style={{ transition: 'stroke-dashoffset 0.8s ease' }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-0.5">
+            <span className="text-2xl font-bold leading-none" style={{ color: rateColor }}>{satisfactionRate}%</span>
+            <span className="text-[10px] text-[var(--color-text-secondary)]">만족률</span>
+          </div>
+        </div>
       </div>
-      <div className="mb-[var(--space-s)] flex flex-wrap gap-[var(--space-xs)]">
-        {patterns.map((pattern) => (
-          <span key={pattern} className="inline-block rounded-full bg-[#F0F9FF] px-3 py-1 text-[var(--font-size-caption)] text-[#0369A1]">
-            {pattern}
-          </span>
-        ))}
+      {/* 카테고리별 만족도 바 차트 */}
+      <div className="mb-[var(--space-s)] space-y-2">
+        {patterns.map((pattern) => {
+          const d = getPatternDetail(pattern)
+          return (
+            <div key={pattern} className="rounded-lg p-2.5" style={{ backgroundColor: d.bg }}>
+              <div className="mb-1.5 flex items-center justify-between">
+                <span className="flex items-center gap-1.5 text-[var(--font-size-body2)] font-medium" style={{ color: d.text }}>
+                  <span className="text-sm">{d.icon}</span>
+                  {d.subject}
+                </span>
+                <span className="rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ backgroundColor: `${d.barColor}20`, color: d.barColor }}>
+                  {d.label}
+                </span>
+              </div>
+              <div className="h-2 w-full overflow-hidden rounded-full bg-white/60">
+                <div
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{ width: `${d.barPercent}%`, backgroundColor: d.barColor }}
+                />
+              </div>
+            </div>
+          )
+        })}
       </div>
-      <p className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)] leading-relaxed">{patternComment}</p>
+      {/* 코칭 코멘트 (말풍선) */}
+      <div className="relative rounded-xl bg-[#F8FAFC] p-3" style={{ border: '1px solid #E2E8F0' }}>
+        <div className="absolute -top-2 left-4 h-3 w-3 rotate-45 bg-[#F8FAFC]" style={{ border: '1px solid #E2E8F0', borderBottom: 'none', borderRight: 'none' }} />
+        <p className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)] leading-relaxed">{patternComment}</p>
+      </div>
     </div>
   )
 }
@@ -495,6 +565,39 @@ function InsightsContent() {
               </div>
             )}
 
+            {/* 선호 카테고리 Top 5 */}
+            {effectiveInsights.topCategories.length > 0 && (
+              <div className="mb-[var(--space-m)] rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
+                <h3 className="mb-[var(--space-m)] text-[var(--font-size-label)] font-medium">
+                  선호 카테고리 Top {Math.min(effectiveInsights.topCategories.length, 5)}
+                </h3>
+                <div className="space-y-[var(--space-s)]">
+                  {effectiveInsights.topCategories.slice(0, 5).map((cat: { category: string; percentage: number; color?: string }, i: number) => (
+                    <div key={cat.category} className="flex items-center gap-[var(--space-s)]">
+                      <span className="w-5 text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
+                        {i + 1}.
+                      </span>
+                      <span className="w-10 text-[var(--font-size-body2)] font-medium">
+                        {cat.category}
+                      </span>
+                      <div className="h-4 flex-1 overflow-hidden rounded-full bg-[#E5E7EB]">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${cat.percentage}%`,
+                            background: getCategoryColor(cat.category, cat.color),
+                          }}
+                        />
+                      </div>
+                      <span className="w-9 text-right text-[var(--font-size-body2)] font-bold">
+                        {cat.percentage}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* AI 인사이트 섹션 */}
             {(() => {
               const showAi = isPremium && effectiveInsights.isAiGenerated
@@ -561,75 +664,94 @@ function InsightsContent() {
                 )
               }
 
-              return null
+              // 프리미엄이지만 AI 데이터가 아직 없는 경우
+              return (
+                <div className="mb-[var(--space-m)] rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)] text-center">
+                  <span className="text-[28px]">🤖</span>
+                  <p className="mt-[var(--space-s)] text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
+                    AI 인사이트를 준비하고 있어요. 잠시만 기다려주세요!
+                  </p>
+                </div>
+              )
             })()}
 
-            {/* 선호 카테고리 Top 5 */}
-            {effectiveInsights.topCategories.length > 0 && (
-              <div className="mb-[var(--space-m)] rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
-                <h3 className="mb-[var(--space-m)] text-[var(--font-size-label)] font-medium">
-                  선호 카테고리 Top {Math.min(effectiveInsights.topCategories.length, 5)}
-                </h3>
-                <div className="space-y-[var(--space-s)]">
-                  {effectiveInsights.topCategories.slice(0, 5).map((cat, i) => (
-                    <div key={cat.category} className="flex items-center gap-[var(--space-s)]">
-                      <span className="w-5 text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
-                        {i + 1}.
-                      </span>
-                      <span className="w-10 text-[var(--font-size-body2)] font-medium">
-                        {cat.category}
-                      </span>
-                      <div className="h-4 flex-1 overflow-hidden rounded-full bg-[#E5E7EB]">
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{
-                            width: `${cat.percentage}%`,
-                            background: getCategoryColor(cat.category, cat.color),
-                          }}
-                        />
-                      </div>
-                      <span className="w-9 text-right text-[var(--font-size-body2)] font-bold">
-                        {cat.percentage}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* 만족도 추세 그래프 */}
+            {effectiveInsights.satisfactionTrend.length > 0 && (() => {
+              const trend = effectiveInsights.satisfactionTrend
+              const latest = trend[trend.length - 1]?.satisfactionRate ?? 0
+              const isUp = trend.length >= 2 && trend[trend.length - 1].satisfactionRate >= trend[trend.length - 2].satisfactionRate
+              const trendColor = isUp ? '#10B981' : '#EF4444'
+              // ISO 주차(IYYY-IW) → 읽기 쉬운 라벨 변환
+              const formatWeekLabel = (week: string) => {
+                const match = week.match(/\d+-(\d+)/)
+                return match ? `${parseInt(match[1], 10)}주차` : week
+              }
+              // SVG 라인 차트 계산
+              const chartW = 280
+              const chartH = 100
+              const padX = 10
+              const padTop = 15
+              const padBottom = 20
+              const graphW = chartW - padX * 2
+              const graphH = chartH - padTop - padBottom
+              const minRate = Math.min(...trend.map(t => t.satisfactionRate), 0)
+              const maxRate = Math.max(...trend.map(t => t.satisfactionRate), 100)
+              const range = maxRate - minRate || 1
+              const points = trend.map((t, i) => {
+                const x = padX + (trend.length > 1 ? (i / (trend.length - 1)) * graphW : graphW / 2)
+                const y = padTop + graphH - ((t.satisfactionRate - minRate) / range) * graphH
+                return { x, y, rate: t.satisfactionRate, week: t.week }
+              })
+              const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
+              const areaPath = `${linePath} L ${points[points.length - 1].x} ${padTop + graphH} L ${points[0].x} ${padTop + graphH} Z`
 
-            {/* 만족도 요약 */}
-            {effectiveInsights.satisfactionTrend.length > 0 && (
-              <div className="mb-[var(--space-m)] rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
-                <h3 className="mb-[var(--space-m)] text-[var(--font-size-label)] font-medium">
-                  만족도 변화 (최근 30일)
-                </h3>
-                <div className="flex h-[120px] items-center justify-center rounded-[var(--radius-s)] bg-[var(--color-background)]">
-                  <div className="text-center">
-                    <div className="text-[36px]">😊</div>
-                    <div className="mt-1 text-[var(--font-size-h2)] font-bold">
-                      {effectiveInsights.satisfactionTrend[effectiveInsights.satisfactionTrend.length - 1]
-                        ?.satisfactionRate ?? 0}
-                      %
+              return (
+                <div className="mb-[var(--space-m)] rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
+                  <div className="mb-[var(--space-s)] flex items-center justify-between">
+                    <h3 className="text-[var(--font-size-label)] font-medium">만족도 변화 (최근 30일)</h3>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg font-bold" style={{ color: trendColor }}>{latest}%</span>
+                      <span className="rounded-full px-1.5 py-0.5 text-[10px] font-bold" style={{ backgroundColor: `${trendColor}15`, color: trendColor }}>
+                        {isUp ? '↑ 상승' : '↓ 하락'}
+                      </span>
                     </div>
                   </div>
+                  <svg width="100%" viewBox={`0 0 ${chartW} ${chartH}`} className="overflow-visible">
+                    {/* 배경 가이드라인 */}
+                    {[0, 25, 50, 75, 100].map(v => {
+                      const y = padTop + graphH - ((v - minRate) / range) * graphH
+                      return (
+                        <g key={v}>
+                          <line x1={padX} y1={y} x2={chartW - padX} y2={y} stroke="#E5E7EB" strokeWidth="0.5" strokeDasharray="3 3" />
+                          <text x={padX - 2} y={y} dy="3" textAnchor="end" fontSize="7" fill="#9CA3AF">{v}</text>
+                        </g>
+                      )
+                    })}
+                    {/* 그래디언트 영역 */}
+                    <defs>
+                      <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={trendColor} stopOpacity="0.3" />
+                        <stop offset="100%" stopColor={trendColor} stopOpacity="0.02" />
+                      </linearGradient>
+                    </defs>
+                    <path d={areaPath} fill="url(#trendGrad)" />
+                    {/* 추세선 */}
+                    <path d={linePath} fill="none" stroke={trendColor} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    {/* 데이터 포인트 + 라벨 */}
+                    {points.map((p, i) => (
+                      <g key={i}>
+                        <circle cx={p.x} cy={p.y} r="4" fill="white" stroke={trendColor} strokeWidth="2" />
+                        <text x={p.x} y={p.y - 8} textAnchor="middle" fontSize="8" fontWeight="bold" fill={trendColor}>{p.rate}%</text>
+                        <text x={p.x} y={padTop + graphH + 13} textAnchor="middle" fontSize="8" fill="#6B7280">{formatWeekLabel(p.week)}</text>
+                      </g>
+                    ))}
+                  </svg>
+                  <div className="mt-[var(--space-xs)] text-right text-[var(--font-size-caption)] text-[var(--color-text-secondary)]">
+                    총 {effectiveInsights.currentRecordCount}끼 기록
+                  </div>
                 </div>
-                <div className="mt-[var(--space-s)] flex justify-between text-[var(--font-size-caption)] text-[var(--color-text-secondary)]">
-                  <span>
-                    추세:{' '}
-                    {effectiveInsights.satisfactionTrend.length >= 2 &&
-                    effectiveInsights.satisfactionTrend[effectiveInsights.satisfactionTrend.length - 1]
-                      .satisfactionRate >=
-                      effectiveInsights.satisfactionTrend[effectiveInsights.satisfactionTrend.length - 2]
-                        .satisfactionRate ? (
-                      <span className="text-[var(--color-success)]">상승 ↑</span>
-                    ) : (
-                      <span className="text-[var(--color-error)]">하락 ↓</span>
-                    )}
-                  </span>
-                  <span>총 {effectiveInsights.currentRecordCount}끼 기록</span>
-                </div>
-              </div>
-            )}
+              )
+            })()}
 
             {/* 데이터 부족 배너 */}
             {!effectiveInsights.hasEnoughData && (

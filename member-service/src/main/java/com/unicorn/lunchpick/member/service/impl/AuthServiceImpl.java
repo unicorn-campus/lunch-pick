@@ -99,6 +99,7 @@ public class AuthServiceImpl implements AuthService {
                 .memberId(member.getMemberId())
                 .isNewUser(isNewUser)
                 .onboardingCompleted(member.isOnboardingCompleted())
+                .nickname(member.getNickname())
                 .build();
     }
 }
