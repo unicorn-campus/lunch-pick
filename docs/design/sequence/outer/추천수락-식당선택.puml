@@ -1,0 +1,110 @@
+@startuml 추천수락-식당선택
+!theme mono
+
+title 추천 수락 및 식당 선택
+
+actor "사용자" as User
+participant "프론트엔드" as Frontend
+participant "API Gateway" as Gateway
+participant "추천·이력 서비스" as RecService
+participant "지도 API(E)" as MapAPI
+database "Redis" as Redis
+database "추천·이력 DB" as RecDB
+
+== 추천 수락 (UFR-REC-040) ==
+
+User -> Frontend: "여기 갈래요" 버튼 탭\n(추천 카드 선택)
+Frontend -> Frontend: 수락 반응 시간 측정 시작\n(추천 표시 → 수락까지 경과 시간)
+
+Frontend -> Gateway: POST /api/v1/recommendations/{recommendation_id}/accept\n{수락 시각, 반응 시간(ms)}\nAuthorization: Bearer {JWT}
+activate Gateway
+Gateway -> Gateway: JWT 검증
+Gateway -> RecService: 추천 수락 처리
+activate RecService
+
+RecService -> RecDB: 수락 이력 저장\n{회원 ID, 추천 ID, 식당 ID, 수락 시각, 반응 시간}
+RecDB --> RecService: 저장 완료
+
+RecService --> Gateway: 200 OK\n{식당 정보, 수락 완료}
+deactivate RecService
+Gateway --> Frontend: 수락 처리 완료
+deactivate Gateway
+
+Frontend -> User: 식당 안내 화면으로 전환
+
+== 추천 거절 및 대체 추천 (UFR-REC-050) ==
+
+User -> Frontend: 추천 카드 왼쪽 스와이프\n(거절 의사 표시)
+Frontend -> User: 거절 사유 선택 팝업 표시\n("오늘 기분 아님" / "너무 멀어요" / "최근에 갔어요" / "기타")
+User -> Frontend: 거절 사유 선택
+
+Frontend -> Gateway: POST /api/v1/recommendations/{recommendation_id}/reject\n{거절 사유 코드}\nAuthorization: Bearer {JWT}
+activate Gateway
+Gateway -> RecService: 추천 거절 및 대체 추천 요청
+activate RecService
+
+RecService -> RecDB: 거절 이력 저장\n{회원 ID, 추천 ID, 거절 사유, 거절 시각}
+RecDB --> RecService: 저장 완료
+
+alt 대체 추천 후보 존재
+    RecService -> Redis: 대체 추천 캐시 확인\n(거절 식당 제외 차순위)
+    Redis --> RecService: 대체 추천 후보 반환
+    RecService --> Gateway: 200 OK\n{대체 추천 1개, "이런 건 어때요?" 메시지}
+    Gateway --> Frontend: 대체 추천 반환
+    deactivate RecService
+    Frontend -> User: 대체 추천 카드 표시\n"이런 건 어때요?"
+
+else 대체 추천 후보 없음
+    RecService --> Gateway: 200 OK\n{추천 없음, "주변에 더 추천할 곳이 없어요. 거리를 넓혀볼까요?" 메시지}
+    Gateway --> Frontend: 추천 없음 응답
+    deactivate RecService
+    Frontend -> User: "주변에 더 추천할 곳이 없어요.\n거리를 넓혀볼까요?" 안내
+end
+
+deactivate Gateway
+
+== 전체 새로고침 (3개 모두 거절 시) ==
+
+Frontend -> Gateway: POST /api/v1/recommendations/refresh\n{거절된 추천 ID 목록}\nAuthorization: Bearer {JWT}
+activate Gateway
+Gateway -> RecService: 완전 새로운 추천 3개 요청
+activate RecService
+RecService -> Redis: 기존 캐시 무효화 + 새 추천 요청
+RecService --> Gateway: 200 OK\n{새로운 추천 3개}
+deactivate RecService
+Gateway --> Frontend: 새 추천 결과 반환
+deactivate Gateway
+Frontend -> User: 완전히 새로운 추천 3개 표시
+
+== 식당 길찾기 안내 (UFR-REC-060) ==
+
+User -> Frontend: "길찾기" 버튼 탭
+
+Frontend -> Gateway: GET /api/v1/restaurants/{restaurant_id}/directions\n{현재 위치(위도/경도)}\nAuthorization: Bearer {JWT}
+activate Gateway
+Gateway -> RecService: 도보 경로 조회
+activate RecService
+
+RecService -> MapAPI: 도보 경로 API 요청\n{출발지(현재 위치), 목적지(식당 위치)}
+activate MapAPI
+
+alt 경로 조회 성공
+    MapAPI --> RecService: 도보 경로 + 예상 소요시간 반환
+    deactivate MapAPI
+    RecService --> Gateway: 200 OK\n{도보 시간(분), 지도 링크, 카카오맵/네이버지도 딥링크}
+    deactivate RecService
+    Gateway --> Frontend: 경로 정보 반환
+    deactivate Gateway
+    Frontend -> User: 도보 소요시간 + 지도 링크 표시\n+ 외부 지도 앱 연동 버튼
+
+else 경로 조회 실패
+    MapAPI --> RecService: API 오류
+    deactivate MapAPI
+    RecService --> Gateway: 200 OK\n{식당 주소 텍스트, "지도 앱에서 검색하기" 버튼}
+    deactivate RecService
+    Gateway --> Frontend: 주소 텍스트 반환
+    deactivate Gateway
+    Frontend -> User: 식당 주소 텍스트 표시\n+ "지도 앱에서 검색하기" 버튼
+end
+
+@enduml

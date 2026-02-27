@@ -1,0 +1,110 @@
+@startuml recommendation-service-취향학습
+!theme mono
+
+title 추천·이력 서비스 - 취향 학습 (UFR-REC-100)
+
+participant "BatchScheduler" as Scheduler
+participant "TasteLearningService" as LearningService
+participant "TasteVectorCalculator" as VectorCalc
+participant "FeedbackRepository" as FeedbackRepo
+participant "MealRepository" as MealRepo
+participant "BatchLogRepository" as BatchLogRepo
+participant "회원 서비스(E)" as MemberService
+participant "AI Pipeline(E)" as AIPipeline
+database "추천·이력 DB" as RecDB
+database "Redis Cache(E)" as Redis
+
+== 매일 03:00 배치 실행 ==
+
+Scheduler -> LearningService: runDailyTasteLearning()
+activate LearningService
+
+LearningService -> BatchLogRepo: 배치 실행 시작 기록
+activate BatchLogRepo
+BatchLogRepo -> RecDB: INSERT 배치 실행 로그\n{시작 시각, 상태: RUNNING}
+RecDB --> BatchLogRepo: 저장 완료
+BatchLogRepo --> LearningService: batchLogId 반환
+deactivate BatchLogRepo
+
+LearningService -> FeedbackRepo: 전일 피드백 보유 활성 사용자 목록 조회
+activate FeedbackRepo
+FeedbackRepo -> RecDB: SELECT DISTINCT memberId FROM 피드백\nWHERE date = 어제
+RecDB --> FeedbackRepo: 활성 사용자 목록 반환
+FeedbackRepo --> LearningService: 활성 사용자 목록
+deactivate FeedbackRepo
+
+loop 사용자별 취향 벡터 갱신
+
+    LearningService -> FeedbackRepo: 해당 사용자 누적 피드백 수 조회
+    activate FeedbackRepo
+    FeedbackRepo -> RecDB: SELECT COUNT 피드백 WHERE memberId
+    RecDB --> FeedbackRepo: 누적 피드백 수
+    FeedbackRepo --> LearningService: 누적 피드백 수
+    deactivate FeedbackRepo
+
+    alt 누적 피드백 5건 이상 (정상 학습)
+
+        LearningService -> FeedbackRepo: 최근 피드백 이력 조회\n(최근 가중치 > 과거 가중치)
+        activate FeedbackRepo
+        FeedbackRepo -> RecDB: SELECT 피드백 이력 WHERE memberId\nORDER BY 제출 시각 DESC
+        RecDB --> FeedbackRepo: 피드백 이력 반환
+        FeedbackRepo --> LearningService: 피드백 이력
+        deactivate FeedbackRepo
+
+        LearningService -> VectorCalc: calculateUpdatedVector(feedbackHistory)
+        activate VectorCalc
+        VectorCalc -> VectorCalc: 시간 가중치 적용\n(최근 피드백일수록 높은 가중치)
+        VectorCalc -> VectorCalc: 카테고리별 선호도 재계산
+        VectorCalc -> VectorCalc: 추천 수락률 및 만족 비율 반영
+        VectorCalc --> LearningService: 갱신된 취향 벡터
+        deactivate VectorCalc
+
+        LearningService -> MemberService: PUT /internal/members/{memberId}/taste-vector\n{갱신된 취향 벡터}
+        activate MemberService
+        MemberService --> LearningService: 200 OK
+        deactivate MemberService
+
+        LearningService -> AIPipeline: POST /internal/ai/learning-message\n{memberId, 피드백 요약}
+        activate AIPipeline
+        AIPipeline -->> AIPipeline: 자연어 학습 반영 메시지 생성
+        AIPipeline --> LearningService: 학습 반영 메시지\n("어제 별로라고 한 매운 음식을 빼고 추천했어요")
+        deactivate AIPipeline
+
+        LearningService -> MealRepo: 학습 반영 메시지 저장
+        activate MealRepo
+        MealRepo -> RecDB: UPSERT 학습 반영 메시지\n{memberId, message, 생성 시각}
+        RecDB --> MealRepo: 저장 완료
+        MealRepo --> LearningService: 완료
+        deactivate MealRepo
+
+        LearningService -> Redis: 추천 캐시 전체 무효화\n(rec:{memberId}:*)
+        activate Redis
+        Redis --> LearningService: 무효화 완료
+        deactivate Redis
+
+    else 누적 피드백 5건 미만 (콜드스타트 안전망 유지)
+        LearningService -> MealRepo: 콜드스타트 상태 갱신
+        activate MealRepo
+        MealRepo -> RecDB: UPDATE 취향 학습 상태\n{memberId, coldStart: true}
+        RecDB --> MealRepo: 갱신 완료
+        MealRepo --> LearningService: 완료
+        deactivate MealRepo
+
+    else 취향 벡터 갱신 실패
+        LearningService -> LearningService: 오류 로깅\n(이전 취향 벡터 유지, 서비스 영향 없음)
+    end
+
+end
+
+LearningService -> BatchLogRepo: 배치 실행 완료 기록
+activate BatchLogRepo
+BatchLogRepo -> RecDB: UPDATE 배치 실행 로그\n{완료 시각, 상태: COMPLETED, 갱신 성공 수, 실패 수}
+RecDB --> BatchLogRepo: 갱신 완료
+BatchLogRepo --> LearningService: 완료
+deactivate BatchLogRepo
+
+LearningService -> LearningService: 추천 품질 자가 검증\n(전일 수락률, 만족 비율 로깅)
+
+deactivate LearningService
+
+@enduml

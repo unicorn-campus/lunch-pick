@@ -1,0 +1,132 @@
+<svg width="700" height="620" xmlns="http://www.w3.org/2000/svg">
+  <rect width="700" height="620" fill="#f9f9f9"/>
+
+  <!-- Title -->
+  <text x="350" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">런치픽 솔루션 우선순위 매트릭스</text>
+
+  <!-- Axes -->
+  <line x1="120" y1="440" x2="600" y2="440" stroke="#333" stroke-width="2"/>
+  <line x1="120" y1="440" x2="120" y2="50" stroke="#333" stroke-width="2"/>
+  <line x1="120" y1="440" x2="600" y2="440" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="120" y1="440" x2="120" y2="50" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Axis Labels -->
+  <text x="360" y="475" text-anchor="middle" font-size="14" fill="#333">실현 가능성 (F 득표) →</text>
+  <text x="45" y="250" text-anchor="middle" font-size="14" fill="#333" transform="rotate(-90, 45, 250)">비즈니스 영향도 (B 득표) →</text>
+
+  <!-- Quadrant Backgrounds -->
+  <rect x="120" y="50" width="240" height="195" fill="#ffcccc" opacity="0.3"/>
+  <rect x="360" y="50" width="240" height="195" fill="#ccffcc" opacity="0.3"/>
+  <rect x="120" y="245" width="240" height="195" fill="#ffffcc" opacity="0.3"/>
+  <rect x="360" y="245" width="240" height="195" fill="#cce5ff" opacity="0.3"/>
+
+  <!-- Quadrant Labels -->
+  <text x="240" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#cc3333">Bit Bets</text>
+  <text x="240" y="96" text-anchor="middle" font-size="10" fill="#999">(전략적 투자)</text>
+  <text x="480" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#339933">No Brainers</text>
+  <text x="480" y="96" text-anchor="middle" font-size="10" fill="#999">(즉시 실행)</text>
+  <text x="240" y="350" text-anchor="middle" font-size="13" font-weight="bold" fill="#cc9933">Unwise</text>
+  <text x="240" y="366" text-anchor="middle" font-size="10" fill="#999">(보류/폐기)</text>
+  <text x="480" y="350" text-anchor="middle" font-size="13" font-weight="bold" fill="#3366cc">Utilities</text>
+  <text x="480" y="366" text-anchor="middle" font-size="10" fill="#999">(기반 기능)</text>
+
+  <!-- Midlines -->
+  <line x1="360" y1="50" x2="360" y2="440" stroke="#aaa" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="120" y1="245" x2="600" y2="245" stroke="#aaa" stroke-width="1" stroke-dasharray="5,5"/>
+
+  <!-- Scale Labels - X axis -->
+  <text x="120" y="455" text-anchor="middle" font-size="10" fill="#666">0</text>
+  <text x="280" y="455" text-anchor="middle" font-size="10" fill="#666">1</text>
+  <text x="440" y="455" text-anchor="middle" font-size="10" fill="#666">2</text>
+  <text x="600" y="455" text-anchor="middle" font-size="10" fill="#666">3</text>
+
+  <!-- Scale Labels - Y axis -->
+  <text x="110" y="440" text-anchor="end" font-size="10" fill="#666">0</text>
+  <text x="110" y="384" text-anchor="end" font-size="10" fill="#666">1</text>
+  <text x="110" y="328" text-anchor="end" font-size="10" fill="#666">2</text>
+  <text x="110" y="272" text-anchor="end" font-size="10" fill="#666">3</text>
+  <text x="110" y="216" text-anchor="end" font-size="10" fill="#666">4</text>
+  <text x="110" y="160" text-anchor="end" font-size="10" fill="#666">5</text>
+  <text x="110" y="106" text-anchor="end" font-size="10" fill="#666">7</text>
+
+  <!-- Data Points -->
+  <!-- A1: B7, F0 — Bit Bets (top-left) -->
+  <circle cx="140" cy="106" r="12" fill="#cc3333" opacity="0.8"/>
+  <text x="140" y="110" text-anchor="middle" font-size="10" fill="white" font-weight="bold">A1</text>
+
+  <!-- A7: B3, F0 — Bit Bets -->
+  <circle cx="150" cy="272" r="10" fill="#cc3333" opacity="0.8"/>
+  <text x="150" y="276" text-anchor="middle" font-size="9" fill="white" font-weight="bold">A7</text>
+
+  <!-- A8: B3, F1 — Bit Bets (closest to No Brainers) -->
+  <circle cx="280" cy="262" r="11" fill="#cc6600" opacity="0.8" stroke="#339933" stroke-width="2"/>
+  <text x="280" y="266" text-anchor="middle" font-size="9" fill="white" font-weight="bold">A8</text>
+
+  <!-- A13: B2, F0 — Bit Bets -->
+  <circle cx="140" cy="328" r="8" fill="#cc3333" opacity="0.6"/>
+  <text x="155" y="332" font-size="9" fill="#cc3333">A13</text>
+
+  <!-- A2: B2, F0 — Bit Bets -->
+  <circle cx="160" cy="328" r="8" fill="#cc3333" opacity="0.6"/>
+  <text x="175" y="318" font-size="9" fill="#cc3333">A2</text>
+
+  <!-- A24: B2, F0 — Bit Bets -->
+  <circle cx="140" cy="345" r="8" fill="#cc3333" opacity="0.6"/>
+  <text x="155" y="349" font-size="9" fill="#cc3333">A24</text>
+
+  <!-- A11: B2, F0 — Bit Bets -->
+  <circle cx="160" cy="345" r="8" fill="#cc3333" opacity="0.6"/>
+  <text x="175" y="353" font-size="9" fill="#cc3333">A11</text>
+
+  <!-- A5: B0, F3 — Utilities -->
+  <circle cx="580" cy="430" r="10" fill="#3366cc" opacity="0.8"/>
+  <text x="580" y="434" text-anchor="middle" font-size="9" fill="white" font-weight="bold">A5</text>
+
+  <!-- A4: B0, F3 — Utilities -->
+  <circle cx="560" cy="415" r="10" fill="#3366cc" opacity="0.8"/>
+  <text x="560" y="419" text-anchor="middle" font-size="9" fill="white" font-weight="bold">A4</text>
+
+  <!-- A27: B0, F3 — Utilities -->
+  <circle cx="540" cy="430" r="10" fill="#3366cc" opacity="0.8"/>
+  <text x="540" y="434" text-anchor="middle" font-size="9" fill="white" font-weight="bold">A27</text>
+
+  <!-- A35: B1, F3 — Utilities (closest to No Brainers) -->
+  <circle cx="570" cy="380" r="11" fill="#3366cc" opacity="0.8" stroke="#339933" stroke-width="2"/>
+  <text x="570" y="384" text-anchor="middle" font-size="9" fill="white" font-weight="bold">A35</text>
+
+  <!-- A21: B0, F3 — Utilities -->
+  <circle cx="520" cy="415" r="10" fill="#3366cc" opacity="0.8"/>
+  <text x="520" y="419" text-anchor="middle" font-size="9" fill="white" font-weight="bold">A21</text>
+
+  <!-- A10: B0, F2 — Utilities -->
+  <circle cx="440" cy="430" r="8" fill="#3366cc" opacity="0.6"/>
+  <text x="440" y="434" text-anchor="middle" font-size="9" fill="white">A10</text>
+
+  <!-- A16: B0, F2 — Utilities -->
+  <circle cx="460" cy="415" r="8" fill="#3366cc" opacity="0.6"/>
+  <text x="460" y="419" text-anchor="middle" font-size="9" fill="white">A16</text>
+
+  <!-- A32: B0, F2 — Utilities -->
+  <circle cx="420" cy="415" r="8" fill="#3366cc" opacity="0.6"/>
+  <text x="420" y="419" text-anchor="middle" font-size="9" fill="white">A32</text>
+
+  <!-- A33: B0, F2 — Utilities -->
+  <circle cx="440" cy="400" r="8" fill="#3366cc" opacity="0.6"/>
+  <text x="440" y="404" text-anchor="middle" font-size="9" fill="white">A33</text>
+
+  <!-- Legend Box -->
+  <rect x="10" y="490" width="680" height="125" fill="white" stroke="#ddd" rx="5"/>
+  <text x="20" y="510" font-size="12" font-weight="bold" fill="#333">범례</text>
+
+  <circle cx="30" cy="528" r="6" fill="#cc3333" opacity="0.8"/>
+  <text x="45" y="532" font-size="10" fill="#333">Bit Bets: A1(취향 해자 구독, B7) A7(컨텍스트 카드 UX, B3) A8(투명 추천 근거, B3/F1) A13(피로 사이클, B2) A2(B2B, B2) A24(LLM, B2) A11(타임라인, B2)</text>
+
+  <circle cx="30" cy="548" r="6" fill="#3366cc" opacity="0.8"/>
+  <text x="45" y="552" font-size="10" fill="#333">Utilities: A5(원탭 기록, F3) A4(온보딩 퀴즈, F3) A27(콜드스타트, F3) A35(알레르기, B1/F3) A21(컨텍스트 API, F3) A10(스와이프, F2) A16(날씨, F2)</text>
+
+  <circle cx="30" cy="568" r="6" fill="#cc9933" opacity="0.6"/>
+  <text x="45" y="572" font-size="10" fill="#333">Unwise/기타: A25 A30 A38 A36 A19 + Crazy Ideas (A6 A12 A17 A23 A40 A41)</text>
+
+  <circle cx="30" cy="590" r="6" fill="#cc6600" stroke="#339933" stroke-width="2"/>
+  <text x="45" y="594" font-size="10" fill="#333">No Brainers 최근접: A8(B3/F1, 녹색 테두리), A35(B1/F3, 녹색 테두리)</text>
+</svg>

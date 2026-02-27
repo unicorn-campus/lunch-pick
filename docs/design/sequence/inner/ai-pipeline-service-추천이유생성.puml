@@ -1,0 +1,92 @@
+@startuml ai-pipeline-service-추천이유생성
+!theme mono
+
+title AI Pipeline 서비스 - 추천 이유 생성 (UFR-REC-020)
+
+participant "ReasonRouter" as Router
+participant "PromptBuilder" as PromptBuilder
+participant "LLMClient" as LLMClient
+participant "ResponseParser" as ResponseParser
+participant "CacheManager" as CacheManager
+participant "LLM API(E)\n(Claude / GPT)" as LLM
+database "Redis Cache(E)" as Redis
+
+== 추천 이유 상세 생성 요청 ==
+
+Router -> CacheManager: getCachedReason(recommendationId)
+activate CacheManager
+CacheManager -> Redis: 추천 이유 캐시 조회\n(reason:{recommendationId})
+activate Redis
+Redis --> CacheManager: 캐시 결과
+deactivate Redis
+
+alt 캐시 히트
+    CacheManager --> Router: 캐시된 추천 이유 반환
+    deactivate CacheManager
+    Router --> Router: 캐시 결과 즉시 반환
+
+else 캐시 미스
+    CacheManager --> Router: 캐시 없음
+    deactivate CacheManager
+
+    Router -> PromptBuilder: buildReasonPrompt(recommendationContext, restaurantInfo)
+    activate PromptBuilder
+    PromptBuilder -> PromptBuilder: 반영된 컨텍스트 요소 추출\n(날씨, 최근 식사 이력, 취향 벡터 요약)
+    PromptBuilder -> PromptBuilder: 추천 이유 생성 프롬프트 조립\n("비 오는 날 + 어제 양식 → 따뜻한 한식" 형태)
+    PromptBuilder -> PromptBuilder: 확신 스코어 계산 지시 추가\n(상위 3개 추천의 확률 % 포함)
+    PromptBuilder -> PromptBuilder: 컨텍스트 태그 목록 명시\n(날씨/이력/취향 중 반영된 요소)
+    PromptBuilder --> Router: 추천 이유 생성 프롬프트
+    deactivate PromptBuilder
+
+    Router -> LLMClient: generateReason(prompt)
+    activate LLMClient
+
+    LLMClient -> LLMClient: Circuit Breaker 상태 확인
+
+    alt Circuit Breaker Closed (정상)
+        LLMClient -> LLM: LLM API 호출\n(자연어 추천 이유 생성 요청)
+        activate LLM
+
+        alt LLM 정상 응답
+            LLM -->> LLMClient: 추천 이유 JSON 반환
+            deactivate LLM
+            LLMClient --> Router: LLM 원시 응답
+            deactivate LLMClient
+
+            Router -> ResponseParser: parseReason(rawResponse)
+            activate ResponseParser
+            ResponseParser -> ResponseParser: 자연어 이유 추출\n(한 줄 요약 형태 검증)
+            ResponseParser -> ResponseParser: 확신 스코어 파싱\n(0~100% 정규화)
+            ResponseParser -> ResponseParser: 컨텍스트 태그 파싱\n([날씨] [이력] [취향] 태그 추출)
+            ResponseParser --> Router: ParsedReason\n{자연어 이유, 확신 스코어, 컨텍스트 태그}
+            deactivate ResponseParser
+
+            Router -> CacheManager: cacheReason(recommendationId, parsedReason)
+            activate CacheManager
+            CacheManager -> Redis: 추천 이유 저장\n(reason:{recommendationId}, TTL: 당일 13:00)
+            Redis --> CacheManager: 저장 완료
+            CacheManager --> Router: 완료
+            deactivate CacheManager
+
+            Router --> Router: 추천 이유 반환
+
+        else LLM 오류
+            LLM -->> LLMClient: 오류 응답
+            deactivate LLM
+            LLMClient -> LLMClient: 재시도 (최대 3회, 지수 백오프)
+
+            alt 재시도 실패
+                LLMClient --> Router: LLMException
+                deactivate LLMClient
+                Router --> Router: 기본 이유 반환\n{거리/평점 기반 기본 이유, "추천 이유를 준비 중이에요"}
+            end
+        end
+
+    else Circuit Breaker Open
+        LLMClient --> Router: CircuitBreakerOpenException
+        deactivate LLMClient
+        Router --> Router: 기본 이유 반환\n{거리/평점 기반 기본 이유, "추천 이유를 준비 중이에요"}
+    end
+end
+
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+!theme mono
+title 02. 오늘의 추천 조회
+
+actor "사용자" as user
+participant "추천업무" as recommend
+participant "이력업무" as history
+participant "(E)LLM API" as llm
+participant "(E)지도 API" as map
+participant "(E)날씨 API" as weather
+
+== 컨텍스트 수집 ==
+
+user -> recommend : [커맨드] 오늘의 추천 요청\n[데이터] (현재 위치, 현재 시간)
+
+recommend -> history : [커맨드] 최근 식사 이력 조회\n[데이터] (회원 ID, 최근 7일)
+history --> recommend : [이벤트] 식사 이력 조회됨\n[데이터] (최근 7일 식사 목록)
+
+recommend -> weather : [커맨드] 현재 날씨 조회\n[데이터] (위도, 경도)
+weather --> recommend : [이벤트] 날씨 정보 수신됨\n[데이터] (기온, 날씨 상태)
+
+recommend -> map : [커맨드] 주변 식당 조회\n[데이터] (위도, 경도, 반경 500m)
+map --> recommend : [이벤트] 주변 식당 목록 수신됨\n[데이터] (식당 목록, 거리, 평점)
+
+== 추천 생성 (A8: 투명한 근거) ==
+
+recommend -> recommend : [정책/규칙] 컨텍스트 파라미터 DTO 구성\n- 식사 이력(반복 방지)\n- 날씨(계절 메뉴 가중치)\n- 요일/시간\n- 취향 프로파일
+
+recommend -> recommend : [정책/규칙] 알레르기/식이제한 하드 필터 적용\n- 제외 식재료 포함 식당 제거\n- 페일세이프: 필터 실패 시 전체 제외
+
+recommend -> llm : [커맨드] 개인화 추천 생성 요청\n[데이터] (컨텍스트 DTO, 취향 벡터,\n후보 식당 목록)
+llm --> recommend : [이벤트] 추천 결과 생성됨\n[데이터] (추천 3개, 추천 이유,\n확신 스코어)
+
+recommend -> recommend : [정책/규칙] 확신 스코어 검증\n- 최소 임계값 이상만 노출\n- 미달 시 콜드스타트 안전망 적용
+
+== 추천 제시 ==
+
+recommend --> user : [이벤트] 오늘의 추천 제시됨\n[데이터] (추천 3개 카드:\n식당명, 메뉴, 추천 이유 한 줄,\n확신 스코어, 거리, 예상 소요시간)
+note right : 안내 메시지: "어제 한식을 드셨으니\n오늘은 가벼운 일식 어때요?"
+
+alt 추천 품질 미달 (콜드스타트)
+  recommend -> recommend : [정책/규칙] 콜드스타트 안전망 적용\n- 직군 클러스터 Bayesian Prior\n- 인기 메뉴 기반 추천으로 대체
+  recommend --> user : [이벤트] 안전망 추천 제시됨\n[데이터] (추천 3개 + "아직 취향을\n학습 중이에요" 안내)
+  note right : 복구 경로: "취향 퀴즈를\n더 진행하면 정확도가 올라가요"
+end
+
+@enduml

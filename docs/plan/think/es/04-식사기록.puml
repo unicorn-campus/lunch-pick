@@ -1,0 +1,48 @@
+@startuml
+!theme mono
+title 04. 식사 기록 (A5: 원탭 기록)
+
+actor "사용자" as user
+participant "이력업무" as history
+participant "추천업무" as recommend
+
+== 식사 기록 (원탭) ==
+
+user -> history : [커맨드] 식사 완료 기록\n[데이터] (회원 ID, 식당 ID, 메뉴,\n기록 시간)
+note right : A5: "먹었어요" 1탭\n홈 위젯에서도 기록 가능
+
+history -> history : [정책/규칙] 기록 데이터 검증\n- 동일 식사 중복 기록 방지\n- 식사 시간대 합리성 확인
+
+history --> user : [이벤트] 식사 기록 완료됨\n[데이터] (기록 ID, 기록 시간)
+note right : 피드백: "오늘 점심 기록 완료!\n30초 내 수정할 수 있어요"
+
+== 실행 취소 (30초) ==
+
+alt 30초 이내 수정 요청
+  user -> history : [커맨드] 식사 기록 수정\n[데이터] (기록 ID, 수정 내용)
+  history -> history : [정책/규칙] 30초 이내 수정 허용 확인
+  history --> user : [이벤트] 식사 기록 수정됨
+end
+
+== 간단 피드백 (10초) ==
+
+history --> user : [이벤트] 피드백 요청 표시됨\n[데이터] (엄지 위/아래 선택지,\n키워드 3개: 맛/양/속도)
+note right : 안내 메시지: "오늘 점심 어땠어요?\n10초면 끝나요!"
+
+user -> history : [커맨드] 간단 피드백 제출\n[데이터] (기록 ID, 만족도: 좋아요/별로,\n키워드: 선택)
+
+history -> history : [정책/규칙] 피드백 데이터 유효성 검증
+history --> user : [이벤트] 피드백 저장 완료됨\n[데이터] (누적 피드백 횟수)
+note right : 피드백: "피드백 감사해요!\n내일 추천에 반영할게요 :)"
+
+history -> recommend : [커맨드] 취향 학습 데이터 전달\n[데이터] (기록 ID, 식당 ID, 만족도,\n키워드, 컨텍스트 스냅샷)
+recommend --> history : [이벤트] 학습 데이터 수신 확인됨
+
+== 피드백 미제출 시 ==
+
+alt 피드백 미응답 (1시간 경과)
+  history --> user : [이벤트] 피드백 리마인더 표시됨\n[데이터] ("오늘 점심은 어땠나요?"\n푸시 알림)
+  note right : 에러 처리: 강제하지 않음\n리마인더 1회만 발송\n무시 시 기본값(중립) 적용
+end
+
+@enduml

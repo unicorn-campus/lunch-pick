@@ -2,6 +2,13 @@
 ## 목표
 점심 메뉴 추천 서비스 를 위한 런치픽(LunchPick) 개발
 
+## MVP 주제
+직장인을 위한 AI 기반 점심 메뉴 추천 서비스 — 런치픽(LunchPick): 매일 반복되는 점심 메뉴 의사결정 피로를 AI 개인화 추천으로 해결하는 foodtech 버티컬 서비스
+
+## 고객유형
+- 최우선 고객: 결정 피로 직장인 (수도권 오피스 밀집 지역, 25-45세, 매일 점심 외식)
+- 세그먼트: 결정 피로 직장인 / 점심 루틴 탈출자 / 배달 의존 재택근무자 / 점심 책임자 / 건강 관리 직장인
+
 ## 팀 행동원칙
 - 'M'사상을 믿고 실천한다. : Value-Oriented, Interactive, Iterative
 - 'M'사상 실천을 위한 마인드셋을 가진다
@@ -123,4 +130,26 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 | `ulw` | `Skill("oh-my-claudecode:ultrawork")` |
 
 ### 교훈 목록
-(아직 없음)
+- [HIGH] `<!--ASK_USER-->` 발견 시 AskUserQuestion 도구를 호출할 것 - 공통
+
+## NPD 워크플로우 상태
+### develop
+- 진행 모드: 자동 진행
+- 개발 범위: Phase 1 (MVP)
+- 마지막 완료 Step: Step 6 (개발 완료 — 서비스 중지, 실행 도구 복사, README.md 생성)
+
+### plan
+- 진행 모드: 자동 진행
+- 마지막 완료 Step: Step 9 (설계 완료)
+
+### design
+- 진행 모드: 자동 진행
+- 리뷰: 안함
+- 설계 아키텍처 패턴: 회원서비스→Layered, 추천·이력서비스→Layered, 결제서비스→Layered
+- CLOUD: AWS
+- 마지막 완료 Step: Step 9 (설계 완료)
+
+## 프로젝트 네이밍
+- ORG (회사/조직명): unicorn
+- ROOT (대표 시스템명): lunchpick
+- 기본 패키지: com.unicorn.lunchpick

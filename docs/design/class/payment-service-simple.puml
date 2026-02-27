@@ -1,0 +1,77 @@
+@startuml payment-service-simple
+!theme mono
+
+title 결제 서비스(payment-service) - 클래스 다이어그램 (요약)
+' 작성자: 홍길동 (아키) + 한승우 (마법사)
+
+package "com.unicorn.lunchpick.payment" {
+
+    package "controller" {
+        class SubscriptionController
+    }
+
+    package "service" {
+        interface SubscriptionService
+        class SubscriptionServiceImpl
+        interface PaymentService
+        class PaymentServiceImpl
+        class PaymentValidator
+        class SubscriptionEventPublisher
+    }
+
+    package "repository" {
+        interface SubscriptionRepository
+        interface PaymentHistoryRepository
+    }
+
+    package "repository/entity" {
+        class SubscriptionEntity
+        class PaymentHistoryEntity
+    }
+
+    package "client" {
+        class PgGatewayClient
+    }
+
+    package "dto/request" {
+        class CreateSubscriptionRequest
+        class CancelSubscriptionRequest
+    }
+
+    package "dto/response" {
+        class SubscriptionPlansResponse
+        class CreateSubscriptionResponse
+        class CancelSubscriptionResponse
+        class ExtendTrialResponse
+    }
+}
+
+' 관계
+SubscriptionController --> SubscriptionService
+
+SubscriptionServiceImpl ..|> SubscriptionService
+SubscriptionServiceImpl --> SubscriptionRepository
+SubscriptionServiceImpl --> PaymentHistoryRepository
+SubscriptionServiceImpl --> PaymentValidator
+SubscriptionServiceImpl --> PgGatewayClient
+SubscriptionServiceImpl --> SubscriptionEventPublisher
+SubscriptionServiceImpl --> PaymentService
+
+PaymentServiceImpl ..|> PaymentService
+PaymentServiceImpl --> PgGatewayClient
+PaymentServiceImpl --> PaymentHistoryRepository
+
+SubscriptionRepository ..> SubscriptionEntity
+PaymentHistoryRepository ..> PaymentHistoryEntity
+
+note as N1
+  **Controller API 매핑표**
+  ──────────────────────────────────────────────────────
+  **SubscriptionController**
+  GET    /api/v1/subscriptions/plans          구독 플랜 조회
+  POST   /api/v1/subscriptions                구독 결제
+  DELETE /api/v1/subscriptions/{subscriptionId}  구독 해지
+  POST   /api/v1/subscriptions/extend-trial   해지 전 7일 무료 연장 (복귀 유도)
+end note
+
+@enduml

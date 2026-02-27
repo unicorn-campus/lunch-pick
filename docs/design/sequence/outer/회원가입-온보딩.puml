@@ -1,0 +1,125 @@
+@startuml 회원가입-온보딩
+!theme mono
+
+title 회원가입-온보딩
+
+actor "사용자" as User
+participant "프론트엔드" as Frontend
+participant "API Gateway" as Gateway
+participant "회원 서비스" as MemberService
+participant "카카오 로그인 API(E)" as Kakao
+database "Redis" as Redis
+database "회원 DB" as MemberDB
+
+== 소셜 로그인 (UFR-MBR-010) ==
+
+User -> Frontend: 카카오 로그인 버튼 탭
+Frontend -> Kakao: 카카오 OAuth 인증 요청
+activate Kakao
+Kakao -> User: 카카오 인증 화면 표시
+User -> Kakao: 카카오 계정 인증 완료
+Kakao --> Frontend: 카카오 인증 코드 반환
+deactivate Kakao
+
+Frontend -> Gateway: POST /api/v1/auth/kakao\n{카카오 인증 코드}
+activate Gateway
+Gateway -> MemberService: 소셜 로그인 요청 전달
+activate MemberService
+
+MemberService -> Kakao: 카카오 토큰 검증 요청
+activate Kakao
+Kakao --> MemberService: 사용자 프로필 반환\n(이메일, 카카오 ID)
+deactivate Kakao
+
+alt 기존 회원
+    MemberService -> MemberDB: 회원 조회 (이메일)
+    MemberDB --> MemberService: 기존 회원 정보 반환
+    MemberService -> Redis: 세션 저장 (TTL: 1시간)
+    MemberService --> Gateway: 200 OK\n{JWT 토큰, 회원 ID, isNewUser: false}
+    Gateway --> Frontend: 로그인 성공 응답
+    Frontend -> Frontend: 메인 화면으로 이동
+
+else 신규 회원가입
+    MemberService -> MemberDB: 신규 회원 생성\n(회원 ID, 이메일, 카카오 ID)
+    MemberDB --> MemberService: 회원 생성 완료
+    MemberService -> Redis: 세션 저장 (TTL: 1시간)
+    MemberService --> Gateway: 201 Created\n{JWT 토큰, 회원 ID, isNewUser: true}
+    Gateway --> Frontend: 회원가입 성공 응답
+    Frontend -> Frontend: 취향 온보딩 화면으로 이동
+
+else 카카오 인증 실패
+    MemberService --> Gateway: 401 Unauthorized\n{error: "카카오 인증에 실패했어요"}
+    Gateway --> Frontend: 인증 실패 응답
+    Frontend -> User: "인증에 실패했어요. 다시 시도해주세요" 안내
+end
+
+deactivate MemberService
+deactivate Gateway
+
+== 취향 온보딩 퀴즈 (UFR-MBR-020) ==
+
+Frontend -> User: 음식 카드 10장 표시
+User -> Frontend: 음식 카드 스와이프 (좋아요/싫어요)
+Frontend -> Frontend: 진행률 실시간 표시
+
+alt 최소 7장 이상 완료
+    Frontend -> Gateway: POST /api/v1/members/onboarding/taste\n{카드별 스와이프 결과 배열}
+    activate Gateway
+    Gateway -> MemberService: 취향 온보딩 저장 요청
+    activate MemberService
+    MemberService -> MemberDB: 초기 취향 벡터 저장\n(선호/비선호 카테고리)
+    MemberDB --> MemberService: 저장 완료
+    MemberService --> Gateway: 200 OK\n{선호 카테고리 Top 3}
+    deactivate MemberService
+    Gateway --> Frontend: 온보딩 완료 응답
+    deactivate Gateway
+    Frontend -> User: "취향 프로파일 완성!" 축하 메시지\n+ 선호 카테고리 Top 3 표시
+
+else 7장 미만 스와이프
+    Frontend -> User: "조금만 더!" 안내 메시지
+
+else 중간 이탈
+    Frontend -> Gateway: PUT /api/v1/members/onboarding/progress\n{현재까지 스와이프 결과}
+    activate Gateway
+    Gateway -> MemberService: 진행 상태 임시 저장
+    activate MemberService
+    MemberService -> MemberDB: 온보딩 진행 상태 저장
+    MemberService --> Gateway: 200 OK
+    deactivate MemberService
+    Gateway --> Frontend: 저장 완료
+    deactivate Gateway
+    Frontend -> User: 재진입 시 이어서 진행 가능 안내
+end
+
+== 위치 정보 동의 (UFR-MBR-030) ==
+
+Frontend -> User: 위치 정보 수집 동의 화면 표시\n(수집 목적, 보유 기간 6개월 고지)
+User -> Frontend: 위치 정보 동의/거절 선택
+
+alt 동의
+    Frontend -> Gateway: POST /api/v1/members/location/consent\n{동의 여부: true}
+    activate Gateway
+    Gateway -> MemberService: 위치 동의 처리
+    activate MemberService
+    MemberService -> MemberDB: 위치 동의 이력 저장\n(동의 시각, 동의 내용)
+    MemberDB --> MemberService: 저장 완료
+    MemberService --> Gateway: 200 OK\n{위치 기반 추천 활성화}
+    deactivate MemberService
+    Gateway --> Frontend: 동의 처리 완료
+    deactivate Gateway
+    Frontend -> User: 위치 자동 인식 + 메인 화면 전환
+
+else 거절
+    Frontend -> Gateway: POST /api/v1/members/location/consent\n{동의 여부: false}
+    activate Gateway
+    Gateway -> MemberService: 위치 거절 처리
+    activate MemberService
+    MemberService -> MemberDB: 위치 거절 이력 저장
+    MemberService --> Gateway: 200 OK\n{수동 위치 입력 모드}
+    deactivate MemberService
+    Gateway --> Frontend: 거절 처리 완료
+    deactivate Gateway
+    Frontend -> User: "위치를 직접 입력해주세요" 안내
+end
+
+@enduml

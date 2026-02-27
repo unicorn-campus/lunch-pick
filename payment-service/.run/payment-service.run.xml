@@ -1,0 +1,73 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="payment-service" type="GradleRunConfiguration" factoryName="Gradle">
+    <ExternalSystemSettings>
+      <option name="env">
+        <map>
+          <!-- 서버 설정 -->
+          <entry key="SERVER_PORT" value="8083" />
+          <entry key="SPRING_PROFILES_ACTIVE" value="dev" />
+
+          <!-- 데이터베이스 (backing-service-result.md 기준) -->
+          <entry key="DB_KIND" value="postgresql" />
+          <entry key="DB_HOST" value="localhost" />
+          <entry key="DB_PORT" value="15432" />
+          <entry key="DB_NAME" value="payment" />
+          <entry key="DB_USER" value="lunchpick" />
+          <entry key="DB_PASSWORD" value="P@ssw0rd$" />
+
+          <!-- JPA -->
+          <entry key="DDL_AUTO" value="update" />
+          <entry key="SHOW_SQL" value="true" />
+
+          <!-- Redis (DB 3: 구독 플랜/활성 구독 캐시, 중복 결제 Lock) -->
+          <entry key="REDIS_HOST" value="localhost" />
+          <entry key="REDIS_PORT" value="16379" />
+          <entry key="REDIS_DATABASE" value="3" />
+
+          <!-- Redis Streams MQ (DB 0: subscription-events 발행) -->
+          <entry key="KAFKA_BROKERS" value="localhost:16379" />
+          <entry key="MQ_SUBSCRIPTION_TOPIC" value="subscription-events" />
+
+          <!-- JWT (모든 서비스 동일) -->
+          <entry key="JWT_SECRET" value="lunchpick-dev-jwt-secret-key-2026-must-be-at-least-256-bits-long-for-hs256" />
+          <entry key="JWT_ACCESS_TOKEN_VALIDITY" value="1800" />
+          <entry key="JWT_REFRESH_TOKEN_VALIDITY" value="86400" />
+
+          <!-- PG 게이트웨이 (크리덴셜 미발급 시 빈 값) -->
+          <entry key="PG_GATEWAY_URL" value="" />
+          <entry key="PG_MERCHANT_ID" value="" />
+          <entry key="PG_SECRET_KEY" value="" />
+
+          <!-- CORS -->
+          <entry key="CORS_ALLOWED_ORIGINS" value="http://localhost:3000" />
+
+          <!-- 로깅 -->
+          <entry key="LOG_LEVEL_ROOT" value="INFO" />
+          <entry key="LOG_LEVEL_APP" value="DEBUG" />
+          <entry key="LOG_LEVEL_WEB" value="INFO" />
+          <entry key="LOG_LEVEL_SQL" value="DEBUG" />
+          <entry key="LOG_LEVEL_SQL_TYPE" value="TRACE" />
+          <entry key="LOG_FILE_PATH" value="logs/payment-service.log" />
+        </map>
+      </option>
+      <option name="executionName" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      <option name="externalSystemIdString" value="GRADLE" />
+      <option name="scriptParameters" value="" />
+      <option name="taskDescriptions">
+        <list />
+      </option>
+      <option name="taskNames">
+        <list>
+          <option value="payment-service:bootRun" />
+        </list>
+      </option>
+      <option name="vmOptions" />
+    </ExternalSystemSettings>
+    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+    <DebugAllEnabled>false</DebugAllEnabled>
+    <RunAsTest>false</RunAsTest>
+    <method v="2" />
+  </configuration>
+</component>

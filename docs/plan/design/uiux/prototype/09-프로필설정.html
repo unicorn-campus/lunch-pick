@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>런치픽 - 프로필 설정</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .profile-header {
+      text-align: center;
+      padding: var(--space-xl) 0 var(--space-l);
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #FFF5F0, #FEF3C7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto var(--space-m);
+    }
+    .profile-name {
+      font-size: var(--font-size-h2);
+      font-weight: var(--font-weight-bold);
+    }
+    .profile-plan {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      margin-top: var(--space-s);
+      padding: var(--space-xs) var(--space-s);
+      background: var(--color-bg);
+      border-radius: var(--radius-xs);
+      font-size: var(--font-size-caption);
+      color: var(--color-text-secondary);
+    }
+    .settings-section {
+      margin-bottom: var(--space-l);
+    }
+    .settings-section__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      margin-bottom: var(--space-s);
+      padding: 0 var(--space-xs);
+    }
+    .settings-list {
+      background: var(--color-surface);
+      border-radius: var(--radius-m);
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
+    }
+    .settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-m);
+      border-bottom: 1px solid #F3F4F6;
+      cursor: pointer;
+      transition: background var(--duration-fast) var(--easing-standard);
+      min-height: 52px;
+    }
+    .settings-item:last-child {
+      border-bottom: none;
+    }
+    .settings-item:hover {
+      background: var(--color-bg);
+    }
+    .settings-item__left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-m);
+    }
+    .settings-item__icon {
+      font-size: 20px;
+      width: 24px;
+      text-align: center;
+    }
+    .settings-item__label {
+      font-size: var(--font-size-body1);
+    }
+    .settings-item__value {
+      font-size: var(--font-size-body2);
+      color: var(--color-text-secondary);
+    }
+    .settings-item__arrow {
+      color: var(--color-text-disabled);
+      font-size: 16px;
+    }
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      width: 48px;
+      height: 28px;
+    }
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #D1D5DB;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background var(--duration-fast) var(--easing-standard);
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform var(--duration-fast) var(--easing-standard);
+    }
+    .toggle input:checked + .toggle-slider {
+      background: var(--color-primary);
+    }
+    .toggle input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+    }
+    /* Edit Modal */
+    .edit-field {
+      margin-bottom: var(--space-m);
+    }
+    .edit-field label {
+      display: block;
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-medium);
+      margin-bottom: var(--space-s);
+    }
+  </style>
+</head>
+<body>
+  <app-header title="프로필" back="05-홈.html"></app-header>
+
+  <main role="main" class="page-container">
+    <div class="profile-header">
+      <div class="profile-avatar" aria-hidden="true">👤</div>
+      <h1 class="profile-name" id="profileName"></h1>
+      <div class="profile-plan" id="profilePlan"></div>
+    </div>
+
+    <section class="settings-section">
+      <div class="settings-section__title">계정</div>
+      <div class="settings-list">
+        <div class="settings-item" onclick="editNickname()">
+          <div class="settings-item__left">
+            <span class="settings-item__icon">✏️</span>
+            <span class="settings-item__label">닉네임</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--space-s);">
+            <span class="settings-item__value" id="nicknameValue"></span>
+            <span class="settings-item__arrow">→</span>
+          </div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item__left">
+            <span class="settings-item__icon">📧</span>
+            <span class="settings-item__label">이메일</span>
+          </div>
+          <span class="settings-item__value" id="emailValue"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <div class="settings-section__title">식이제한</div>
+      <div class="settings-list">
+        <div class="settings-item" onclick="navigateTo('04-식이제한설정.html')">
+          <div class="settings-item__left">
+            <span class="settings-item__icon">⚠️</span>
+            <span class="settings-item__label">알레르기 설정</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--space-s);">
+            <span class="settings-item__value" id="allergyValue">미설정</span>
+            <span class="settings-item__arrow">→</span>
+          </div>
+        </div>
+        <div class="settings-item" onclick="navigateTo('04-식이제한설정.html')">
+          <div class="settings-item__left">
+            <span class="settings-item__icon">🥗</span>
+            <span class="settings-item__label">식이 유형</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--space-s);">
+            <span class="settings-item__value" id="dietValue">일반</span>
+            <span class="settings-item__arrow">→</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <div class="settings-section__title">알림</div>
+      <div class="settings-list">
+        <div class="settings-item">
+          <div class="settings-item__left">
+            <span class="settings-item__icon">🔔</span>
+            <span class="settings-item__label">추천 알림</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" checked aria-label="추천 알림 켜기/끄기">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item__left">
+            <span class="settings-item__icon">💬</span>
+            <span class="settings-item__label">피드백 리마인더</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" checked aria-label="피드백 리마인더 켜기/끄기">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <div class="settings-section__title">구독</div>
+      <div class="settings-list">
+        <div class="settings-item" onclick="navigateTo('10-구독플랜.html')">
+          <div class="settings-item__left">
+            <span class="settings-item__icon">💎</span>
+            <span class="settings-item__label">구독 관리</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--space-s);">
+            <span class="settings-item__value" id="planValue"></span>
+            <span class="settings-item__arrow">→</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <div class="settings-section__title">위치</div>
+      <div class="settings-list">
+        <div class="settings-item">
+          <div class="settings-item__left">
+            <span class="settings-item__icon">📍</span>
+            <span class="settings-item__label">위치 정보 제공</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" checked aria-label="위치 정보 제공 동의">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <div style="text-align:center;padding:var(--space-l) 0;">
+      <button class="btn-text" style="color:var(--color-text-secondary);">로그아웃</button>
+    </div>
+  </main>
+
+  <!-- Nickname Edit Modal -->
+  <div id="editModal" class="modal-overlay" role="dialog" aria-label="닉네임 수정">
+    <div class="modal">
+      <h3 class="modal__title">닉네임 수정</h3>
+      <div class="edit-field">
+        <label for="nicknameInput">닉네임</label>
+        <input type="text" id="nicknameInput" class="input-field" maxlength="20" placeholder="2~20자">
+      </div>
+      <div class="modal__actions">
+        <button class="btn btn-secondary" onclick="closeEditModal()">취소</button>
+        <button class="btn btn-primary" onclick="saveNickname()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <app-bottom-nav active="profile"></app-bottom-nav>
+
+  <script src="common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var user = SAMPLE_DATA.user;
+      document.getElementById('profileName').textContent = user.nickname + '님';
+      document.getElementById('profilePlan').textContent = user.plan === 'premium' ? '💎 프리미엄' : '무료 플랜';
+      document.getElementById('nicknameValue').textContent = user.nickname;
+      document.getElementById('emailValue').textContent = user.email;
+      document.getElementById('planValue').textContent = user.plan === 'premium' ? '프리미엄' : '무료';
+    });
+
+    function editNickname() {
+      document.getElementById('nicknameInput').value = SAMPLE_DATA.user.nickname;
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+    }
+
+    function saveNickname() {
+      var newName = document.getElementById('nicknameInput').value.trim();
+      if (newName.length < 2 || newName.length > 20) {
+        showToast('닉네임은 2~20자여야 해요');
+        return;
+      }
+      document.getElementById('nicknameValue').textContent = newName;
+      document.getElementById('profileName').textContent = newName + '님';
+      closeEditModal();
+      showToast('설정이 저장되었어요');
+    }
+  </script>
+</body>
+</html>

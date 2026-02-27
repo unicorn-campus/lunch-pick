@@ -1,0 +1,80 @@
+@startuml recommendation-service-피드백제출
+!theme mono
+
+title 추천·이력 서비스 - 피드백 제출 (UFR-REC-090)
+
+participant "FeedbackController" as Controller
+participant "FeedbackService" as FeedbackService
+participant "FeedbackRepository" as FeedbackRepo
+participant "MealRepository" as MealRepo
+database "추천·이력 DB" as RecDB
+
+== 피드백 제출 ==
+
+Controller -> FeedbackService: submitFeedback(memberId, mealId, satisfaction, keyword)
+activate FeedbackService
+
+FeedbackService -> MealRepo: 식사 기록 소유자 검증
+activate MealRepo
+MealRepo -> RecDB: SELECT 식사 기록 WHERE mealId AND memberId
+RecDB --> MealRepo: 식사 기록 반환
+MealRepo --> FeedbackService: 소유자 확인 결과
+deactivate MealRepo
+
+alt 소유자 불일치
+    FeedbackService --> Controller: ForbiddenException\n{code: MEAL_NOT_OWNED}
+
+else 소유자 확인 완료
+
+    FeedbackService -> FeedbackRepo: 기존 피드백 존재 여부 확인
+    activate FeedbackRepo
+    FeedbackRepo -> RecDB: SELECT 피드백 WHERE mealId
+    RecDB --> FeedbackRepo: 조회 결과
+    FeedbackRepo --> FeedbackService: 기존 피드백 여부
+    deactivate FeedbackRepo
+
+    alt 이미 피드백 제출됨 (수정으로 처리)
+        FeedbackService -> FeedbackRepo: 피드백 수정
+        activate FeedbackRepo
+        FeedbackRepo -> RecDB: UPDATE 피드백\n{satisfaction, keyword, 수정 시각}
+        RecDB --> FeedbackRepo: 수정 완료
+        FeedbackRepo --> FeedbackService: 완료
+        deactivate FeedbackRepo
+
+    else 신규 피드백
+        FeedbackService -> FeedbackRepo: 피드백 저장
+        activate FeedbackRepo
+        FeedbackRepo -> RecDB: INSERT 피드백\n{feedbackId, memberId, mealId, satisfaction, keyword, 제출 시각}
+        RecDB --> FeedbackRepo: 생성된 feedbackId 반환
+        FeedbackRepo --> FeedbackService: feedbackId 반환
+        deactivate FeedbackRepo
+    end
+
+    FeedbackService -> FeedbackRepo: 누적 피드백 횟수 조회
+    activate FeedbackRepo
+    FeedbackRepo -> RecDB: SELECT COUNT 피드백 WHERE memberId
+    RecDB --> FeedbackRepo: 누적 횟수 반환
+    FeedbackRepo --> FeedbackService: 누적 피드백 횟수 반환
+    deactivate FeedbackRepo
+
+    FeedbackService --> Controller: FeedbackResult\n{message: "피드백 감사해요!", totalFeedbackCount: N, "내일 추천에 반영할게요"}
+end
+
+deactivate FeedbackService
+
+== 피드백 스킵 시 기본값 처리 ==
+
+Controller -> FeedbackService: submitDefaultFeedback(memberId, mealId)
+activate FeedbackService
+
+FeedbackService -> FeedbackRepo: 중립 피드백 저장
+activate FeedbackRepo
+FeedbackRepo -> RecDB: INSERT 피드백\n{feedbackId, memberId, mealId, satisfaction: NEUTRAL, skipped: true}
+RecDB --> FeedbackRepo: 저장 완료
+FeedbackRepo --> FeedbackService: 완료
+deactivate FeedbackRepo
+
+FeedbackService --> Controller: DefaultFeedbackResult\n{skipped: true}
+deactivate FeedbackService
+
+@enduml

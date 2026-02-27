@@ -1,0 +1,127 @@
+@startuml payment-service-구독결제
+!theme mono
+
+title 결제 서비스 - 구독 결제 (UFR-PAY-020)
+
+participant "PaymentController" as Controller
+participant "SubscriptionService" as SubService
+participant "PaymentValidator" as Validator
+participant "PGClient" as PGClient
+participant "PaymentRepository" as PaymentRepo
+participant "EventPublisher" as EventPublisher
+participant "PG(결제 게이트웨이)(E)" as PG
+participant "메시지 큐(E)\n(Redis Streams)" as MQ
+database "결제 DB" as PaymentDB
+
+== 구독 결제 요청 ==
+
+Controller -> SubService: subscribe(memberId, planType, paymentInfo)
+activate SubService
+
+SubService -> Validator: validatePaymentInfo(paymentInfo)
+activate Validator
+Validator -> Validator: 카드 번호 형식 검증 (Luhn 알고리즘)
+Validator -> Validator: 유효기간 검증 (만료 여부)
+Validator -> Validator: CVC 형식 검증
+Validator -> Validator: 플랜 유형 검증 (월간/연간)
+Validator --> SubService: 검증 결과
+deactivate Validator
+
+alt 검증 실패
+    SubService --> Controller: ValidationException\n{code: INVALID_PAYMENT_INFO}
+
+else 검증 통과
+
+    SubService -> SubService: 전자상거래법 준수 기록\n(청약철회권 7일, 자동 갱신 고지 로깅)
+
+    SubService -> PaymentRepo: 진행 중 결제 중복 확인\n(동일 회원 처리 중 결제 존재 여부)
+    activate PaymentRepo
+    PaymentRepo -> PaymentDB: SELECT 결제 이력 WHERE memberId AND status = PENDING
+    PaymentDB --> PaymentRepo: 조회 결과
+    PaymentRepo --> SubService: 중복 여부
+    deactivate PaymentRepo
+
+    alt 중복 결제 진행 중
+        SubService --> Controller: ConflictException\n{code: PAYMENT_IN_PROGRESS}
+
+    else 정상 진행 가능
+
+        SubService -> PaymentRepo: 결제 요청 임시 저장 (PENDING 상태)
+        activate PaymentRepo
+        PaymentRepo -> PaymentDB: INSERT 결제 요청\n{memberId, planType, amount, status: PENDING, 요청 시각}
+        PaymentDB --> PaymentRepo: paymentId 반환
+        PaymentRepo --> SubService: paymentId
+        deactivate PaymentRepo
+
+        == PG 결제 승인 요청 (Retry 미적용 — 이중결제 방지) ==
+
+        SubService -> PGClient: requestPayment(paymentId, amount, cardInfo)
+        activate PGClient
+
+        PGClient -> PGClient: Circuit Breaker 상태 확인
+
+        alt Circuit Breaker Closed (정상)
+            PGClient -> PG: 결제 승인 요청\n{금액, 카드 정보, 정기 결제 등록}
+            activate PG
+
+            alt 결제 승인 성공
+                PG --> PGClient: 승인 완료\n{pgTransactionId, 승인 번호, 승인 시각}
+                deactivate PG
+                PGClient --> SubService: PaymentSuccess\n{pgTransactionId, approvedAt}
+                deactivate PGClient
+
+                SubService -> PaymentRepo: 결제 성공 상태 갱신
+                activate PaymentRepo
+                PaymentRepo -> PaymentDB: UPDATE 결제\n{status: SUCCESS, pgTransactionId, 다음 결제일, 승인 시각}
+                PaymentDB --> PaymentRepo: 갱신 완료
+                PaymentRepo --> SubService: 완료
+                deactivate PaymentRepo
+
+                SubService -> EventPublisher: publishSubscriptionActivated(memberId, planType, startDate, expiryDate)
+                activate EventPublisher
+                EventPublisher -> MQ: 구독 활성화 이벤트 발행\n(Redis Streams: subscription.activated)
+                MQ --> EventPublisher: 발행 완료
+                EventPublisher --> SubService: 완료
+                deactivate EventPublisher
+
+                SubService --> Controller: SubscriptionResult\n{subscriptionId, planType, startDate, nextBillingDate, "프리미엄 활성화 완료"}
+
+            else 결제 승인 실패
+                PG --> PGClient: 승인 실패\n{errorCode, errorMessage}
+                deactivate PG
+                PGClient --> SubService: PaymentFailure\n{errorCode}
+                deactivate PGClient
+
+                SubService -> PaymentRepo: 결제 실패 상태 갱신
+                activate PaymentRepo
+                PaymentRepo -> PaymentDB: UPDATE 결제\n{status: FAILED, errorCode, 실패 시각}
+                PaymentDB --> PaymentRepo: 갱신 완료
+                PaymentRepo --> SubService: 완료
+                deactivate PaymentRepo
+
+                SubService -> SubService: 연속 실패 횟수 확인
+
+                alt 3회 미만 실패
+                    SubService --> Controller: PaymentException\n{code: PAYMENT_FAILED, message: "결제가 실패했어요. 다른 결제 수단을 시도해주세요"}
+                else 3회 연속 실패
+                    SubService --> Controller: PaymentException\n{code: PAYMENT_FAILED_MAX_RETRY, message: "고객 지원 연결", dataGracePeriodDays: 7}
+                end
+            end
+
+        else Circuit Breaker Open (PG 장애)
+            PGClient --> SubService: CircuitBreakerOpenException
+            deactivate PGClient
+            SubService -> PaymentRepo: 결제 상태 FAILED 처리
+            activate PaymentRepo
+            PaymentRepo -> PaymentDB: UPDATE 결제\n{status: FAILED, errorCode: PG_UNAVAILABLE}
+            PaymentDB --> PaymentRepo: 완료
+            PaymentRepo --> SubService: 완료
+            deactivate PaymentRepo
+            SubService --> Controller: ServiceUnavailableException\n{code: PG_UNAVAILABLE, message: "결제 서비스가 일시적으로 불가합니다"}
+        end
+    end
+end
+
+deactivate SubService
+
+@enduml

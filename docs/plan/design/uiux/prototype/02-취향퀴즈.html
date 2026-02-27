@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>런치픽 - 취향 퀴즈</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .quiz-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: var(--space-l) var(--space-m);
+      background: var(--color-surface);
+    }
+    .quiz-header {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-l);
+    }
+    .quiz-title {
+      text-align: center;
+      margin-bottom: var(--space-s);
+    }
+    .quiz-subtitle {
+      text-align: center;
+      font-size: var(--font-size-body2);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-l);
+    }
+    .quiz-card-area {
+      position: relative;
+      width: 280px;
+      height: 360px;
+      margin: 0 auto var(--space-l);
+    }
+    .quiz-card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--color-surface);
+      border-radius: var(--radius-l);
+      box-shadow: var(--shadow-2);
+      overflow: hidden;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    .quiz-card.hidden {
+      display: none;
+    }
+    .quiz-card__image {
+      height: 70%;
+      background: linear-gradient(135deg, #FFF5F0 0%, #FEF3C7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+    }
+    .quiz-card__info {
+      padding: var(--space-m);
+      text-align: center;
+    }
+    .quiz-card__name {
+      font-size: var(--font-size-h3);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-s);
+    }
+    .quiz-card__tags {
+      font-size: var(--font-size-caption);
+      color: var(--color-text-secondary);
+    }
+    .quiz-card.swipe-left {
+      transform: translateX(-150%) rotate(-15deg);
+      opacity: 0;
+    }
+    .quiz-card.swipe-right {
+      transform: translateX(150%) rotate(15deg);
+      opacity: 0;
+    }
+    .quiz-buttons {
+      display: flex;
+      gap: var(--space-xl);
+      margin-bottom: var(--space-l);
+    }
+    .quiz-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-full);
+      border: 2px solid #E5E7EB;
+      background: var(--color-surface);
+      font-size: 32px;
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--easing-standard);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .quiz-btn:hover {
+      transform: scale(1.1);
+    }
+    .quiz-btn--dislike {
+      border-color: var(--color-error);
+    }
+    .quiz-btn--dislike:hover {
+      background: #FEF2F2;
+    }
+    .quiz-btn--like {
+      border-color: var(--color-success);
+    }
+    .quiz-btn--like:hover {
+      background: #ECFDF5;
+    }
+    .quiz-progress {
+      width: 100%;
+      max-width: 280px;
+      margin-bottom: var(--space-s);
+    }
+    .quiz-progress-text {
+      text-align: center;
+      font-size: var(--font-size-caption);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-s);
+    }
+    .quiz-encourage {
+      text-align: center;
+      font-size: var(--font-size-body2);
+      color: var(--color-primary);
+      font-weight: var(--font-weight-medium);
+      min-height: 20px;
+    }
+    .quiz-complete {
+      display: none;
+      text-align: center;
+      padding: var(--space-xl);
+    }
+    .quiz-complete.show {
+      display: block;
+    }
+    .quiz-complete__emoji {
+      font-size: 64px;
+      margin-bottom: var(--space-m);
+    }
+    .quiz-complete__title {
+      font-size: var(--font-size-h2);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--space-s);
+    }
+    .quiz-complete__desc {
+      font-size: var(--font-size-body1);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-l);
+    }
+  </style>
+</head>
+<body>
+  <main role="main" class="quiz-page">
+    <div class="quiz-header">
+      <div></div>
+      <button class="btn-text" onclick="skipQuiz()" aria-label="퀴즈 건너뛰기">건너뛰기</button>
+    </div>
+
+    <h1 class="quiz-title">당신의 취향을 알려주세요!</h1>
+    <p class="quiz-subtitle">좋으면 오른쪽, 싫으면 왼쪽으로 넘겨주세요</p>
+
+    <div id="quizArea" class="quiz-card-area" role="region" aria-label="음식 카드 스와이프">
+      <!-- Cards rendered by JS -->
+    </div>
+
+    <div id="quizButtons" class="quiz-buttons">
+      <button class="quiz-btn quiz-btn--dislike" onclick="swipe('dislike')" aria-label="싫어요">👎</button>
+      <button class="quiz-btn quiz-btn--like" onclick="swipe('like')" aria-label="좋아요">👍</button>
+    </div>
+
+    <div id="quizProgress" class="quiz-progress">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-bar__fill" style="width: 0%"></div>
+      </div>
+    </div>
+    <div id="progressText" class="quiz-progress-text">0/10</div>
+    <div id="encourageText" class="quiz-encourage"></div>
+
+    <div id="quizComplete" class="quiz-complete">
+      <div class="quiz-complete__emoji">🎉</div>
+      <h2 class="quiz-complete__title">취향 프로파일 완성!</h2>
+      <p class="quiz-complete__desc">선호 카테고리 Top 3: 한식, 양식, 중식</p>
+      <button class="btn btn-primary btn-full" onclick="navigateTo('03-위치동의.html')">다음으로</button>
+    </div>
+  </main>
+
+  <script src="common.js"></script>
+  <script>
+    var currentIndex = 0;
+    var foods = SAMPLE_DATA.onboardingFoods;
+    var total = foods.length;
+
+    function renderCards() {
+      var area = document.getElementById('quizArea');
+      area.innerHTML = '';
+      for (var i = total - 1; i >= 0; i--) {
+        var food = foods[i];
+        var card = document.createElement('div');
+        card.className = 'quiz-card' + (i < currentIndex ? ' hidden' : '');
+        card.id = 'card-' + i;
+        card.setAttribute('role', 'article');
+        card.setAttribute('aria-label', food.name);
+        card.innerHTML = '<div class="quiz-card__image">' + food.emoji + '</div>' +
+          '<div class="quiz-card__info">' +
+          '<div class="quiz-card__name">' + food.name + '</div>' +
+          '<div class="quiz-card__tags">' + food.tags + '</div>' +
+          '</div>';
+        area.appendChild(card);
+      }
+    }
+
+    function swipe(direction) {
+      if (currentIndex >= total) return;
+      var card = document.getElementById('card-' + currentIndex);
+      if (!card) return;
+      card.classList.add(direction === 'like' ? 'swipe-right' : 'swipe-left');
+      currentIndex++;
+      updateProgress();
+      setTimeout(function() {
+        card.classList.add('hidden');
+      }, 400);
+
+      if (currentIndex >= total) {
+        completeQuiz();
+      }
+    }
+
+    function updateProgress() {
+      var pct = (currentIndex / total) * 100;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressText').textContent = currentIndex + '/' + total;
+
+      var encourage = document.getElementById('encourageText');
+      if (currentIndex < 7) {
+        encourage.textContent = '조금만 더! 3분이면 끝나요';
+      } else if (currentIndex < total) {
+        encourage.textContent = '거의 다 됐어요! 💪';
+      } else {
+        encourage.textContent = '';
+      }
+    }
+
+    function completeQuiz() {
+      document.getElementById('quizArea').style.display = 'none';
+      document.getElementById('quizButtons').style.display = 'none';
+      document.getElementById('quizProgress').style.display = 'none';
+      document.getElementById('progressText').style.display = 'none';
+      document.getElementById('encourageText').style.display = 'none';
+      document.getElementById('quizComplete').classList.add('show');
+    }
+
+    function skipQuiz() {
+      navigateTo('03-위치동의.html');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCards();
+      updateProgress();
+    });
+  </script>
+</body>
+</html>

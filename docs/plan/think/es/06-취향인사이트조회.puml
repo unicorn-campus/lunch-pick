@@ -1,0 +1,39 @@
+@startuml
+!theme mono
+title 06. 취향 인사이트 조회
+
+actor "사용자" as user
+participant "이력업무" as history
+participant "추천업무" as recommend
+
+== 식사 이력 타임라인 조회 ==
+
+user -> history : [커맨드] 식사 이력 조회\n[데이터] (회원 ID, 기간: 30일)
+
+history -> history : [정책/규칙] 조회 기간 검증\n- 무료: 30일 제한\n- 프리미엄: 무제한
+
+history --> user : [이벤트] 식사 이력 타임라인 표시됨\n[데이터] (30일 달력 뷰,\n일별 식사 기록, 카테고리 태그)
+
+== 취향 인사이트 리포트 ==
+
+user -> recommend : [커맨드] 취향 인사이트 요청\n[데이터] (회원 ID)
+
+recommend -> history : [커맨드] 통계 데이터 조회\n[데이터] (회원 ID, 전체 이력)
+history --> recommend : [이벤트] 통계 데이터 조회됨\n[데이터] (카테고리 분포, 만족도 추이,\n방문 빈도)
+
+recommend --> user : [이벤트] 취향 인사이트 표시됨\n[데이터] (선호 카테고리 Top 5,\n주간 패턴, 만족도 변화 그래프,\n"이번 주 당신의 점심 패턴" 요약)
+note right : 피드백: "한식을 가장 좋아하시네요!\n이번 주는 4일 연속 국물 메뉴였어요"
+
+== 데이터 가치 체감 ==
+
+alt 누적 기록 30건 이상
+  recommend --> user : [이벤트] 데이터 축적 마일스톤 표시됨\n[데이터] ("30끼 기록 달성!\n추천 정확도가 42% 올랐어요")
+  note right : 데이터 축적→가치 상승 체감\n구독 전환 동기 강화
+end
+
+alt 무료 사용자 30일 접근 시
+  history --> user : [이벤트] 기억 제한 안내 표시됨\n[데이터] ("30일 전 기록은\n프리미엄에서 확인할 수 있어요")
+  note right : 복구 경로: "프리미엄 7일\n무료 체험하기" 버튼 제공
+end
+
+@enduml

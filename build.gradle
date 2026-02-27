@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+    alias(libs.plugins.spring.boot) apply false
+    alias(libs.plugins.dependency.management) apply false
+    alias(libs.plugins.lombok) apply false
+}
+
+group = 'com.unicorn.lunchpick'
+version = '1.0.0'
+
+allprojects {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.freefair.lombok'
+
+    java {
+        sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+        targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}
+
+// Spring BOM을 모든 서브프로젝트에 적용
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${libs.versions.spring.cloud.get()}"
+        }
+    }
+}
+
+// common을 제외한 서비스 모듈에만 Spring Boot 플러그인 + 공통 의존성 적용
+configure(subprojects.findAll { it.name != 'common' }) {
+    apply plugin: 'org.springframework.boot'
+
+    dependencies {
+        // 공통 모듈
+        implementation project(':common')
+
+        // Actuator (헬스체크 및 모니터링)
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+        // OpenAPI Documentation
+        implementation libs.springdoc.webmvc
+
+        // 테스트
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation 'org.testcontainers:junit-jupiter'
+        testImplementation 'org.mockito:mockito-junit-jupiter'
+
+        // Configuration Processor
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    }
+}
+
+// Java 버전 확인 태스크
+tasks.register('checkJavaVersion') {
+    doLast {
+        println "Java Version: ${System.getProperty('java.version')}"
+        println "Java Home: ${System.getProperty('java.home')}"
+    }
+}
+
+// 전체 클린 태스크
+tasks.register('cleanAll') {
+    dependsOn subprojects.collect { it.tasks.named('clean') }
+    description = 'Clean all subprojects'
+}
+
+// 전체 빌드 태스크
+tasks.register('buildAll') {
+    dependsOn subprojects.collect { it.tasks.named('build') }
+    description = 'Build all subprojects'
+}

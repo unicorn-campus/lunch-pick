@@ -1,0 +1,139 @@
+spring:
+  application:
+    name: recommendation-service
+
+  # PostgreSQL 데이터소스
+  datasource:
+    url: jdbc:${DB_KIND:postgresql}://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:recommendation}
+    username: ${DB_USER:lunchpick}
+    password: ${DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+
+  # JPA 설정
+  jpa:
+    show-sql: ${SHOW_SQL:true}
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        default_schema: lunchpick_recommendation
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+
+  # Redis 설정 (DB 2: 추천 결과 캐시, 추천 이유 캐시, Stale 캐시)
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+      database: ${REDIS_DATABASE:2}
+
+server:
+  port: ${SERVER_PORT:8082}
+
+# JWT (모든 서비스 동일 시크릿)
+jwt:
+  secret: ${JWT_SECRET:}
+  access-token-validity: ${JWT_ACCESS_TOKEN_VALIDITY:1800}
+  refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:86400}
+
+# 내부 서비스 연동 URL
+internal:
+  member-service:
+    url: ${MEMBER_SERVICE_URL:http://localhost:8081}
+  ai-pipeline-service:
+    url: ${AI_PIPELINE_SERVICE_URL:http://localhost:8084}
+
+# 외부 API
+external:
+  weather:
+    url: ${WEATHER_API_URL:}
+    key: ${WEATHER_API_KEY:}
+  map:
+    url: ${MAP_API_URL:}
+    key: ${MAP_API_KEY:}
+
+# Resilience4j Circuit Breaker (ai-pipeline-service 호출 보호)
+resilience4j:
+  circuitbreaker:
+    instances:
+      ai-pipeline:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+        minimum-number-of-calls: 5
+        record-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+          - io.netty.handler.timeout.ReadTimeoutException
+  timelimiter:
+    instances:
+      ai-pipeline:
+        timeout-duration: 35s
+        cancel-running-future: true
+
+# CORS
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+# OpenAPI Documentation
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  show-actuator: false
+
+# Logging
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.unicorn.lunchpick: ${LOG_LEVEL_APP:DEBUG}
+    org.springframework.web: ${LOG_LEVEL_WEB:INFO}
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:INFO}
+    org.hibernate.type: ${LOG_LEVEL_SQL_TYPE:INFO}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: ${LOG_FILE_PATH:logs/recommendation-service.log}
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${LOG_ROLLING_FILE_PATTERN:logs/recommendation-service.%d{yyyy-MM-dd}.%i.log}
+      max-file-size: ${LOG_MAX_FILE_SIZE:100MB}
+      max-history: ${LOG_MAX_HISTORY:30}
+      total-size-cap: ${LOG_TOTAL_SIZE_CAP:1GB}

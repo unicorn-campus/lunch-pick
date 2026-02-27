@@ -1,0 +1,83 @@
+@startuml common-base
+!theme mono
+
+title 런치픽(LunchPick) - 공통 컴포넌트 클래스 다이어그램
+' 작성자: 홍길동 (아키) + 한승우 (마법사)
+
+package "com.unicorn.lunchpick.common" {
+
+    package "entity" {
+        abstract class BaseTimeEntity {
+            # createdAt: LocalDateTime
+            # updatedAt: LocalDateTime
+        }
+    }
+
+    package "dto" {
+        class ApiResponse<T> {
+            - success: boolean
+            - data: T
+            - error: String
+            - timestamp: LocalDateTime
+            + {static} ok(data: T): ApiResponse<T>
+            + {static} fail(error: String): ApiResponse<Void>
+        }
+
+        class ErrorResponse {
+            - error: String
+            - message: String
+            - timestamp: LocalDateTime
+            + {static} of(error: String, message: String): ErrorResponse
+        }
+    }
+
+    package "exception" {
+        class BusinessException {
+            - errorCode: String
+            - message: String
+            + BusinessException(errorCode: String, message: String)
+        }
+
+        class NotFoundException {
+            + NotFoundException(resource: String, id: String)
+        }
+
+        class ValidationException {
+            + ValidationException(message: String)
+        }
+
+        class ConflictException {
+            + ConflictException(errorCode: String, message: String)
+        }
+
+        class UnauthorizedException {
+            + UnauthorizedException(message: String)
+        }
+    }
+
+    package "util" {
+        class JwtTokenProvider {
+            - secretKey: String
+            - expirationMs: long
+            + generateToken(memberId: String): String
+            + getMemberIdFromToken(token: String): String
+            + validateToken(token: String): boolean
+            + getExpiration(token: String): Date
+        }
+
+        class DateTimeUtil {
+            + {static} nowKst(): LocalDateTime
+            + {static} isLunchTime(time: LocalDateTime): boolean
+            + {static} getWeekday(date: LocalDate): String
+            + {static} toIso8601(dateTime: LocalDateTime): String
+        }
+    }
+}
+
+' 예외 상속 관계
+NotFoundException --|> BusinessException
+ValidationException --|> BusinessException
+ConflictException --|> BusinessException
+UnauthorizedException --|> BusinessException
+
+@enduml

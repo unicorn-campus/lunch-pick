@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>런치픽 - 인사이트</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .insight-tabs {
+      display: flex;
+      border-bottom: 2px solid #E5E7EB;
+      margin-bottom: var(--space-l);
+      margin-top: var(--space-m);
+    }
+    .insight-tab {
+      flex: 1;
+      padding: var(--space-m);
+      background: none;
+      border: none;
+      font-family: var(--font-family);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      position: relative;
+      transition: color var(--duration-fast) var(--easing-standard);
+    }
+    .insight-tab.active {
+      color: var(--color-primary);
+    }
+    .insight-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--color-primary);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    /* Calendar styles */
+    .calendar-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-m);
+    }
+    .calendar-nav__title {
+      font-size: var(--font-size-h3);
+      font-weight: var(--font-weight-semibold);
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: var(--space-xs);
+      text-align: center;
+      margin-bottom: var(--space-l);
+    }
+    .calendar-grid__day-label {
+      font-size: var(--font-size-caption);
+      color: var(--color-text-secondary);
+      padding: var(--space-s) 0;
+    }
+    .calendar-grid__cell {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-body2);
+      border-radius: var(--radius-s);
+      gap: 2px;
+      cursor: pointer;
+    }
+    .calendar-grid__cell:hover {
+      background: var(--color-bg);
+    }
+    .calendar-grid__cell--empty {
+      cursor: default;
+    }
+    .calendar-grid__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+    }
+    .calendar-legend {
+      display: flex;
+      gap: var(--space-m);
+      justify-content: center;
+      margin-bottom: var(--space-l);
+    }
+    .calendar-legend__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--font-size-caption);
+      color: var(--color-text-secondary);
+    }
+    .calendar-legend__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+    }
+    /* Insight report */
+    .insight-card {
+      margin-bottom: var(--space-m);
+    }
+    .insight-card__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-medium);
+      margin-bottom: var(--space-m);
+    }
+    .category-bars {
+      margin-bottom: var(--space-s);
+    }
+    .category-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-s);
+      margin-bottom: var(--space-s);
+    }
+    .category-bar__rank {
+      width: 20px;
+      font-size: var(--font-size-body2);
+      color: var(--color-text-secondary);
+    }
+    .category-bar__name {
+      width: 40px;
+      font-size: var(--font-size-body2);
+      font-weight: var(--font-weight-medium);
+    }
+    .category-bar__track {
+      flex: 1;
+      height: 16px;
+      background: #E5E7EB;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .category-bar__fill {
+      height: 100%;
+      border-radius: 8px;
+      transition: width var(--duration-slow) var(--easing-standard);
+    }
+    .category-bar__value {
+      width: 36px;
+      text-align: right;
+      font-size: var(--font-size-body2);
+      font-weight: var(--font-weight-bold);
+    }
+    .satisfaction-area {
+      height: 120px;
+      background: var(--color-bg);
+      border-radius: var(--radius-s);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-s);
+      position: relative;
+    }
+    .satisfaction-line {
+      position: absolute;
+      top: 20%;
+      left: 5%;
+      right: 5%;
+      bottom: 30%;
+    }
+    .satisfaction-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-caption);
+      color: var(--color-text-secondary);
+    }
+    .premium-notice {
+      display: flex;
+      align-items: center;
+      gap: var(--space-s);
+      padding: var(--space-m);
+      background: #FFF5F0;
+      border-radius: var(--radius-m);
+      margin-top: var(--space-l);
+    }
+    .premium-notice__text {
+      flex: 1;
+      font-size: var(--font-size-body2);
+    }
+  </style>
+</head>
+<body>
+  <app-header location notification></app-header>
+
+  <main role="main" class="page-container">
+    <div class="insight-tabs" role="tablist">
+      <button class="insight-tab active" role="tab" aria-selected="true" onclick="switchTab('history')" id="tabHistory">이력</button>
+      <button class="insight-tab" role="tab" aria-selected="false" onclick="switchTab('insight')" id="tabInsight">인사이트</button>
+    </div>
+
+    <!-- History Tab -->
+    <div id="historyContent" class="tab-content active" role="tabpanel" aria-labelledby="tabHistory">
+      <div class="calendar-nav">
+        <button class="btn-icon" aria-label="이전 달">←</button>
+        <span class="calendar-nav__title">2026년 2월</span>
+        <button class="btn-icon" aria-label="다음 달">→</button>
+      </div>
+
+      <div id="calendarGrid" class="calendar-grid">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="calendar-legend">
+        <div class="calendar-legend__item">
+          <span class="calendar-legend__dot" style="background:var(--color-cat-korean)"></span> 한식
+        </div>
+        <div class="calendar-legend__item">
+          <span class="calendar-legend__dot" style="background:var(--color-cat-western)"></span> 양식
+        </div>
+        <div class="calendar-legend__item">
+          <span class="calendar-legend__dot" style="background:var(--color-cat-chinese)"></span> 중식
+        </div>
+        <div class="calendar-legend__item">
+          <span class="calendar-legend__dot" style="background:var(--color-cat-japanese)"></span> 일식
+        </div>
+      </div>
+
+      <div id="premiumNotice" class="premium-notice" style="display:none;">
+        <span aria-hidden="true">💎</span>
+        <div class="premium-notice__text">30일 전 기록은 프리미엄에서 확인할 수 있어요</div>
+        <button class="btn-text" onclick="navigateTo('10-구독플랜.html')" style="white-space:nowrap;">체험하기</button>
+      </div>
+    </div>
+
+    <!-- Insight Tab -->
+    <div id="insightContent" class="tab-content" role="tabpanel" aria-labelledby="tabInsight">
+      <div id="milestoneBanner" class="banner banner--milestone" style="display:none;">
+        🎉 30끼 기록 달성! 추천 정확도가 <strong>42%</strong> 올랐어요
+      </div>
+
+      <div class="card insight-card">
+        <h3 class="insight-card__title">이번 주 당신의 점심 패턴</h3>
+        <p class="body2" id="weeklyPattern" style="color:var(--color-text-secondary);"></p>
+      </div>
+
+      <div class="card insight-card">
+        <h3 class="insight-card__title">선호 카테고리 Top 5</h3>
+        <div id="categoryBars" class="category-bars">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <div class="card insight-card">
+        <h3 class="insight-card__title">만족도 변화 (최근 30일)</h3>
+        <div class="satisfaction-area">
+          <div style="text-align:center;">
+            <div style="font-size:36px;">😊</div>
+            <div style="font-size:var(--font-size-h2);font-weight:var(--font-weight-bold);margin-top:4px;" id="satisfactionAvg"></div>
+          </div>
+        </div>
+        <div class="satisfaction-label">
+          <span>추세: <span id="satisfactionTrend" style="color:var(--color-success);">상승 ↑</span></span>
+          <span id="totalMeals"></span>
+        </div>
+      </div>
+
+      <div id="dataShortBanner" class="banner banner--info" style="display:none;">
+        📊 10끼 이상 기록하면 취향 인사이트가 열려요!
+      </div>
+    </div>
+  </main>
+
+  <app-bottom-nav active="insight"></app-bottom-nav>
+
+  <script src="common.js"></script>
+  <script>
+    var categoryColors = {
+      korean: 'var(--color-cat-korean)',
+      western: 'var(--color-cat-western)',
+      chinese: 'var(--color-cat-chinese)',
+      japanese: 'var(--color-cat-japanese)',
+      other: 'var(--color-cat-other)'
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCalendar();
+      renderInsights();
+
+      if (SAMPLE_DATA.user.plan === 'free') {
+        document.getElementById('premiumNotice').style.display = 'flex';
+      }
+
+      if (SAMPLE_DATA.insights.totalMeals >= 30) {
+        document.getElementById('milestoneBanner').style.display = 'block';
+      }
+
+      if (SAMPLE_DATA.insights.totalMeals < 10) {
+        document.getElementById('dataShortBanner').style.display = 'block';
+      }
+    });
+
+    function switchTab(tab) {
+      document.querySelectorAll('.insight-tab').forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+      document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+
+      if (tab === 'history') {
+        document.getElementById('tabHistory').classList.add('active');
+        document.getElementById('tabHistory').setAttribute('aria-selected', 'true');
+        document.getElementById('historyContent').classList.add('active');
+      } else {
+        document.getElementById('tabInsight').classList.add('active');
+        document.getElementById('tabInsight').setAttribute('aria-selected', 'true');
+        document.getElementById('insightContent').classList.add('active');
+      }
+    }
+
+    function renderCalendar() {
+      var grid = document.getElementById('calendarGrid');
+      var dayLabels = ['일', '월', '화', '수', '목', '금', '토'];
+      dayLabels.forEach(function(d) {
+        var label = document.createElement('div');
+        label.className = 'calendar-grid__day-label';
+        label.textContent = d;
+        grid.appendChild(label);
+      });
+
+      // Feb 2026 starts on Sunday (day 0)
+      var startDay = 0;
+      var daysInMonth = 28;
+
+      var historyMap = {};
+      SAMPLE_DATA.mealHistory.forEach(function(h) {
+        var day = parseInt(h.date.split('-')[2]);
+        historyMap[day] = h.category;
+      });
+
+      for (var i = 0; i < startDay; i++) {
+        var empty = document.createElement('div');
+        empty.className = 'calendar-grid__cell calendar-grid__cell--empty';
+        grid.appendChild(empty);
+      }
+
+      for (var d = 1; d <= daysInMonth; d++) {
+        var cell = document.createElement('div');
+        cell.className = 'calendar-grid__cell';
+        cell.innerHTML = '<span>' + d + '</span>';
+        if (historyMap[d]) {
+          var dot = document.createElement('span');
+          dot.className = 'calendar-grid__dot';
+          dot.style.background = categoryColors[historyMap[d]] || categoryColors.other;
+          cell.appendChild(dot);
+        }
+        grid.appendChild(cell);
+      }
+    }
+
+    function renderInsights() {
+      var insights = SAMPLE_DATA.insights;
+      document.getElementById('weeklyPattern').textContent = '"' + insights.weeklyPattern + '"';
+      document.getElementById('satisfactionAvg').textContent = '평균 ' + insights.satisfactionAvg;
+      document.getElementById('totalMeals').textContent = '총 ' + insights.totalMeals + '끼 기록';
+
+      var container = document.getElementById('categoryBars');
+      var catColors = ['var(--color-cat-korean)', 'var(--color-cat-western)', 'var(--color-cat-chinese)', 'var(--color-cat-japanese)', 'var(--color-cat-other)'];
+      insights.topCategories.forEach(function(cat, i) {
+        var bar = document.createElement('div');
+        bar.className = 'category-bar';
+        bar.innerHTML =
+          '<span class="category-bar__rank">' + (i + 1) + '.</span>' +
+          '<span class="category-bar__name">' + cat.name + '</span>' +
+          '<div class="category-bar__track"><div class="category-bar__fill" style="width:' + cat.percent + '%;background:' + catColors[i] + '"></div></div>' +
+          '<span class="category-bar__value">' + cat.percent + '%</span>';
+        container.appendChild(bar);
+      });
+    }
+  </script>
+</body>
+</html>

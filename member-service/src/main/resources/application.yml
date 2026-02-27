@@ -1,0 +1,119 @@
+spring:
+  application:
+    name: member-service
+
+  # PostgreSQL 데이터소스
+  datasource:
+    url: jdbc:${DB_KIND:postgresql}://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:member}
+    username: ${DB_USER:lunchpick}
+    password: ${DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+
+  # JPA 설정
+  jpa:
+    show-sql: ${SHOW_SQL:true}
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        default_schema: lunchpick_member
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+
+  # Redis 설정 (DB 0: 세션, JWT 블랙리스트, subscription-events Streams / DB 1: 취향 프로파일 캐시)
+  # subscription-events 스트림은 payment-service(DB 0)와 동일한 DB를 사용해야 함
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+      database: ${REDIS_DATABASE:0}
+
+# MQ 설정 (Redis Streams)
+mq:
+  redis-streams:
+    enabled: ${MQ_REDIS_STREAMS_ENABLED:true}
+  subscription:
+    topic: ${MQ_SUBSCRIPTION_TOPIC:subscription-events}
+  consumer-group: ${MQ_CONSUMER_GROUP:member-service-group}
+  consumer-name: ${MQ_CONSUMER_NAME:member-service-1}
+
+server:
+  port: ${SERVER_PORT:8081}
+
+# JWT (모든 서비스 동일 시크릿)
+jwt:
+  secret: ${JWT_SECRET:}
+  access-token-validity: ${JWT_ACCESS_TOKEN_VALIDITY:1800}
+  refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:86400}
+
+# 카카오 OAuth2
+kakao:
+  oauth:
+    client-id: ${KAKAO_CLIENT_ID:}
+    client-secret: ${KAKAO_CLIENT_SECRET:}
+    redirect-uri: ${KAKAO_REDIRECT_URI:}
+
+# CORS
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+# OpenAPI Documentation
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  show-actuator: false
+
+# Logging
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.unicorn.lunchpick: ${LOG_LEVEL_APP:DEBUG}
+    org.springframework.web: ${LOG_LEVEL_WEB:INFO}
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:INFO}
+    org.hibernate.type: ${LOG_LEVEL_SQL_TYPE:INFO}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: ${LOG_FILE_PATH:logs/member-service.log}
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${LOG_ROLLING_FILE_PATTERN:logs/member-service.%d{yyyy-MM-dd}.%i.log}
+      max-file-size: ${LOG_MAX_FILE_SIZE:100MB}
+      max-history: ${LOG_MAX_HISTORY:30}
+      total-size-cap: ${LOG_TOTAL_SIZE_CAP:1GB}

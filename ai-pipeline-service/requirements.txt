@@ -1,0 +1,36 @@
+# -------------------------------------------------------
+# ai-pipeline-service 의존성
+# Python 3.12+ 권장
+# -------------------------------------------------------
+
+# FastAPI 웹 프레임워크
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+
+# Pydantic v2 (데이터 검증 + 설정 관리)
+pydantic==2.10.6
+pydantic-settings==2.7.0
+
+# HTTP 클라이언트
+httpx==0.28.1
+
+# 환경변수 로딩
+python-dotenv==1.0.1
+
+# LangChain 기반 LLM 추상화 (버전 핀 제거 — 호환 버전 자동 선택)
+langchain>=0.3.18
+langchain-core>=0.3.39
+langchain-anthropic>=0.3.8
+langchain-openai>=0.3.6
+
+# Redis 클라이언트 (비동기)
+redis[asyncio]==5.2.1
+
+# 타임존 처리
+pytz==2024.2
+
+# -------------------------------------------------------
+# 개발/테스트 의존성
+# -------------------------------------------------------
+pytest==8.3.4
+pytest-asyncio==0.25.3

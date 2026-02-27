@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
+  <defs>
+    <style>
+      text {
+        font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      }
+      .title { font-size: 20px; font-weight: bold; fill: #1a1a2e; }
+      .subtitle { font-size: 13px; fill: #555; }
+      .stage-header { font-size: 13px; font-weight: bold; fill: #ffffff; }
+      .stage-sub { font-size: 10px; fill: #e0e8ff; }
+      .row-label { font-size: 12px; font-weight: bold; fill: #2d3748; }
+      .cell-text { font-size: 10px; fill: #2d3748; }
+      .emotion-label { font-size: 11px; fill: #1a56db; font-weight: bold; }
+      .pain-text { font-size: 9.5px; fill: #9b1c1c; }
+      .gain-text { font-size: 9.5px; fill: #166534; }
+      .insight-title { font-size: 13px; font-weight: bold; fill: #1e3a5f; }
+      .insight-text { font-size: 10px; fill: #374151; }
+      .persona-label { font-size: 11px; font-weight: bold; fill: #374151; }
+      .persona-value { font-size: 10px; fill: #4b5563; }
+    </style>
+
+    <!-- 감정 그라디언트 -->
+    <linearGradient id="headerGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#3730a3"/>
+    </linearGradient>
+    <linearGradient id="headerGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="headerGrad3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="headerGrad4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="headerGrad5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="headerGrad6" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8faff"/>
+      <stop offset="100%" stop-color="#eef2ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="1400" height="1000" fill="url(#bgGrad)" rx="0"/>
+  <rect width="1400" height="1000" fill="none" stroke="#c7d2fe" stroke-width="2"/>
+
+  <!-- ===== 제목 영역 ===== -->
+  <rect x="0" y="0" width="1400" height="70" fill="#1e3a5f" rx="0"/>
+  <text x="30" y="30" class="title" fill="white" font-size="22">런치픽(LunchPick) — 유저 저니 맵 (User Journey Map)</text>
+  <text x="30" y="52" class="subtitle" fill="#93c5fd">페르소나: 민준혁 (결정 피로 직장인, 31세 IT개발자)  |  세그먼트: S1 결정 피로 직장인  |  작성: 도그냥 2026-02-26</text>
+  <text x="1200" y="38" font-size="10" fill="#93c5fd">데이터: 관찰 5회 | 인터뷰 3회 | 체험 5회</text>
+
+  <!-- ===== 페르소나 박스 ===== -->
+  <rect x="20" y="80" width="260" height="160" rx="8" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="20" y="80" width="260" height="32" rx="8" fill="#1e3a5f"/>
+  <rect x="20" y="100" width="260" height="12" fill="#1e3a5f"/>
+  <text x="35" y="101" font-size="13" font-weight="bold" fill="white">페르소나 정의</text>
+  <text x="35" y="127" class="persona-label">이름:</text><text x="90" y="127" class="persona-value">민준혁 | 31세 | IT 스타트업 개발자</text>
+  <text x="35" y="143" class="persona-label">근무:</text><text x="90" y="143" class="persona-value">강남 오피스 3년차 | 혼밥 위주</text>
+  <text x="35" y="159" class="persona-label">목표:</text><text x="90" y="159" class="persona-value">3분 안에 신뢰할 수 있는 추천</text>
+  <text x="35" y="175" class="persona-label">좌절:</text><text x="90" y="175" class="persona-value">선택지 과부하, 피드백 미반영</text>
+  <text x="35" y="191" class="persona-label">예산:</text><text x="90" y="191" class="persona-value">1만 원 내외 | 점심 외식 매일</text>
+  <text x="35" y="207" font-size="9" fill="#6b7280" font-style="italic">"선택지 30개는 1개랑 똑같아요."</text>
+  <text x="35" y="220" font-size="9" fill="#6b7280" font-style="italic">"점심이 이렇게 귀찮아야 하나 싶어요."</text>
+
+  <!-- ===== 감정 레벨 범례 ===== -->
+  <rect x="290" y="80" width="210" height="160" rx="8" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <rect x="290" y="80" width="210" height="32" rx="8" fill="#1e3a5f"/>
+  <rect x="290" y="100" width="210" height="12" fill="#1e3a5f"/>
+  <text x="305" y="101" font-size="13" font-weight="bold" fill="white">감정 레벨 기준</text>
+  <rect x="305" y="118" width="14" height="14" rx="2" fill="#7f1d1d"/>
+  <text x="325" y="130" font-size="10" fill="#374151">1 — 극도로 불편 / 좌절</text>
+  <rect x="305" y="138" width="14" height="14" rx="2" fill="#dc2626"/>
+  <text x="325" y="150" font-size="10" fill="#374151">2 — 불편 / 불만족</text>
+  <rect x="305" y="158" width="14" height="14" rx="2" fill="#d97706"/>
+  <text x="325" y="170" font-size="10" fill="#374151">3 — 중립 / 무관심</text>
+  <rect x="305" y="178" width="14" height="14" rx="2" fill="#059669"/>
+  <text x="325" y="190" font-size="10" fill="#374151">4 — 만족 / 긍정적</text>
+  <rect x="305" y="198" width="14" height="14" rx="2" fill="#1d4ed8"/>
+  <text x="325" y="210" font-size="10" fill="#374151">5 — 매우 만족 / 감동</text>
+  <text x="305" y="228" font-size="9" fill="#6b7280">※ 런치픽 개입 핵심: 2단계(탐색)+3단계(결정)</text>
+
+  <!-- ===== 단계 헤더 영역 정의 ===== -->
+  <!-- 6단계 컬럼 시작 X: 510, 각 컬럼 너비: 148 -->
+
+  <!-- 행 레이블 컬럼 -->
+  <rect x="510" y="80" width="880" height="160" rx="0" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+
+  <!-- 단계 1: 배고픔 인식 -->
+  <rect x="510" y="80" width="146" height="160" rx="0" fill="url(#headerGrad1)"/>
+  <text x="583" y="107" text-anchor="middle" class="stage-header" fill="white">1단계</text>
+  <text x="583" y="123" text-anchor="middle" font-size="14" font-weight="bold" fill="white">배고픔 인식</text>
+  <text x="583" y="140" text-anchor="middle" class="stage-sub">오전 11~12시</text>
+  <text x="583" y="155" text-anchor="middle" class="stage-sub">점심 고민 시작</text>
+  <text x="583" y="172" text-anchor="middle" font-size="11" fill="#fbbf24">감정: ★★☆☆☆</text>
+  <text x="583" y="188" text-anchor="middle" font-size="10" fill="#fde68a">Pain 집중도: 낮음</text>
+  <text x="583" y="205" text-anchor="middle" font-size="10" fill="#bfdbfe">감정점수: 2/5</text>
+  <text x="583" y="222" text-anchor="middle" font-size="10" fill="#fbbf24">개입: 중간</text>
+
+  <!-- 단계 2: 메뉴 탐색 -->
+  <rect x="658" y="80" width="146" height="160" rx="0" fill="url(#headerGrad2)"/>
+  <text x="731" y="107" text-anchor="middle" class="stage-header" fill="white">2단계</text>
+  <text x="731" y="123" text-anchor="middle" font-size="14" font-weight="bold" fill="white">메뉴 탐색</text>
+  <text x="731" y="140" text-anchor="middle" class="stage-sub">탐색 13~18분 소요</text>
+  <text x="731" y="155" text-anchor="middle" class="stage-sub">결정피로 최대 발생</text>
+  <text x="731" y="172" text-anchor="middle" font-size="11" fill="#fbbf24">감정: ★☆☆☆☆</text>
+  <text x="731" y="188" text-anchor="middle" font-size="10" fill="#fde68a">Pain 집중도: 최고</text>
+  <text x="731" y="205" text-anchor="middle" font-size="10" fill="#fee2e2">감정점수: 1/5</text>
+  <text x="731" y="222" text-anchor="middle" font-size="10" fill="#fbbf24">개입: 최우선</text>
+
+  <!-- 단계 3: 선택 결정 -->
+  <rect x="806" y="80" width="146" height="160" rx="0" fill="url(#headerGrad3)"/>
+  <text x="879" y="107" text-anchor="middle" class="stage-header" fill="white">3단계</text>
+  <text x="879" y="123" text-anchor="middle" font-size="14" font-weight="bold" fill="white">선택 결정</text>
+  <text x="879" y="140" text-anchor="middle" class="stage-sub">기존 식당으로 회귀</text>
+  <text x="879" y="155" text-anchor="middle" class="stage-sub">체념 후 안도</text>
+  <text x="879" y="172" text-anchor="middle" font-size="11" fill="white">감정: ★★☆☆☆</text>
+  <text x="879" y="188" text-anchor="middle" font-size="10" fill="#fde68a">Pain 집중도: 매우높음</text>
+  <text x="879" y="205" text-anchor="middle" font-size="10" fill="#fef3c7">감정점수: 2/5</text>
+  <text x="879" y="222" text-anchor="middle" font-size="10" fill="#fbbf24">개입: 최우선</text>
+
+  <!-- 단계 4: 식사 실행 -->
+  <rect x="954" y="80" width="146" height="160" rx="0" fill="url(#headerGrad4)"/>
+  <text x="1027" y="107" text-anchor="middle" class="stage-header" fill="white">4단계</text>
+  <text x="1027" y="123" text-anchor="middle" font-size="14" font-weight="bold" fill="white">식사 실행</text>
+  <text x="1027" y="140" text-anchor="middle" class="stage-sub">이동+웨이팅</text>
+  <text x="1027" y="155" text-anchor="middle" class="stage-sub">실제 식사 15분 이내</text>
+  <text x="1027" y="172" text-anchor="middle" font-size="11" fill="white">감정: ★★★☆☆</text>
+  <text x="1027" y="188" text-anchor="middle" font-size="10" fill="#d1fae5">Pain 집중도: 중간</text>
+  <text x="1027" y="205" text-anchor="middle" font-size="10" fill="#d1fae5">감정점수: 3/5</text>
+  <text x="1027" y="222" text-anchor="middle" font-size="10" fill="#fbbf24">개입: 낮음</text>
+
+  <!-- 단계 5: 식사 평가 -->
+  <rect x="1102" y="80" width="146" height="160" rx="0" fill="url(#headerGrad5)"/>
+  <text x="1175" y="107" text-anchor="middle" class="stage-header" fill="white">5단계</text>
+  <text x="1175" y="123" text-anchor="middle" font-size="14" font-weight="bold" fill="white">식사 평가</text>
+  <text x="1175" y="140" text-anchor="middle" class="stage-sub">기록 없이 흘려보냄</text>
+  <text x="1175" y="155" text-anchor="middle" class="stage-sub">피드백 루프 단절</text>
+  <text x="1175" y="172" text-anchor="middle" font-size="11" fill="white">감정: ★★☆☆☆</text>
+  <text x="1175" y="188" text-anchor="middle" font-size="10" fill="#fde68a">Pain 집중도: 높음</text>
+  <text x="1175" y="205" text-anchor="middle" font-size="10" fill="#fef3c7">감정점수: 2/5</text>
+  <text x="1175" y="222" text-anchor="middle" font-size="10" fill="#fbbf24">개입: 높음</text>
+
+  <!-- 단계 6: 루틴 형성 -->
+  <rect x="1250" y="80" width="140" height="160" rx="0" fill="url(#headerGrad6)"/>
+  <text x="1320" y="107" text-anchor="middle" class="stage-header" fill="white">6단계</text>
+  <text x="1320" y="123" text-anchor="middle" font-size="14" font-weight="bold" fill="white">루틴 형성</text>
+  <text x="1320" y="140" text-anchor="middle" class="stage-sub">3~8개 식당 로테이션</text>
+  <text x="1320" y="155" text-anchor="middle" class="stage-sub">기대치 하락 고착</text>
+  <text x="1320" y="172" text-anchor="middle" font-size="11" fill="white">감정: ★★☆☆☆</text>
+  <text x="1320" y="188" text-anchor="middle" font-size="10" fill="#ddd6fe">Pain 집중도: 높음</text>
+  <text x="1320" y="205" text-anchor="middle" font-size="10" fill="#ddd6fe">감정점수: 2/5</text>
+  <text x="1320" y="222" text-anchor="middle" font-size="10" fill="#fbbf24">개입: 높음</text>
+
+  <!-- ===== 행 레이블 컬럼 ===== -->
+  <rect x="20" y="240" width="488" height="540" rx="0" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+
+  <!-- 행: 행동 -->
+  <rect x="20" y="240" width="488" height="80" rx="0" fill="#eff6ff" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="20" y="240" width="110" height="80" rx="0" fill="#dbeafe"/>
+  <text x="75" y="274" text-anchor="middle" class="row-label" fill="#1e40af">행동</text>
+  <text x="75" y="290" text-anchor="middle" font-size="9" fill="#3b82f6">(Actions)</text>
+  <!-- 행동 내용 -->
+  <text x="140" y="258" font-size="9.5" fill="#374151">• 11시~12시 시계 확인, 동료에게 "뭐 먹을 거야?" 질문</text>
+  <text x="140" y="272" font-size="9.5" fill="#374151">• 아무도 답 안 하면 혼자 막연히 떠올림</text>
+  <text x="140" y="286" font-size="9.5" fill="#374151">• 업무 집중 중 갑자기 점심 고민 진입</text>
+  <text x="140" y="300" font-size="9.5" fill="#374151">• 어제 뭘 먹었는지 기억 불분명한 채로 시작</text>
+  <text x="140" y="314" font-size="9.5" fill="#374151">• 팀 채팅(슬랙)에 "점심 어떻게 할 거예요?" 메시지 전송</text>
+
+  <!-- 행: 생각 -->
+  <rect x="20" y="320" width="488" height="70" rx="0" fill="#f0fdf4" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="20" y="320" width="110" height="70" rx="0" fill="#dcfce7"/>
+  <text x="75" y="349" text-anchor="middle" class="row-label" fill="#166534">생각</text>
+  <text x="75" y="365" text-anchor="middle" font-size="9" fill="#16a34a">(Thoughts)</text>
+  <text x="140" y="338" font-size="9.5" fill="#374151">• "오전 개발 마쳤으니 오늘은 맛있는 거 먹어야지. 근데 뭐 먹지?"</text>
+  <text x="140" y="353" font-size="9.5" fill="#374151">• "어제 뭘 먹었더라... 기억이 안 나네"</text>
+  <text x="140" y="368" font-size="9.5" fill="#374151">• "업무 흐름이 끊기는 게 아쉽다"</text>
+  <text x="140" y="383" font-size="9.5" fill="#374151">• "이 시간이 또 됐구나 — 막막하다"</text>
+
+  <!-- 행: 감정 (배지) -->
+  <rect x="20" y="390" width="488" height="45" rx="0" fill="#fef9f0" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="20" y="390" width="110" height="45" rx="0" fill="#fef3c7"/>
+  <text x="75" y="408" text-anchor="middle" class="row-label" fill="#92400e">감정</text>
+  <text x="75" y="424" text-anchor="middle" font-size="9" fill="#b45309">(Emotions)</text>
+  <text x="155" y="417" text-anchor="middle" font-size="11" fill="#d97706">기대+막막함</text>
+
+  <!-- 행: 터치포인트 -->
+  <rect x="20" y="435" width="488" height="65" rx="0" fill="#fdf4ff" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="20" y="435" width="110" height="65" rx="0" fill="#f3e8ff"/>
+  <text x="75" y="461" text-anchor="middle" class="row-label" fill="#6d28d9">터치포인트</text>
+  <text x="75" y="477" text-anchor="middle" font-size="9" fill="#7c3aed">(Touchpoints)</text>
+  <text x="140" y="453" font-size="9.5" fill="#374151">• 업무용 PC / 스마트폰 (시계 확인)</text>
+  <text x="140" y="468" font-size="9.5" fill="#374151">• 팀 채팅 (슬랙 / 카카오톡 단체방)</text>
+  <text x="140" y="483" font-size="9.5" fill="#374151">• 동료의 말 한마디 — 점심 고민 트리거</text>
+  <text x="140" y="498" font-size="9.5" fill="#374151">• (부재) 앱이 선제적 알림 제공 안 함</text>
+
+  <!-- 행: Pain Points -->
+  <rect x="20" y="500" width="488" height="160" rx="0" fill="#fff5f5" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="20" y="500" width="110" height="160" rx="0" fill="#fee2e2"/>
+  <text x="75" y="571" text-anchor="middle" class="row-label" fill="#991b1b">Pain</text>
+  <text x="75" y="587" text-anchor="middle" font-size="9" fill="#dc2626">Points</text>
+  <rect x="130" y="508" width="370" height="145" rx="4" fill="#fff1f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="140" y="524" font-size="9.5" fill="#9b1c1c">• 업무 집중 흐름이 끊기는 부담 — 코딩 중 갑자기 밥 생각하면 다시 집중하기 어려움</text>
+  <text x="140" y="540" font-size="9.5" fill="#9b1c1c">• "또 뭐 먹지"라는 막막함이 즉각 찾아옴 — 배고픔보다 결정 의무감이 먼저 작동</text>
+  <text x="140" y="556" font-size="9.5" fill="#9b1c1c">• 어제 뭘 먹었는지 기억나지 않아 선택의 시작점이 모호함</text>
+  <text x="140" y="572" font-size="9.5" fill="#9b1c1c">• 서비스가 점심 고민의 트리거를 만들어주지 않음 (모든 현존 앱 공통)</text>
+  <text x="140" y="588" font-size="9.5" fill="#9b1c1c">• 알림이 있어도 "할인 쿠폰" 중심 — 식욕·의사결정 자극 실패</text>
+  <text x="140" y="630" font-size="9" fill="#b91c1c" font-style="italic">[관찰] 민준: "배고픔보다 결정해야 한다는 의무감이 먼저 작동한다"</text>
+  <text x="140" y="645" font-size="9" fill="#b91c1c" font-style="italic">[관찰] 병훈: "배고픔보다 체념이 먼저다. 어차피 같은 곳이겠구나"</text>
+
+  <!-- 행: Gain Points -->
+  <rect x="20" y="660" width="488" height="120" rx="0" fill="#f0fdf4" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="20" y="660" width="110" height="120" rx="0" fill="#bbf7d0"/>
+  <text x="75" y="711" text-anchor="middle" class="row-label" fill="#14532d">Gain</text>
+  <text x="75" y="727" text-anchor="middle" font-size="9" fill="#16a34a">Points</text>
+  <rect x="130" y="668" width="370" height="105" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+  <text x="140" y="684" font-size="9.5" fill="#166534">• 오전 집중 개발을 잘 마친 성취감 — "보상을 받아야 한다"는 기대감</text>
+  <text x="140" y="700" font-size="9.5" fill="#166534">• "오늘은 뭔가 맛있는 걸 먹고 싶다"는 소소한 설렘</text>
+  <text x="140" y="716" font-size="9.5" fill="#166534">• 점심이 오전 업무 사이 숨구멍 같은 전환 의식(ritual)의 역할</text>
+  <text x="140" y="748" font-size="9" fill="#166534" font-style="italic">[인터뷰] 민준혁: "점심은 오전 집중의 보상 같은 느낌이에요"</text>
+
+  <!-- ===== 6단계 × 행 그리드 ===== -->
+
+  <!-- 컬럼 구분선 -->
+  <line x1="510" y1="240" x2="510" y2="780" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="658" y1="240" x2="658" y2="780" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="806" y1="240" x2="806" y2="780" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="954" y1="240" x2="954" y2="780" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="1102" y1="240" x2="1102" y2="780" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="1250" y1="240" x2="1250" y2="780" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="1390" y1="240" x2="1390" y2="780" stroke="#e5e7eb" stroke-width="1"/>
+
+  <!-- 행 구분선 -->
+  <line x1="510" y1="320" x2="1390" y2="320" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="510" y1="390" x2="1390" y2="390" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="510" y1="435" x2="1390" y2="435" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="510" y1="500" x2="1390" y2="500" stroke="#e5e7eb" stroke-width="1"/>
+  <line x1="510" y1="660" x2="1390" y2="660" stroke="#e5e7eb" stroke-width="1"/>
+
+  <!-- 그리드 배경 행 색상 -->
+  <rect x="510" y="240" width="880" height="80" fill="#eff6ff" opacity="0.6"/>
+  <rect x="510" y="320" width="880" height="70" fill="#f0fdf4" opacity="0.6"/>
+  <rect x="510" y="390" width="880" height="45" fill="#fef9f0" opacity="0.6"/>
+  <rect x="510" y="435" width="880" height="65" fill="#fdf4ff" opacity="0.6"/>
+  <rect x="510" y="500" width="880" height="160" fill="#fff5f5" opacity="0.6"/>
+  <rect x="510" y="660" width="880" height="120" fill="#f0fdf4" opacity="0.6"/>
+
+  <!-- ===== 단계 1 셀 내용 ===== -->
+  <!-- 행동 -->
+  <text x="516" y="257" font-size="9" fill="#374151">• 시계 확인, 혼잣말 "벌써 이 시간이네"</text>
+  <text x="516" y="270" font-size="9" fill="#374151">• 팀 채팅에 메시지 전송, 무응답</text>
+  <text x="516" y="283" font-size="9" fill="#374151">• 5분 후 또 시계 확인 반복</text>
+  <text x="516" y="296" font-size="9" fill="#374151">• 혼밥이면 혼자 막연히 고민 시작</text>
+  <!-- 생각 -->
+  <text x="516" y="337" font-size="9" fill="#374151">• "보상 받아야지, 뭔가 맛있는 걸"</text>
+  <text x="516" y="351" font-size="9" fill="#374151">• "어제 뭘 먹었더라... 기억 안 나"</text>
+  <text x="516" y="365" font-size="9" fill="#374151">• "흐름이 끊기는 게 싫다"</text>
+  <!-- 감정 배지 -->
+  <rect x="525" y="398" width="90" height="22" rx="11" fill="#fde68a" stroke="#d97706" stroke-width="1"/>
+  <text x="570" y="413" text-anchor="middle" font-size="10" fill="#92400e">기대 + 막막함 2</text>
+  <!-- 터치포인트 -->
+  <text x="516" y="452" font-size="9" fill="#7c3aed">• PC 시계, 스마트폰</text>
+  <text x="516" y="466" font-size="9" fill="#7c3aed">• 슬랙 / 카카오톡</text>
+  <text x="516" y="480" font-size="9" fill="#7c3aed">• 동료와 대화</text>
+  <text x="516" y="494" font-size="9" fill="#7c3aed">• (없음) 앱 알림 부재</text>
+  <!-- Pain -->
+  <text x="516" y="518" font-size="9" fill="#9b1c1c">• 업무 흐름 단절 부담</text>
+  <text x="516" y="532" font-size="9" fill="#9b1c1c">• 막막함이 즉각 찾아옴</text>
+  <text x="516" y="546" font-size="9" fill="#9b1c1c">• 어제 뭐 먹었는지 모름</text>
+  <text x="516" y="560" font-size="9" fill="#9b1c1c">• 트리거 없이 수동 진입</text>
+  <text x="516" y="574" font-size="9" fill="#9b1c1c">• 알림=할인 쿠폰만 있음</text>
+  <!-- Gain -->
+  <text x="516" y="678" font-size="9" fill="#166534">• 오전 성취감, 보상 기대</text>
+  <text x="516" y="692" font-size="9" fill="#166534">• 설레는 점심 기대감</text>
+  <text x="516" y="706" font-size="9" fill="#166534">• 전환 의식(ritual) 역할</text>
+
+  <!-- ===== 단계 2 셀 내용 ===== -->
+  <!-- 행동 -->
+  <text x="664" y="257" font-size="9" fill="#374151">• 카카오맵/네이버지도 앱 실행</text>
+  <text x="664" y="270" font-size="9" fill="#374151">• "점심", 음식 종류 검색</text>
+  <text x="664" y="283" font-size="9" fill="#374151">• 사진·리뷰 스크롤 11~15분</text>
+  <text x="664" y="296" font-size="9" fill="#374151">• 중간에 유튜브 쇼츠로 이탈</text>
+  <text x="664" y="309" font-size="9" fill="#374151">• 결국 앱 닫음</text>
+  <!-- 생각 -->
+  <text x="664" y="337" font-size="9" fill="#374151">• "이렇게 많은데 왜 모르겠지"</text>
+  <text x="664" y="351" font-size="9" fill="#374151">• "광고인지 진짜인지 모르겠음"</text>
+  <text x="664" y="365" font-size="9" fill="#374151">• "탐색만 하다 시간 다 감"</text>
+  <!-- 감정 배지 -->
+  <rect x="665" y="398" width="110" height="22" rx="11" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="720" y="413" text-anchor="middle" font-size="10" font-weight="bold" fill="#7f1d1d">최저점! 극도 피로 1</text>
+  <!-- 터치포인트 -->
+  <text x="664" y="452" font-size="9" fill="#7c3aed">• 카카오맵, 네이버지도</text>
+  <text x="664" y="466" font-size="9" fill="#7c3aed">• 배달의민족, 유튜브 쇼츠</text>
+  <text x="664" y="480" font-size="9" fill="#7c3aed">• 인스타그램 #맛집</text>
+  <text x="664" y="494" font-size="9" fill="#7c3aed">• (단절) 플랫폼 간 정보 이동</text>
+  <!-- Pain -->
+  <text x="664" y="518" font-size="9" fill="#9b1c1c">• 선택지 40~127개 과부하</text>
+  <text x="664" y="532" font-size="9" fill="#9b1c1c">• 광고·오래된 리뷰 혼재</text>
+  <text x="664" y="546" font-size="9" fill="#9b1c1c">• 탐색할수록 더 모르는 역설</text>
+  <text x="664" y="560" font-size="9" fill="#9b1c1c">• 플랫폼간 수동 정보 이동</text>
+  <text x="664" y="574" font-size="9" fill="#9b1c1c">• 취향 반영 없이 동일 결과</text>
+  <text x="664" y="588" font-size="9" fill="#9b1c1c">• 스크롤 속도↑ = 피로 신호</text>
+  <!-- Gain -->
+  <text x="664" y="678" font-size="9" fill="#166534">• 새 식당 사진 볼 때 호기심</text>
+  <text x="664" y="692" font-size="9" fill="#166534">• 동료와 고르는 유대감</text>
+  <text x="664" y="706" font-size="9" fill="#166534">• "오 이거 괜찮아 보여" 설렘</text>
+
+  <!-- ===== 단계 3 셀 내용 ===== -->
+  <!-- 행동 -->
+  <text x="812" y="257" font-size="9" fill="#374151">• 13분 초과 시 포기 선언</text>
+  <text x="812" y="270" font-size="9" fill="#374151">• 즐겨찾기에서 단골집 선택</text>
+  <text x="812" y="283" font-size="9" fill="#374151">• 동료와 암묵적 합의 구내식당</text>
+  <text x="812" y="296" font-size="9" fill="#374151">• 결정 후에도 스마트폰 재확인</text>
+  <text x="812" y="309" font-size="9" fill="#374151">• 이동 시작</text>
+  <!-- 생각 -->
+  <text x="812" y="337" font-size="9" fill="#374151">• "탐색 그만하자. 시간이 지남"</text>
+  <text x="812" y="351" font-size="9" fill="#374151">• "여기면 실패는 없지"</text>
+  <text x="812" y="365" font-size="9" fill="#374151">• "다른 데가 더 나을 것 같은데..."</text>
+  <!-- 감정 배지 -->
+  <rect x="813" y="398" width="100" height="22" rx="11" fill="#fed7aa" stroke="#d97706" stroke-width="1"/>
+  <text x="863" y="413" text-anchor="middle" font-size="10" fill="#92400e">체념+안도 복합 2</text>
+  <!-- 터치포인트 -->
+  <text x="812" y="452" font-size="9" fill="#7c3aed">• 카카오맵 즐겨찾기</text>
+  <text x="812" y="466" font-size="9" fill="#7c3aed">• 배달앱 최근주문 탭</text>
+  <text x="812" y="480" font-size="9" fill="#7c3aed">• 동료 구두 합의</text>
+  <text x="812" y="494" font-size="9" fill="#7c3aed">• 카카오톡 단체방 투표(무효)</text>
+  <!-- Pain -->
+  <text x="812" y="518" font-size="9" fill="#9b1c1c">• 탐색 후 결국 기존식당 회귀</text>
+  <text x="812" y="532" font-size="9" fill="#9b1c1c">• 결정 후 "더 나은 곳" 불안 지속</text>
+  <text x="812" y="546" font-size="9" fill="#9b1c1c">• 팀 결정 시 한 명이 책임 전담</text>
+  <text x="812" y="560" font-size="9" fill="#9b1c1c">• 탐색시간 낭비 → 식사시간 감소</text>
+  <text x="812" y="574" font-size="9" fill="#9b1c1c">• 단톡 투표 실질 무효화</text>
+  <!-- Gain -->
+  <text x="812" y="678" font-size="9" fill="#166534">• 결정 마친 홀가분함</text>
+  <text x="812" y="692" font-size="9" fill="#166534">• "실패는 없지" 안도감</text>
+  <text x="812" y="706" font-size="9" fill="#166534">• 빠른 결정에서 오는 안도</text>
+
+  <!-- ===== 단계 4 셀 내용 ===== -->
+  <!-- 행동 -->
+  <text x="960" y="257" font-size="9" fill="#374151">• 식당까지 도보 5~10분 이동</text>
+  <text x="960" y="270" font-size="9" fill="#374151">• 메뉴판 앞 2차 결정 발생</text>
+  <text x="960" y="283" font-size="9" fill="#374151">• 단골이면 메뉴판 안 봄</text>
+  <text x="960" y="296" font-size="9" fill="#374151">• 식사 12~20분, 유튜브 시청</text>
+  <text x="960" y="309" font-size="9" fill="#374151">• 편의점 커피 사서 복귀</text>
+  <!-- 생각 -->
+  <text x="960" y="337" font-size="9" fill="#374151">• "무난한데, 맛있다기보단 그냥 먹음"</text>
+  <text x="960" y="351" font-size="9" fill="#374151">• "어제도 한식이었는데"</text>
+  <text x="960" y="365" font-size="9" fill="#374151">• "빠르게 먹어야 회의 때 늦지 않아"</text>
+  <!-- 감정 배지 -->
+  <rect x="961" y="398" width="100" height="22" rx="11" fill="#bbf7d0" stroke="#16a34a" stroke-width="1"/>
+  <text x="1011" y="413" text-anchor="middle" font-size="10" fill="#14532d">무난한 중립 3</text>
+  <!-- 터치포인트 -->
+  <text x="960" y="452" font-size="9" fill="#7c3aed">• 식당 (오프라인)</text>
+  <text x="960" y="466" font-size="9" fill="#7c3aed">• 메뉴판, 직원</text>
+  <text x="960" y="480" font-size="9" fill="#7c3aed">• 스마트폰 (식사중 콘텐츠)</text>
+  <text x="960" y="494" font-size="9" fill="#7c3aed">• 배달앱 추적화면 (배달시)</text>
+  <!-- Pain -->
+  <text x="960" y="518" font-size="9" fill="#9b1c1c">• 이동+웨이팅 → 식사 15분 이하</text>
+  <text x="960" y="532" font-size="9" fill="#9b1c1c">• 식당내 메뉴판 2차 결정 피로</text>
+  <text x="960" y="546" font-size="9" fill="#9b1c1c">• 앱정보(혼잡도)와 현실 괴리</text>
+  <text x="960" y="560" font-size="9" fill="#9b1c1c">• 배달 35~50분 대기 (재택)</text>
+  <text x="960" y="574" font-size="9" fill="#9b1c1c">• 음식이 식사가 아닌 연료가 됨</text>
+  <!-- Gain -->
+  <text x="960" y="678" font-size="9" fill="#166534">• 동료와 대화 스트레스 해소</text>
+  <text x="960" y="692" font-size="9" fill="#166534">• 기대보다 맛있을 때 감동</text>
+  <text x="960" y="706" font-size="9" fill="#166534">• 단골집 직원 친밀감·편안함</text>
+
+  <!-- ===== 단계 5 셀 내용 ===== -->
+  <!-- 행동 -->
+  <text x="1108" y="257" font-size="9" fill="#374151">• "오늘 어땠어요?" 동료 소감 교환</text>
+  <text x="1108" y="270" font-size="9" fill="#374151">• "그냥 먹었어요"가 기본 답변</text>
+  <text x="1108" y="283" font-size="9" fill="#374151">• 리뷰 알림 팝업 무시</text>
+  <text x="1108" y="296" font-size="9" fill="#374151">• 별도 기록 없이 흘려보냄</text>
+  <text x="1108" y="309" font-size="9" fill="#374151">• 좋은 식당 정보도 기억에서 소실</text>
+  <!-- 생각 -->
+  <text x="1108" y="337" font-size="9" fill="#374151">• "뭔가 먹었는데 만족스럽지 않음"</text>
+  <text x="1108" y="351" font-size="9" fill="#374151">• "내일도 이럴 것 같다"</text>
+  <text x="1108" y="365" font-size="9" fill="#374151">• "좋은 데 어디였더라... 기억 안 남"</text>
+  <!-- 감정 배지 -->
+  <rect x="1109" y="398" width="110" height="22" rx="11" fill="#fecaca" stroke="#dc2626" stroke-width="1"/>
+  <text x="1164" y="413" text-anchor="middle" font-size="10" fill="#7f1d1d">낮은만족+무기력 2</text>
+  <!-- 터치포인트 -->
+  <text x="1108" y="452" font-size="9" fill="#7c3aed">• 동료와 짧은 대화</text>
+  <text x="1108" y="466" font-size="9" fill="#7c3aed">• 배달앱 리뷰 팝업 (무시)</text>
+  <text x="1108" y="480" font-size="9" fill="#7c3aed">• 메모앱 (거의 사용 안 함)</text>
+  <text x="1108" y="494" font-size="9" fill="#7c3aed">• 카카오맵 리뷰창 (미진입)</text>
+  <!-- Pain -->
+  <text x="1108" y="518" font-size="9" fill="#9b1c1c">• 기록수단 없어 다음날 동일 고민</text>
+  <text x="1108" y="532" font-size="9" fill="#9b1c1c">• 리뷰 작성 부담 → 피드백 단절</text>
+  <text x="1108" y="546" font-size="9" fill="#9b1c1c">• 평가가 추천에 반영된다는 신호 없음</text>
+  <text x="1108" y="560" font-size="9" fill="#9b1c1c">• 좋았던 식당 기억 소실</text>
+  <text x="1108" y="574" font-size="9" fill="#9b1c1c">• 낮은 만족 → 오후 집중력 저하</text>
+  <!-- Gain -->
+  <text x="1108" y="678" font-size="9" fill="#166534">• 동료 "오늘 좋았어요" 시 보람</text>
+  <text x="1108" y="692" font-size="9" fill="#166534">• 만족 식사 후 오후 긍정에너지</text>
+  <text x="1108" y="706" font-size="9" fill="#166534">• "이 집 또 와야겠다" 좋은 기억</text>
+
+  <!-- ===== 단계 6 셀 내용 ===== -->
+  <!-- 행동 -->
+  <text x="1256" y="257" font-size="9" fill="#374151">• 즐겨찾기 3~4개만 저장 (1년전)</text>
+  <text x="1256" y="270" font-size="9" fill="#374151">• 머릿속 단골 3~8개 로테이션</text>
+  <text x="1256" y="283" font-size="9" fill="#374151">• 새 식당 탐색 시도 → 포기 반복</text>
+  <text x="1256" y="296" font-size="9" fill="#374151">• 새 식당 생겨도 탐색 동기 저하</text>
+  <text x="1256" y="309" font-size="9" fill="#374151">• "어차피 거기 갈 거면서 왜 찾아봄"</text>
+  <!-- 생각 -->
+  <text x="1256" y="337" font-size="9" fill="#374151">• "주변 식당 다 가본 것 같아"</text>
+  <text x="1256" y="351" font-size="9" fill="#374151">• "탐색 에너지 쓰기 싫다"</text>
+  <text x="1256" y="365" font-size="9" fill="#374151">• "점심이 이렇게 귀찮아야 하나"</text>
+  <!-- 감정 배지 -->
+  <rect x="1257" y="398" width="110" height="22" rx="11" fill="#ddd6fe" stroke="#7c3aed" stroke-width="1"/>
+  <text x="1312" y="413" text-anchor="middle" font-size="10" fill="#4c1d95">포화감+단조로움 2</text>
+  <!-- 터치포인트 -->
+  <text x="1256" y="452" font-size="9" fill="#7c3aed">• 카카오맵 즐겨찾기 (구식)</text>
+  <text x="1256" y="466" font-size="9" fill="#7c3aed">• 머릿속 기억 (비체계적)</text>
+  <text x="1256" y="480" font-size="9" fill="#7c3aed">• 동료·지인 추천 (고신뢰)</text>
+  <text x="1256" y="494" font-size="9" fill="#7c3aed">• SNS 우연한 발견 (드물게)</text>
+  <!-- Pain -->
+  <text x="1256" y="518" font-size="9" fill="#9b1c1c">• 3~7개 식당 로테이션 고착화</text>
+  <text x="1256" y="532" font-size="9" fill="#9b1c1c">• 탐색 실패 경험으로 새도전 포기</text>
+  <text x="1256" y="546" font-size="9" fill="#9b1c1c">• "여기서 더 이상 갈 데 없다" 포화감</text>
+  <text x="1256" y="560" font-size="9" fill="#9b1c1c">• 기대치 자체의 하향 고착</text>
+  <text x="1256" y="574" font-size="9" fill="#9b1c1c">• 설렘→처리해야 할 일로 격하</text>
+  <!-- Gain -->
+  <text x="1256" y="678" font-size="9" fill="#166534">• 검증된 단골 예측가능 안정감</text>
+  <text x="1256" y="692" font-size="9" fill="#166534">• 단골 직원과 소소한 친밀감</text>
+  <text x="1256" y="706" font-size="9" fill="#166534">• 6단계가 1단계로 이어지는 순환</text>
+
+  <!-- ===== 감정 곡선 영역 ===== -->
+  <rect x="20" y="785" width="1370" height="200" rx="8" fill="white" stroke="#c7d2fe" stroke-width="1.5"/>
+  <text x="35" y="808" class="insight-title" fill="#1e3a5f">감정 곡선 (Emotion Curve)</text>
+  <text x="35" y="822" font-size="10" fill="#6b7280">1=극도 불편, 2=불만족, 3=중립, 4=만족, 5=매우만족</text>
+
+  <!-- Y축 -->
+  <line x1="200" y1="835" x2="200" y2="960" stroke="#9ca3af" stroke-width="1.5"/>
+  <!-- Y축 레이블 -->
+  <text x="185" y="840" text-anchor="end" font-size="9" fill="#6b7280">5</text>
+  <text x="185" y="866" text-anchor="end" font-size="9" fill="#6b7280">4</text>
+  <text x="185" y="893" text-anchor="end" font-size="9" fill="#6b7280">3</text>
+  <text x="185" y="919" text-anchor="end" font-size="9" fill="#6b7280">2</text>
+  <text x="185" y="946" text-anchor="end" font-size="9" fill="#6b7280">1</text>
+  <!-- Y 그리드 라인 -->
+  <line x1="200" y1="840" x2="1350" y2="840" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="200" y1="866" x2="1350" y2="866" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="200" y1="893" x2="1350" y2="893" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="200" y1="919" x2="1350" y2="919" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="200" y1="946" x2="1350" y2="946" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- X축 -->
+  <line x1="200" y1="946" x2="1350" y2="946" stroke="#9ca3af" stroke-width="1.5"/>
+
+  <!-- X축 단계 레이블 위치: 감정 점수에 따른 Y좌표 계산
+       Y = 946 - (감정점수 - 1) * 26.5
+       1점 = 946, 2점 = 919, 3점 = 893, 4점 = 866, 5점 = 840
+  -->
+
+  <!-- 단계별 X좌표: 단계 중앙
+       단계1=390, 단계2=582, 단계3=774, 단계4=966, 단계5=1158, 단계6=1315 -->
+
+  <!-- 감정 곡선 라인 (파란색) -->
+  <polyline
+    points="390,919 582,946 774,919 966,893 1158,919 1315,919"
+    fill="none"
+    stroke="#2563eb"
+    stroke-width="3"
+    stroke-linejoin="round"/>
+
+  <!-- 현재 as-is 감정 영역 채우기 -->
+  <polygon
+    points="200,946 390,919 582,946 774,919 966,893 1158,919 1315,919 1350,946"
+    fill="#dbeafe"
+    opacity="0.35"/>
+
+  <!-- 런치픽 개입 후 목표 감정 곡선 (초록 점선) -->
+  <polyline
+    points="390,893 582,866 774,840 966,866 1158,840 1315,840"
+    fill="none"
+    stroke="#16a34a"
+    stroke-width="2"
+    stroke-dasharray="7,4"/>
+
+  <!-- 감정 곡선 데이터 포인트 -->
+  <!-- 단계1: 2점 = 919 -->
+  <circle cx="390" cy="919" r="7" fill="#2563eb" stroke="white" stroke-width="2"/>
+  <text x="390" y="912" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">2</text>
+  <text x="390" y="960" text-anchor="middle" font-size="9" fill="#374151">1.배고픔 인식</text>
+
+  <!-- 단계2: 1점 = 946 — 최저점 강조 -->
+  <circle cx="582" cy="946" r="10" fill="#dc2626" stroke="white" stroke-width="2"/>
+  <text x="582" y="939" text-anchor="middle" font-size="11" font-weight="bold" fill="#dc2626">1</text>
+  <text x="582" y="970" text-anchor="middle" font-size="9" fill="#374151">2.메뉴 탐색</text>
+  <text x="582" y="984" text-anchor="middle" font-size="8" fill="#dc2626">★ 최저점 ★</text>
+
+  <!-- 단계3: 2점 = 919 -->
+  <circle cx="774" cy="919" r="7" fill="#2563eb" stroke="white" stroke-width="2"/>
+  <text x="774" y="912" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">2</text>
+  <text x="774" y="960" text-anchor="middle" font-size="9" fill="#374151">3.선택 결정</text>
+
+  <!-- 단계4: 3점 = 893 -->
+  <circle cx="966" cy="893" r="7" fill="#059669" stroke="white" stroke-width="2"/>
+  <text x="966" y="886" text-anchor="middle" font-size="10" font-weight="bold" fill="#059669">3</text>
+  <text x="966" y="960" text-anchor="middle" font-size="9" fill="#374151">4.식사 실행</text>
+
+  <!-- 단계5: 2점 = 919 -->
+  <circle cx="1158" cy="919" r="7" fill="#2563eb" stroke="white" stroke-width="2"/>
+  <text x="1158" y="912" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">2</text>
+  <text x="1158" y="960" text-anchor="middle" font-size="9" fill="#374151">5.식사 평가</text>
+
+  <!-- 단계6: 2점 = 919 -->
+  <circle cx="1315" cy="919" r="7" fill="#2563eb" stroke="white" stroke-width="2"/>
+  <text x="1315" y="912" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">2</text>
+  <text x="1315" y="960" text-anchor="middle" font-size="9" fill="#374151">6.루틴 형성</text>
+
+  <!-- 곡선 범례 -->
+  <line x1="230" y1="862" x2="270" y2="862" stroke="#2563eb" stroke-width="3"/>
+  <circle cx="250" cy="862" r="4" fill="#2563eb"/>
+  <text x="278" y="866" font-size="10" fill="#374151">현재 감정 곡선 (AS-IS)</text>
+  <line x1="230" y1="878" x2="270" y2="878" stroke="#16a34a" stroke-width="2" stroke-dasharray="7,4"/>
+  <text x="278" y="882" font-size="10" fill="#374151">런치픽 개입 목표 (TO-BE)</text>
+
+  <!-- 개입 화살표 표시 (2단계와 3단계 사이) -->
+  <rect x="510" y="835" width="290" height="18" rx="4" fill="#fef9c3" stroke="#d97706" stroke-width="1" opacity="0.9"/>
+  <text x="655" y="848" text-anchor="middle" font-size="9" fill="#92400e" font-weight="bold">런치픽 최우선 개입 구간: 탐색(2)→결정(3)</text>
+
+</svg>

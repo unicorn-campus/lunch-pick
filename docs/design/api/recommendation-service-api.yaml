@@ -1,0 +1,1335 @@
+openapi: 3.0.0
+info:
+  title: 추천·이력 서비스 API
+  version: 1.0.0
+  description: 런치픽 추천·이력 서비스 API 명세 — 오늘의 추천 조회, 추천 수락/거절, 식사 기록, 피드백, 취향 인사이트
+  contact:
+    name: 홍길동 (아키) + 한승우 (마법사)
+
+servers:
+  - url: https://mock.swaggerhub.com/lunch-menu-recommender/recommendation-service/1.0.0
+    description: Mock Server
+
+tags:
+  - name: Recommendation
+    description: 오늘의 추천 조회 및 추천 수락/거절
+  - name: Meal
+    description: 식사 기록 관리 및 피드백 제출
+  - name: History
+    description: 식사 이력 타임라인 조회
+  - name: Insight
+    description: 취향 인사이트 리포트
+
+paths:
+
+  /api/v1/recommendations/today:
+    get:
+      tags:
+        - Recommendation
+      summary: 오늘의 추천 3개 조회
+      description: |
+        현재 위치, 날씨, 요일, 최근 7일 식사 이력을 기반으로 개인화된 추천 3개를 반환합니다.
+        캐시 히트 시 200ms 이내, 캐시 미스(LLM 호출) 시 3초 이내 응답합니다.
+        알레르기 하드 필터 및 최근 3일 내 동일 식당 제외가 자동 적용됩니다.
+        LLM 장애 시 규칙 기반 폴백 추천을 반환합니다.
+      operationId: getTodayRecommendations
+      x-user-story: UFR-REC-010
+      x-controller: RecommendationController
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: latitude
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            minimum: 33.0
+            maximum: 38.9
+          description: 현재 위치 위도
+          example: 37.5665
+        - name: longitude
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            minimum: 124.6
+            maximum: 131.9
+          description: 현재 위치 경도
+          example: 126.9780
+        - name: requestedAt
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: 요청 시각 (미전달 시 서버 시각 사용)
+          example: '2026-02-26T12:00:00Z'
+      responses:
+        '200':
+          description: 추천 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodayRecommendationsResponse'
+              examples:
+                normal:
+                  $ref: '#/components/examples/TodayRecommendationsNormalExample'
+                fallback:
+                  $ref: '#/components/examples/TodayRecommendationsFallbackExample'
+                coldstart:
+                  $ref: '#/components/examples/TodayRecommendationsColdStartExample'
+        '400':
+          description: 위치 정보 누락
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: LOCATION_REQUIRED
+                message: 위치를 설정해주세요.
+                timestamp: '2026-02-26T12:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/recommendations/{recommendationId}/reason:
+    get:
+      tags:
+        - Recommendation
+      summary: 추천 이유 상세 확인
+      description: |
+        특정 추천의 자연어 이유, 확신 스코어, 반영된 컨텍스트 태그(날씨/이력/취향)를 반환합니다.
+        "비 오는 날 + 어제 양식 → 따뜻한 한식 추천" 형태의 자연어 설명을 제공합니다.
+        LLM 설명 생성 실패 시 기본 이유(거리/평점)를 반환합니다.
+      operationId: getRecommendationReason
+      x-user-story: UFR-REC-020
+      x-controller: RecommendationController
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: recommendationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 추천 ID
+          example: rec-550e8400-e29b-41d4-a716-446655440010
+      responses:
+        '200':
+          description: 추천 이유 조회 성공 (생성 실패 시에도 200 반환 — 기본 이유 포함)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationReasonResponse'
+              examples:
+                normal:
+                  $ref: '#/components/examples/RecommendationReasonNormalExample'
+                fallback:
+                  $ref: '#/components/examples/RecommendationReasonFallbackExample'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 추천 ID 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: RECOMMENDATION_NOT_FOUND
+                message: 해당 추천 정보를 찾을 수 없습니다.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/recommendations/{recommendationId}/accept:
+    post:
+      tags:
+        - Recommendation
+      summary: 추천 수락
+      description: |
+        사용자가 "여기 갈래요" 버튼을 탭한 시점을 기록합니다.
+        수락 반응 시간(추천 표시 → 수락까지 ms)을 취향 학습에 활용합니다.
+        수락 이력(회원 ID, 추천 ID, 식당 ID, 수락 시각, 반응 시간)을 저장합니다.
+      operationId: acceptRecommendation
+      x-user-story: UFR-REC-040
+      x-controller: RecommendationController
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: recommendationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: rec-550e8400-e29b-41d4-a716-446655440010
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcceptRecommendationRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/AcceptRecommendationRequestExample'
+      responses:
+        '200':
+          description: 추천 수락 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptRecommendationResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/AcceptRecommendationResponseExample'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 추천 ID 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: RECOMMENDATION_NOT_FOUND
+                message: 해당 추천 정보를 찾을 수 없습니다.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/recommendations/{recommendationId}/reject:
+    post:
+      tags:
+        - Recommendation
+      summary: 추천 거절 및 대체 추천 요청
+      description: |
+        추천 카드 거절 사유를 기록하고 대체 추천 1개를 반환합니다.
+        거절 사유는 "오늘 기분 아님", "너무 멀어요", "최근에 갔어요", "기타" 중 택1입니다.
+        대체 후보가 없으면 거리 확장 제안 메시지를 반환합니다.
+        3개 모두 거절 시 /api/v1/recommendations/refresh를 호출하세요.
+      operationId: rejectRecommendation
+      x-user-story: UFR-REC-050
+      x-controller: RecommendationController
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: recommendationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: rec-550e8400-e29b-41d4-a716-446655440010
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RejectRecommendationRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/RejectRecommendationRequestExample'
+      responses:
+        '200':
+          description: 거절 처리 완료 (대체 추천 포함 또는 없음 메시지)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RejectRecommendationResponse'
+              examples:
+                withAlternative:
+                  $ref: '#/components/examples/RejectResponseWithAlternativeExample'
+                noAlternative:
+                  $ref: '#/components/examples/RejectResponseNoAlternativeExample'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/recommendations/refresh:
+    post:
+      tags:
+        - Recommendation
+      summary: 추천 전체 새로고침 (3개 모두 거절 시)
+      description: |
+        3개 추천을 모두 거절했을 때 완전히 새로운 추천 3개를 요청합니다.
+        기존 캐시를 무효화하고 AI Pipeline에 새 추천을 요청합니다.
+      operationId: refreshRecommendations
+      x-user-story: UFR-REC-050
+      x-controller: RecommendationController
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRecommendationsRequest'
+            examples:
+              default:
+                value:
+                  rejectedIds:
+                    - rec-550e8400-e29b-41d4-a716-446655440010
+                    - rec-550e8400-e29b-41d4-a716-446655440011
+                    - rec-550e8400-e29b-41d4-a716-446655440012
+                  latitude: 37.5665
+                  longitude: 126.9780
+      responses:
+        '200':
+          description: 새로운 추천 3개 반환
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodayRecommendationsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/meals:
+    post:
+      tags:
+        - Meal
+      summary: 식사 완료 원탭 기록
+      description: |
+        "먹었어요" 1탭으로 식사를 기록합니다.
+        식사 시간대(10:30~15:00) 합리성 확인 및 중복 기록 방지를 수행합니다.
+        기록 완료 후 해당 사용자의 추천 캐시를 무효화합니다.
+        1초 이내 응답 목표 (p95 < 200ms).
+      operationId: createMealRecord
+      x-user-story: UFR-REC-070
+      x-controller: MealController
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMealRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/CreateMealRequestExample'
+      responses:
+        '201':
+          description: 식사 기록 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/MealResponseExample'
+        '400':
+          description: 식사 시간대 외 기록 시도
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: INVALID_MEAL_TIME
+                message: 점심 식사 기록은 10:30~15:00 사이에만 가능해요.
+                timestamp: '2026-02-26T12:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: 중복 기록
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: DUPLICATE_MEAL_RECORD
+                message: 이미 기록되었어요. 수정하시겠어요?
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/meals/{mealId}:
+    put:
+      tags:
+        - Meal
+      summary: 식사 기록 수정
+      description: |
+        식사 기록의 식당, 메뉴, 기록 시간을 수정합니다.
+        30초 이내 빠른 수정은 DELETE 후 재생성, 30초 이후 수정은 이 API를 사용합니다.
+      operationId: updateMealRecord
+      x-user-story: UFR-REC-080
+      x-controller: MealController
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: mealId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: meal-550e8400-e29b-41d4-a716-446655440020
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMealRequest'
+            examples:
+              default:
+                value:
+                  restaurantId: rest-001
+                  menuName: 된장찌개 정식
+                  recordedAt: '2026-02-26T12:15:00Z'
+      responses:
+        '200':
+          description: 식사 기록 수정 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 식사 기록 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: MEAL_NOT_FOUND
+                message: 해당 식사 기록을 찾을 수 없습니다.
+                timestamp: '2026-02-26T12:00:00Z'
+
+    delete:
+      tags:
+        - Meal
+      summary: 식사 기록 취소 (30초 이내 빠른 수정)
+      description: |
+        기록 직후 30초 이내에만 취소 가능합니다.
+        30초 초과 시 409 응답으로 이력 화면 수정 안내를 합니다.
+        취소 성공 시 추천 캐시 무효화가 복원됩니다.
+      operationId: deleteMealRecord
+      x-user-story: UFR-REC-080
+      x-controller: MealController
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: mealId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: meal-550e8400-e29b-41d4-a716-446655440020
+      responses:
+        '200':
+          description: 식사 기록 취소 완료
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 기록이 취소되었어요.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: 30초 초과로 취소 불가
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: CANCEL_TIMEOUT
+                message: 이력 화면에서 수정할 수 있어요.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/meals/{mealId}/feedback:
+    post:
+      tags:
+        - Meal
+      summary: 식사 피드백 제출
+      description: |
+        식사 기록 완료 후 좋아요/별로 만족도와 선택적 키워드(맛/양/속도)를 제출합니다.
+        10초 이내 완료 가능한 UX로 설계되었습니다.
+        피드백 스킵 시 만족도: 중립(NEUTRAL)으로 제출합니다.
+        제출 후 "내일 추천에 반영할게요" 메시지와 누적 피드백 횟수를 반환합니다.
+      operationId: submitFeedback
+      x-user-story: UFR-REC-090
+      x-controller: MealController
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: mealId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: meal-550e8400-e29b-41d4-a716-446655440020
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackRequest'
+            examples:
+              satisfied:
+                $ref: '#/components/examples/FeedbackSatisfiedExample'
+              dissatisfied:
+                $ref: '#/components/examples/FeedbackDissatisfiedExample'
+              skipped:
+                $ref: '#/components/examples/FeedbackSkippedExample'
+      responses:
+        '200':
+          description: 피드백 제출 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/FeedbackResponseExample'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 식사 기록 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: MEAL_NOT_FOUND
+                message: 해당 식사 기록을 찾을 수 없습니다.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/history/timeline:
+    get:
+      tags:
+        - History
+      summary: 식사 이력 타임라인 조회
+      description: |
+        달력 뷰 형태로 일별 식사 기록과 카테고리 색상 태그를 반환합니다.
+        무료 회원: 최근 30일 제한, 프리미엄: 무제한 조회.
+        30일 초과 조회 시 무료 회원은 403 응답으로 프리미엄 업그레이드를 안내합니다.
+      operationId: getMealHistoryTimeline
+      x-user-story: UFR-REC-110
+      x-controller: HistoryController
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: 조회 시작일 (미전달 시 30일 전)
+          example: '2026-01-27'
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: 조회 종료일 (미전달 시 오늘)
+          example: '2026-02-26'
+      responses:
+        '200':
+          description: 식사 이력 조회 성공 (이력 없으면 빈 배열 반환)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealHistoryResponse'
+              examples:
+                withData:
+                  $ref: '#/components/examples/MealHistoryResponseExample'
+                empty:
+                  value:
+                    meals: []
+                    message: 아직 기록이 없어요. 첫 식사를 기록해보세요!
+                    totalCount: 0
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: 무료 회원 30일 초과 접근
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: PREMIUM_REQUIRED
+                message: 프리미엄에서 전체 이력을 확인하세요.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/insights:
+    get:
+      tags:
+        - Insight
+      summary: 취향 인사이트 리포트 조회
+      description: |
+        선호 카테고리 Top 5, 주간 패턴, 만족도 변화 그래프 데이터를 반환합니다.
+        최소 10건 이상 기록 시 의미 있는 인사이트를 제공합니다.
+        10건 미만 시 기록 독려 메시지와 현재 기록 수를 반환합니다.
+        30끼 마일스톤 달성 시 축하 메시지와 정확도 향상률을 포함합니다.
+      operationId: getTasteInsights
+      x-user-story: UFR-REC-120
+      x-controller: InsightController
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 인사이트 조회 성공 (데이터 부족 시에도 200 반환)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsResponse'
+              examples:
+                sufficient:
+                  $ref: '#/components/examples/InsightsResponseSufficientExample'
+                insufficient:
+                  $ref: '#/components/examples/InsightsResponseInsufficientExample'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: API Gateway에서 발급한 JWT 액세스 토큰 (만료 1시간)
+
+  schemas:
+
+    RecommendationCard:
+      type: object
+      properties:
+        recommendationId:
+          type: string
+          format: uuid
+          example: rec-550e8400-e29b-41d4-a716-446655440010
+        restaurantId:
+          type: string
+          example: rest-001
+        restaurantName:
+          type: string
+          description: 식당명
+          example: 광화문 된장마을
+        representativeMenu:
+          type: string
+          description: 대표 메뉴
+          example: 된장찌개 정식
+        reasonSummary:
+          type: string
+          description: 추천 이유 한 줄 요약
+          example: 비 오는 날엔 따뜻한 한식이 딱이에요
+        confidenceScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 추천 확신 스코어 (%)
+          example: 87
+        distanceMeters:
+          type: integer
+          description: 현재 위치에서 거리(m)
+          example: 320
+        estimatedWalkMinutes:
+          type: integer
+          description: 도보 예상 소요시간(분)
+          example: 4
+        category:
+          type: string
+          example: 한식
+        isFallback:
+          type: boolean
+          description: 폴백 추천 여부
+          example: false
+
+    TodayRecommendationsResponse:
+      type: object
+      properties:
+        recommendations:
+          type: array
+          minItems: 1
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/RecommendationCard'
+        isColdStart:
+          type: boolean
+          description: 콜드스타트 안전망 적용 여부 (피드백 5건 미만)
+          example: false
+        coldStartMessage:
+          type: string
+          nullable: true
+          description: 콜드스타트 시 안내 메시지
+          example: null
+        isFallback:
+          type: boolean
+          description: AI 폴백 추천 여부
+          example: false
+        fallbackMessage:
+          type: string
+          nullable: true
+          description: 폴백 시 안내 메시지
+          example: null
+        generatedAt:
+          type: string
+          format: date-time
+          example: '2026-02-26T12:00:00Z'
+
+    RecommendationReasonResponse:
+      type: object
+      properties:
+        recommendationId:
+          type: string
+          format: uuid
+          example: rec-550e8400-e29b-41d4-a716-446655440010
+        naturalLanguageReason:
+          type: string
+          description: 자연어 추천 이유
+          example: 비 오는 날 + 어제 양식 드셨으니 → 따뜻한 한식을 추천드려요
+        confidenceScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 추천 확신 스코어 (%)
+          example: 87
+        contextTags:
+          type: array
+          description: 반영된 컨텍스트 태그
+          items:
+            type: string
+            enum: [날씨, 이력, 취향, 요일, 시간]
+          example: [날씨, 이력]
+        isReasonReady:
+          type: boolean
+          description: 추천 이유 생성 완료 여부 (false이면 기본 이유)
+          example: true
+        fallbackMessage:
+          type: string
+          nullable: true
+          description: 이유 생성 실패 시 안내 메시지
+          example: null
+
+    AcceptRecommendationRequest:
+      type: object
+      required:
+        - acceptedAt
+        - reactionTimeMs
+      properties:
+        acceptedAt:
+          type: string
+          format: date-time
+          description: 수락 시각
+          example: '2026-02-26T12:05:30Z'
+        reactionTimeMs:
+          type: integer
+          description: 추천 표시부터 수락까지 반응 시간(ms) — 망설임/확신 구별 학습용
+          example: 4200
+
+    AcceptRecommendationResponse:
+      type: object
+      properties:
+        acceptanceId:
+          type: string
+          format: uuid
+          example: acc-550e8400-e29b-41d4-a716-446655440030
+        restaurantId:
+          type: string
+          example: rest-001
+        restaurantName:
+          type: string
+          example: 광화문 된장마을
+        restaurantAddress:
+          type: string
+          example: 서울 종로구 세종대로 175
+        message:
+          type: string
+          example: 수락이 완료되었어요. 맛있는 점심 되세요!
+
+    RejectRecommendationRequest:
+      type: object
+      required:
+        - rejectReason
+      properties:
+        rejectReason:
+          type: string
+          enum: [MOOD_NOT_MATCH, TOO_FAR, RECENTLY_VISITED, OTHER]
+          description: |
+            거절 사유:
+            - MOOD_NOT_MATCH: 오늘 기분 아님
+            - TOO_FAR: 너무 멀어요
+            - RECENTLY_VISITED: 최근에 갔어요
+            - OTHER: 기타
+          example: MOOD_NOT_MATCH
+
+    RejectRecommendationResponse:
+      type: object
+      properties:
+        rejected:
+          type: boolean
+          example: true
+        alternativeRecommendation:
+          $ref: '#/components/schemas/RecommendationCard'
+          nullable: true
+        hasAlternative:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 이런 건 어때요?
+        noAlternativeMessage:
+          type: string
+          nullable: true
+          description: 대체 후보 없을 때 메시지
+          example: null
+
+    RefreshRecommendationsRequest:
+      type: object
+      required:
+        - rejectedIds
+        - latitude
+        - longitude
+      properties:
+        rejectedIds:
+          type: array
+          minItems: 1
+          maxItems: 3
+          items:
+            type: string
+            format: uuid
+          description: 거절된 추천 ID 목록
+        latitude:
+          type: number
+          format: double
+          example: 37.5665
+        longitude:
+          type: number
+          format: double
+          example: 126.9780
+
+    CreateMealRequest:
+      type: object
+      required:
+        - restaurantId
+        - recordedAt
+      properties:
+        recommendationId:
+          type: string
+          format: uuid
+          nullable: true
+          description: 수락한 추천 ID (직접 기록 시 null)
+          example: rec-550e8400-e29b-41d4-a716-446655440010
+        restaurantId:
+          type: string
+          description: 식당 ID
+          example: rest-001
+        menuName:
+          type: string
+          description: 메뉴명 (선택)
+          example: 된장찌개 정식
+        recordedAt:
+          type: string
+          format: date-time
+          description: 식사 기록 시각
+          example: '2026-02-26T12:30:00Z'
+
+    UpdateMealRequest:
+      type: object
+      properties:
+        restaurantId:
+          type: string
+          example: rest-002
+        menuName:
+          type: string
+          example: 비빔밥 세트
+        recordedAt:
+          type: string
+          format: date-time
+          example: '2026-02-26T12:15:00Z'
+
+    MealResponse:
+      type: object
+      properties:
+        mealId:
+          type: string
+          format: uuid
+          example: meal-550e8400-e29b-41d4-a716-446655440020
+        restaurantName:
+          type: string
+          example: 광화문 된장마을
+        menuName:
+          type: string
+          nullable: true
+          example: 된장찌개 정식
+        recordedAt:
+          type: string
+          format: date-time
+          example: '2026-02-26T12:30:00Z'
+        message:
+          type: string
+          example: 오늘 점심 기록 완료!
+
+    FeedbackRequest:
+      type: object
+      required:
+        - satisfaction
+      properties:
+        satisfaction:
+          type: string
+          enum: [GOOD, BAD, NEUTRAL]
+          description: |
+            만족도:
+            - GOOD: 좋아요
+            - BAD: 별로
+            - NEUTRAL: 중립 (스킵 시 기본값)
+          example: GOOD
+        keyword:
+          type: string
+          nullable: true
+          enum: [TASTE, PORTION, SPEED]
+          description: |
+            선택 키워드 (선택 사항):
+            - TASTE: 맛
+            - PORTION: 양
+            - SPEED: 속도
+          example: TASTE
+
+    FeedbackResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 피드백 감사해요!
+        reflectionMessage:
+          type: string
+          example: 내일 추천에 반영할게요.
+        totalFeedbackCount:
+          type: integer
+          description: 누적 피드백 횟수
+          example: 13
+
+    MealHistoryItem:
+      type: object
+      properties:
+        mealId:
+          type: string
+          format: uuid
+          example: meal-550e8400-e29b-41d4-a716-446655440020
+        date:
+          type: string
+          format: date
+          example: '2026-02-26'
+        restaurantName:
+          type: string
+          example: 광화문 된장마을
+        menuName:
+          type: string
+          nullable: true
+          example: 된장찌개 정식
+        category:
+          type: string
+          example: 한식
+        categoryColor:
+          type: string
+          description: 달력 뷰 카테고리 색상 코드
+          example: '#FF6B6B'
+        satisfaction:
+          type: string
+          nullable: true
+          enum: [GOOD, BAD, NEUTRAL]
+          example: GOOD
+        recordedAt:
+          type: string
+          format: date-time
+          example: '2026-02-26T12:30:00Z'
+
+    MealHistoryResponse:
+      type: object
+      properties:
+        meals:
+          type: array
+          items:
+            $ref: '#/components/schemas/MealHistoryItem'
+        totalCount:
+          type: integer
+          example: 15
+        message:
+          type: string
+          nullable: true
+          example: null
+
+    CategoryDistribution:
+      type: object
+      properties:
+        category:
+          type: string
+          example: 한식
+        count:
+          type: integer
+          example: 12
+        percentage:
+          type: number
+          format: float
+          example: 40.0
+        color:
+          type: string
+          example: '#FF6B6B'
+
+    WeeklyPattern:
+      type: object
+      properties:
+        dayOfWeek:
+          type: string
+          enum: [MON, TUE, WED, THU, FRI]
+          example: MON
+        topCategory:
+          type: string
+          example: 한식
+        averageSatisfaction:
+          type: number
+          format: float
+          example: 0.82
+
+    SatisfactionTrend:
+      type: object
+      properties:
+        week:
+          type: string
+          description: 주 시작일
+          example: '2026-02-17'
+        satisfactionRate:
+          type: number
+          format: float
+          description: 만족도 비율 (0.0~1.0)
+          example: 0.85
+
+    InsightsResponse:
+      type: object
+      properties:
+        hasEnoughData:
+          type: boolean
+          description: 10건 이상 기록 여부
+          example: true
+        currentRecordCount:
+          type: integer
+          description: 현재 기록 수
+          example: 30
+        requiredRecordCount:
+          type: integer
+          description: 인사이트 활성화 필요 기록 수
+          example: 10
+        message:
+          type: string
+          nullable: true
+          description: 데이터 부족 시 안내 메시지
+          example: null
+        topCategories:
+          type: array
+          maxItems: 5
+          description: 선호 카테고리 Top 5
+          items:
+            $ref: '#/components/schemas/CategoryDistribution'
+        weeklyPattern:
+          type: array
+          description: 요일별 패턴
+          items:
+            $ref: '#/components/schemas/WeeklyPattern'
+        satisfactionTrend:
+          type: array
+          description: 주간 만족도 변화
+          items:
+            $ref: '#/components/schemas/SatisfactionTrend'
+        weeklySummary:
+          type: string
+          nullable: true
+          description: 주간 요약 문장
+          example: 이번 주 당신은 한식을 자주 드셨어요. 가장 만족한 요일은 수요일이에요.
+        milestone:
+          $ref: '#/components/schemas/MilestoneBadge'
+          nullable: true
+
+    MilestoneBadge:
+      type: object
+      properties:
+        achieved:
+          type: boolean
+          example: true
+        count:
+          type: integer
+          description: 달성한 식사 수
+          example: 30
+        message:
+          type: string
+          example: 30끼 달성! 이제 취향 분석이 훨씬 정확해졌어요.
+        accuracyImprovement:
+          type: number
+          format: float
+          description: 정확도 향상률 (%)
+          example: 23.5
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: INVALID_REQUEST
+        message:
+          type: string
+          example: 요청 데이터를 확인해주세요.
+        timestamp:
+          type: string
+          format: date-time
+          example: '2026-02-26T12:00:00Z'
+
+  responses:
+    Unauthorized:
+      description: 인증 실패 (JWT 토큰 없거나 만료)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: UNAUTHORIZED
+            message: 로그인이 필요합니다.
+            timestamp: '2026-02-26T12:00:00Z'
+
+  examples:
+
+    TodayRecommendationsNormalExample:
+      value:
+        recommendations:
+          - recommendationId: rec-550e8400-e29b-41d4-a716-446655440010
+            restaurantId: rest-001
+            restaurantName: 광화문 된장마을
+            representativeMenu: 된장찌개 정식
+            reasonSummary: 비 오는 날엔 따뜻한 한식이 딱이에요
+            confidenceScore: 87
+            distanceMeters: 320
+            estimatedWalkMinutes: 4
+            category: 한식
+            isFallback: false
+          - recommendationId: rec-550e8400-e29b-41d4-a716-446655440011
+            restaurantId: rest-002
+            restaurantName: 사쿠라 스시
+            representativeMenu: 런치 세트
+            reasonSummary: 어제 분식 드셔서 오늘은 가볍게 일식
+            confidenceScore: 72
+            distanceMeters: 480
+            estimatedWalkMinutes: 6
+            category: 일식
+            isFallback: false
+          - recommendationId: rec-550e8400-e29b-41d4-a716-446655440012
+            restaurantId: rest-003
+            restaurantName: 그린 샐러드바
+            representativeMenu: 프레시 볼
+            reasonSummary: 건강을 중요하게 생각하시는 취향에 맞춰 추천해요
+            confidenceScore: 65
+            distanceMeters: 250
+            estimatedWalkMinutes: 3
+            category: 샐러드/건강식
+            isFallback: false
+        isColdStart: false
+        coldStartMessage: null
+        isFallback: false
+        fallbackMessage: null
+        generatedAt: '2026-02-26T12:00:00Z'
+
+    TodayRecommendationsFallbackExample:
+      value:
+        recommendations:
+          - recommendationId: rec-fallback-001
+            restaurantId: rest-001
+            restaurantName: 광화문 된장마을
+            representativeMenu: 된장찌개 정식
+            reasonSummary: 주변 인기 식당이에요
+            confidenceScore: 60
+            distanceMeters: 320
+            estimatedWalkMinutes: 4
+            category: 한식
+            isFallback: true
+        isColdStart: false
+        coldStartMessage: null
+        isFallback: true
+        fallbackMessage: 최신 추천을 불러오고 있어요.
+        generatedAt: '2026-02-26T12:00:00Z'
+
+    TodayRecommendationsColdStartExample:
+      value:
+        recommendations:
+          - recommendationId: rec-cold-001
+            restaurantId: rest-001
+            restaurantName: 광화문 된장마을
+            representativeMenu: 된장찌개 정식
+            reasonSummary: 이 근처 직장인들이 자주 가는 한식 식당이에요
+            confidenceScore: 55
+            distanceMeters: 320
+            estimatedWalkMinutes: 4
+            category: 한식
+            isFallback: false
+        isColdStart: true
+        coldStartMessage: 아직 취향을 학습 중이에요. 3일만 더 기록하면 추천이 확 달라져요!
+        isFallback: false
+        fallbackMessage: null
+        generatedAt: '2026-02-26T12:00:00Z'
+
+    RecommendationReasonNormalExample:
+      value:
+        recommendationId: rec-550e8400-e29b-41d4-a716-446655440010
+        naturalLanguageReason: 비 오는 날 + 어제 양식 드셨으니 → 따뜻한 한식을 추천드려요
+        confidenceScore: 87
+        contextTags: [날씨, 이력]
+        isReasonReady: true
+        fallbackMessage: null
+
+    RecommendationReasonFallbackExample:
+      value:
+        recommendationId: rec-550e8400-e29b-41d4-a716-446655440010
+        naturalLanguageReason: 거리 320m, 평점 4.2
+        confidenceScore: 87
+        contextTags: []
+        isReasonReady: false
+        fallbackMessage: 추천 이유를 준비 중이에요.
+
+    AcceptRecommendationRequestExample:
+      value:
+        acceptedAt: '2026-02-26T12:05:30Z'
+        reactionTimeMs: 4200
+
+    AcceptRecommendationResponseExample:
+      value:
+        acceptanceId: acc-550e8400-e29b-41d4-a716-446655440030
+        restaurantId: rest-001
+        restaurantName: 광화문 된장마을
+        restaurantAddress: 서울 종로구 세종대로 175
+        message: 수락이 완료되었어요. 맛있는 점심 되세요!
+
+    RejectRecommendationRequestExample:
+      value:
+        rejectReason: MOOD_NOT_MATCH
+
+    RejectResponseWithAlternativeExample:
+      value:
+        rejected: true
+        hasAlternative: true
+        alternativeRecommendation:
+          recommendationId: rec-550e8400-e29b-41d4-a716-446655440015
+          restaurantId: rest-004
+          restaurantName: 삼겹살 한 판
+          representativeMenu: 삼겹살 세트
+          reasonSummary: 든든한 한 끼 어떠세요?
+          confidenceScore: 61
+          distanceMeters: 410
+          estimatedWalkMinutes: 5
+          category: 한식
+          isFallback: false
+        message: 이런 건 어때요?
+        noAlternativeMessage: null
+
+    RejectResponseNoAlternativeExample:
+      value:
+        rejected: true
+        hasAlternative: false
+        alternativeRecommendation: null
+        message: null
+        noAlternativeMessage: 주변에 더 추천할 곳이 없어요. 거리를 넓혀볼까요?
+
+    CreateMealRequestExample:
+      value:
+        recommendationId: rec-550e8400-e29b-41d4-a716-446655440010
+        restaurantId: rest-001
+        menuName: 된장찌개 정식
+        recordedAt: '2026-02-26T12:30:00Z'
+
+    MealResponseExample:
+      value:
+        mealId: meal-550e8400-e29b-41d4-a716-446655440020
+        restaurantName: 광화문 된장마을
+        menuName: 된장찌개 정식
+        recordedAt: '2026-02-26T12:30:00Z'
+        message: 오늘 점심 기록 완료!
+
+    FeedbackSatisfiedExample:
+      value:
+        satisfaction: GOOD
+        keyword: TASTE
+
+    FeedbackDissatisfiedExample:
+      value:
+        satisfaction: BAD
+        keyword: PORTION
+
+    FeedbackSkippedExample:
+      value:
+        satisfaction: NEUTRAL
+        keyword: null
+
+    FeedbackResponseExample:
+      value:
+        message: 피드백 감사해요!
+        reflectionMessage: 내일 추천에 반영할게요.
+        totalFeedbackCount: 13
+
+    MealHistoryResponseExample:
+      value:
+        meals:
+          - mealId: meal-550e8400-e29b-41d4-a716-446655440020
+            date: '2026-02-26'
+            restaurantName: 광화문 된장마을
+            menuName: 된장찌개 정식
+            category: 한식
+            categoryColor: '#FF6B6B'
+            satisfaction: GOOD
+            recordedAt: '2026-02-26T12:30:00Z'
+          - mealId: meal-550e8400-e29b-41d4-a716-446655440019
+            date: '2026-02-25'
+            restaurantName: 사쿠라 스시
+            menuName: 런치 세트
+            category: 일식
+            categoryColor: '#4ECDC4'
+            satisfaction: GOOD
+            recordedAt: '2026-02-25T12:15:00Z'
+        totalCount: 15
+        message: null
+
+    InsightsResponseSufficientExample:
+      value:
+        hasEnoughData: true
+        currentRecordCount: 30
+        requiredRecordCount: 10
+        message: null
+        topCategories:
+          - category: 한식
+            count: 12
+            percentage: 40.0
+            color: '#FF6B6B'
+          - category: 일식
+            count: 8
+            percentage: 26.7
+            color: '#4ECDC4'
+          - category: 샐러드/건강식
+            count: 5
+            percentage: 16.7
+            color: '#45B7D1'
+        weeklyPattern:
+          - dayOfWeek: MON
+            topCategory: 한식
+            averageSatisfaction: 0.82
+          - dayOfWeek: WED
+            topCategory: 일식
+            averageSatisfaction: 0.91
+        satisfactionTrend:
+          - week: '2026-02-17'
+            satisfactionRate: 0.75
+          - week: '2026-02-24'
+            satisfactionRate: 0.87
+        weeklySummary: 이번 주 당신은 한식을 자주 드셨어요. 가장 만족한 요일은 수요일이에요.
+        milestone:
+          achieved: true
+          count: 30
+          message: 30끼 달성! 이제 취향 분석이 훨씬 정확해졌어요.
+          accuracyImprovement: 23.5
+
+    InsightsResponseInsufficientExample:
+      value:
+        hasEnoughData: false
+        currentRecordCount: 5
+        requiredRecordCount: 10
+        message: 10끼 이상 기록하면 취향 인사이트가 열려요!
+        topCategories: []
+        weeklyPattern: []
+        satisfactionTrend: []
+        weeklySummary: null
+        milestone: null

@@ -1,0 +1,33 @@
+[versions]
+# ============================================================
+# 필수 코어
+# ============================================================
+spring-boot = "3.4.1"                  # https://start.spring.io (2026-02 기준 latest GA)
+dependency-management = "1.1.7"        # https://plugins.gradle.org/plugin/io.spring.dependency-management
+lombok-plugin = "8.11"                 # https://plugins.gradle.org/plugin/io.freefair.lombok
+spring-cloud = "2024.0.0"             # Spring Boot 3.4.x 호환 릴리스 트레인
+java = "21"
+
+# ============================================================
+# 선택 라이브러리 (설계 산출물 분석 결과)
+# - high-level-architecture: JWT 인증 → jjwt
+# - API 명세서 4개: Swagger/OpenAPI → springdoc
+# - dev-plan.md 10-5: Resilience4j → spring-cloud-starter-circuitbreaker-resilience4j (Spring Cloud BOM 관리)
+# - payment-service: Redis Streams MQ → spring-cloud-stream-binder-kafka (로컬 개발용)
+# ============================================================
+jjwt = "0.12.6"                        # https://search.maven.org/artifact/io.jsonwebtoken/jjwt-api
+springdoc = "2.7.0"                    # https://search.maven.org/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+
+[libraries]
+# JWT
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
+
+# OpenAPI Documentation
+springdoc-webmvc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+dependency-management = { id = "io.spring.dependency-management", version.ref = "dependency-management" }
+lombok = { id = "io.freefair.lombok", version.ref = "lombok-plugin" }

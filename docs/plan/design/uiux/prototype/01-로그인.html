@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>런치픽 - 로그인</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .login-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: var(--space-xl);
+      text-align: center;
+      background: var(--color-surface);
+    }
+    .login-logo {
+      font-size: 48px;
+      margin-bottom: var(--space-s);
+    }
+    .login-brand {
+      font-size: var(--font-size-h1);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+      margin-bottom: var(--space-s);
+    }
+    .login-tagline {
+      font-size: var(--font-size-body1);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-xxl);
+      line-height: var(--line-height-body1);
+    }
+    .login-kakao {
+      width: 100%;
+      max-width: 320px;
+      height: 48px;
+      background: #FEE500;
+      color: #191919;
+      border: none;
+      border-radius: var(--radius-m);
+      font-family: var(--font-family);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-s);
+      transition: transform var(--duration-fast) var(--easing-standard);
+    }
+    .login-kakao:active {
+      transform: scale(0.97);
+    }
+    .login-kakao:hover {
+      background: #F5DC00;
+    }
+    .login-footer {
+      margin-top: var(--space-xxl);
+      font-size: var(--font-size-caption);
+      color: var(--color-text-disabled);
+      line-height: var(--line-height-body2);
+    }
+    .login-footer a {
+      color: var(--color-text-secondary);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <main role="main" class="login-page">
+    <div class="login-logo" aria-hidden="true">🍽️</div>
+    <h1 class="login-brand">런치픽</h1>
+    <p class="login-tagline">
+      3분이면 당신만의<br>점심 파트너가 완성돼요
+    </p>
+
+    <button class="login-kakao" onclick="handleKakaoLogin()" aria-label="카카오 계정으로 로그인">
+      <span aria-hidden="true">💬</span>
+      카카오로 시작하기
+    </button>
+
+    <div class="login-footer">
+      로그인 시 <a href="#">이용약관</a> 및 <a href="#">개인정보처리방침</a>에<br>동의하는 것으로 간주합니다.
+    </div>
+  </main>
+
+  <script src="common.js"></script>
+  <script>
+    function handleKakaoLogin() {
+      showToast('카카오 로그인 완료!');
+      setTimeout(function() {
+        navigateTo('02-취향퀴즈.html');
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,880 @@
+openapi: 3.0.0
+info:
+  title: 회원 서비스 API
+  version: 1.0.0
+  description: 런치픽 회원 서비스 API 명세 — 카카오 소셜 로그인, 취향 온보딩, 위치 동의, 알레르기/식이제한 설정, 프로필 관리
+  contact:
+    name: 홍길동 (아키) + 한승우 (마법사)
+
+servers:
+  - url: https://mock.swaggerhub.com/lunch-menu-recommender/member-service/1.0.0
+    description: Mock Server
+
+tags:
+  - name: Auth
+    description: 소셜 로그인 인증
+  - name: Onboarding
+    description: 취향 온보딩 퀴즈 및 위치 동의
+  - name: Profile
+    description: 프로필 조회 및 수정
+  - name: Internal
+    description: 서비스 간 내부 API (Gateway 미경유)
+
+paths:
+
+  /api/v1/auth/kakao:
+    post:
+      tags:
+        - Auth
+      summary: 카카오 소셜 로그인
+      description: |
+        카카오 OAuth 2.0 인증 코드를 받아 내부 JWT를 발급합니다.
+        기존 회원이면 로그인, 신규 회원이면 회원가입 처리합니다.
+        isNewUser 값으로 온보딩 화면 전환 여부를 결정합니다.
+      operationId: kakaoLogin
+      x-user-story: UFR-MBR-010
+      x-controller: AuthController
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KakaoLoginRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/KakaoLoginRequestExample'
+      responses:
+        '200':
+          description: 기존 회원 로그인 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              examples:
+                existingUser:
+                  $ref: '#/components/examples/AuthResponseExistingUserExample'
+        '201':
+          description: 신규 회원가입 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              examples:
+                newUser:
+                  $ref: '#/components/examples/AuthResponseNewUserExample'
+        '401':
+          description: 카카오 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: KAKAO_AUTH_FAILED
+                message: 인증에 실패했어요. 다시 시도해주세요.
+                timestamp: '2026-02-26T12:00:00Z'
+        '503':
+          description: 카카오 서버 연결 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: KAKAO_SERVICE_UNAVAILABLE
+                message: 인터넷 연결을 확인해주세요.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/members/onboarding:
+    post:
+      tags:
+        - Onboarding
+      summary: 취향 온보딩 퀴즈 제출
+      description: |
+        음식 카드 스와이프 결과(좋아요/싫어요)를 받아 초기 취향 벡터를 생성합니다.
+        최소 7장 이상 스와이프해야 제출 가능합니다.
+        성공 시 선호 카테고리 Top 3를 반환합니다.
+      operationId: submitOnboarding
+      x-user-story: UFR-MBR-020
+      x-controller: OnboardingController
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardingRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/OnboardingRequestExample'
+      responses:
+        '200':
+          description: 취향 온보딩 완료 — 초기 취향 벡터 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/OnboardingResponseExample'
+        '400':
+          description: 최소 스와이프 수 미달 (7장 미만)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: INSUFFICIENT_SWIPES
+                message: 조금만 더! 7장 이상 스와이프해야 취향을 파악할 수 있어요.
+                timestamp: '2026-02-26T12:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/members/onboarding/progress:
+    put:
+      tags:
+        - Onboarding
+      summary: 온보딩 진행 상태 임시 저장
+      description: |
+        중간 이탈 시 현재까지의 스와이프 결과를 임시 저장합니다.
+        재진입 시 이어서 진행할 수 있습니다.
+      operationId: saveOnboardingProgress
+      x-user-story: UFR-MBR-020
+      x-controller: OnboardingController
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardingProgressRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/OnboardingProgressRequestExample'
+      responses:
+        '200':
+          description: 진행 상태 임시 저장 완료
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 진행 상태가 저장되었어요. 나중에 이어서 진행할 수 있어요.
+                  savedCount:
+                    type: integer
+                    description: 현재까지 저장된 스와이프 수
+                    example: 4
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/members/location-consent:
+    post:
+      tags:
+        - Onboarding
+      summary: 위치 정보 동의
+      description: |
+        위치정보법 준수: 수집 목적 고지, 보유 기간(6개월) 고지 후 동의 여부를 기록합니다.
+        동의 시 위치 기반 추천 활성화, 거절 시 수동 위치 입력 모드로 전환됩니다.
+      operationId: submitLocationConsent
+      x-user-story: UFR-MBR-030
+      x-controller: OnboardingController
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationConsentRequest'
+            examples:
+              agree:
+                $ref: '#/components/examples/LocationConsentAgreeExample'
+              disagree:
+                $ref: '#/components/examples/LocationConsentDisagreeExample'
+      responses:
+        '200':
+          description: 위치 동의 처리 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationConsentResponse'
+              examples:
+                agreed:
+                  value:
+                    locationEnabled: true
+                    message: 위치 기반 추천이 활성화되었어요.
+                disagreed:
+                  value:
+                    locationEnabled: false
+                    message: 위치를 직접 입력해주세요.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/members/dietary-restrictions:
+    put:
+      tags:
+        - Profile
+      summary: 알레르기/식이제한 설정
+      description: |
+        알레르기 항목(8대 알레르겐 + 직접 입력)과 식이 유형(일반/채식/비건/할랄/기타)을 설정합니다.
+        민감 정보(건강 관련)이므로 별도 동의 확인이 필요합니다.
+        하드 필터로 등록되어 추천 시 해당 식재료 포함 식당이 완전 제거됩니다.
+      operationId: updateDietaryRestrictions
+      x-user-story: UFR-MBR-040
+      x-controller: ProfileController
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DietaryRestrictionsRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/DietaryRestrictionsRequestExample'
+      responses:
+        '200':
+          description: 식이제한 설정 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DietaryRestrictionsResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/DietaryRestrictionsResponseExample'
+        '400':
+          description: 건강 정보 동의 미확인
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: HEALTH_INFO_CONSENT_REQUIRED
+                message: 건강 관련 정보 수집에 동의해주세요.
+                timestamp: '2026-02-26T12:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/members/profile:
+    get:
+      tags:
+        - Profile
+      summary: 프로필 조회
+      description: 현재 로그인한 회원의 프로필 정보(닉네임, 식이제한, 알림 설정, 구독 상태)를 조회합니다.
+      operationId: getProfile
+      x-user-story: UFR-MBR-050
+      x-controller: ProfileController
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 프로필 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberProfile'
+              examples:
+                default:
+                  $ref: '#/components/examples/MemberProfileExample'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags:
+        - Profile
+      summary: 프로필 수정
+      description: |
+        닉네임, 식이제한, 알림 설정을 수정합니다.
+        변경된 정보는 즉시 반영되며 다음 추천부터 적용됩니다.
+        닉네임은 2~20자, 특수문자 사용 불가입니다.
+      operationId: updateProfile
+      x-user-story: UFR-MBR-050
+      x-controller: ProfileController
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/UpdateProfileRequestExample'
+      responses:
+        '200':
+          description: 프로필 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberProfile'
+              examples:
+                default:
+                  $ref: '#/components/examples/MemberProfileExample'
+        '400':
+          description: 유효성 오류 (닉네임 형식 등)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: INVALID_NICKNAME
+                message: 닉네임은 2~20자, 특수문자 없이 입력해주세요.
+                timestamp: '2026-02-26T12:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /internal/members/{memberId}/taste-profile:
+    get:
+      tags:
+        - Internal
+      summary: 취향 프로파일 조회 (내부 API)
+      description: |
+        추천·이력 서비스가 추천 생성 시 호출하는 내부 API입니다.
+        취향 벡터와 알레르기 하드 필터를 반환합니다.
+        API Gateway를 경유하지 않습니다.
+      operationId: getTasteProfile
+      x-internal: true
+      x-controller: InternalMemberController
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440001
+      responses:
+        '200':
+          description: 취향 프로파일 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TasteProfile'
+              examples:
+                default:
+                  $ref: '#/components/examples/TasteProfileExample'
+        '404':
+          description: 회원 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: MEMBER_NOT_FOUND
+                message: 회원 정보를 찾을 수 없습니다.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/members/subscription:
+    get:
+      tags:
+        - Internal
+      summary: 구독 상태 조회
+      description: 현재 회원의 구독 플랜(무료/프리미엄)과 만료일을 조회합니다.
+      operationId: getSubscriptionStatus
+      x-internal: true
+      x-controller: SubscriptionController
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 구독 상태 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionStatus'
+              examples:
+                free:
+                  value:
+                    plan: FREE
+                    historyLimitDays: 30
+                    expiresAt: null
+                premium:
+                  value:
+                    plan: PREMIUM
+                    historyLimitDays: null
+                    expiresAt: '2026-03-26T23:59:59Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: API Gateway에서 발급한 JWT 액세스 토큰 (만료 1시간)
+
+  schemas:
+
+    KakaoLoginRequest:
+      type: object
+      required:
+        - authorizationCode
+      properties:
+        authorizationCode:
+          type: string
+          description: 카카오 OAuth 2.0 인증 코드
+          example: 4BQ3X5Y_f8z2Kp9
+
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT 액세스 토큰 (만료 1시간)
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjU1MGU4...
+        tokenType:
+          type: string
+          example: Bearer
+        expiresIn:
+          type: integer
+          description: 액세스 토큰 만료 시간(초)
+          example: 3600
+        memberId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440001
+        isNewUser:
+          type: boolean
+          description: 신규 가입 여부 (true이면 온보딩 화면으로 전환)
+          example: true
+        onboardingCompleted:
+          type: boolean
+          description: 온보딩 완료 여부
+          example: false
+
+    OnboardingRequest:
+      type: object
+      required:
+        - swipeResults
+        - healthInfoConsentGiven
+      properties:
+        swipeResults:
+          type: array
+          minItems: 7
+          description: 음식 카드 스와이프 결과 목록 (최소 7장)
+          items:
+            $ref: '#/components/schemas/CardSwipeResult'
+        healthInfoConsentGiven:
+          type: boolean
+          description: 건강 관련 취향 정보 수집 동의 여부
+          example: true
+
+    CardSwipeResult:
+      type: object
+      required:
+        - cardId
+        - liked
+      properties:
+        cardId:
+          type: string
+          description: 음식 카드 ID
+          example: card-korean-001
+        liked:
+          type: boolean
+          description: 좋아요(true) / 싫어요(false)
+          example: true
+        category:
+          type: string
+          description: 음식 카테고리
+          enum: [한식, 중식, 일식, 양식, 분식, 아시안, 패스트푸드, 샐러드/건강식]
+          example: 한식
+
+    OnboardingResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 취향 프로파일 완성!
+        topCategories:
+          type: array
+          maxItems: 3
+          description: 선호 카테고리 Top 3
+          items:
+            type: string
+          example: [한식, 일식, 샐러드/건강식]
+        tasteVectorCreated:
+          type: boolean
+          example: true
+
+    OnboardingProgressRequest:
+      type: object
+      required:
+        - swipeResults
+      properties:
+        swipeResults:
+          type: array
+          description: 현재까지 스와이프한 결과 목록
+          items:
+            $ref: '#/components/schemas/CardSwipeResult'
+
+    LocationConsentRequest:
+      type: object
+      required:
+        - consented
+      properties:
+        consented:
+          type: boolean
+          description: 위치 정보 수집 동의 여부
+          example: true
+        consentedAt:
+          type: string
+          format: date-time
+          description: 동의 시각 (클라이언트 기준)
+          example: '2026-02-26T12:01:00Z'
+
+    LocationConsentResponse:
+      type: object
+      properties:
+        locationEnabled:
+          type: boolean
+          description: 위치 기반 추천 활성화 여부
+          example: true
+        message:
+          type: string
+          example: 위치 기반 추천이 활성화되었어요.
+
+    DietaryRestrictionsRequest:
+      type: object
+      required:
+        - healthInfoConsentGiven
+      properties:
+        healthInfoConsentGiven:
+          type: boolean
+          description: 건강 관련 정보 수집 동의 (민감정보 별도 동의)
+          example: true
+        allergens:
+          type: array
+          description: 알레르기 항목 (8대 알레르겐 + 직접 입력)
+          items:
+            type: string
+            enum: [난류, 우유, 메밀, 땅콩, 대두, 밀, 고등어, 게, 새우, 돼지고기, 복숭아, 토마토, 아황산류, 호두, 닭고기, 쇠고기, 오징어, 조개류]
+          example: [땅콩, 새우]
+        customAllergens:
+          type: array
+          description: 직접 입력 알레르기 항목
+          items:
+            type: string
+          example: [참깨]
+        dietType:
+          type: string
+          description: 식이 유형
+          enum: [일반, 채식, 비건, 할랄, 기타]
+          example: 채식
+
+    DietaryRestrictionsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 식이제한 필터가 등록되었어요.
+        appliedAllergens:
+          type: array
+          items:
+            type: string
+          example: [땅콩, 새우, 참깨]
+        dietType:
+          type: string
+          example: 채식
+
+    MemberProfile:
+      type: object
+      properties:
+        memberId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440001
+        nickname:
+          type: string
+          description: 닉네임 (2~20자, 특수문자 제한)
+          example: 런치왕김과장
+        email:
+          type: string
+          format: email
+          description: 카카오 연동 이메일 (AES-256 암호화 저장)
+          example: kimkwajang@example.com
+        dietType:
+          type: string
+          enum: [일반, 채식, 비건, 할랄, 기타]
+          example: 일반
+        allergens:
+          type: array
+          items:
+            type: string
+          example: [땅콩]
+        locationEnabled:
+          type: boolean
+          example: true
+        notificationSettings:
+          $ref: '#/components/schemas/NotificationSettings'
+        subscription:
+          $ref: '#/components/schemas/SubscriptionStatus'
+        onboardingCompleted:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-02-26T09:00:00Z'
+
+    NotificationSettings:
+      type: object
+      properties:
+        recommendationAlert:
+          type: boolean
+          description: 추천 알림 ON/OFF
+          example: true
+        feedbackReminder:
+          type: boolean
+          description: 피드백 리마인더 ON/OFF
+          example: true
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        nickname:
+          type: string
+          minLength: 2
+          maxLength: 20
+          pattern: '^[가-힣a-zA-Z0-9 ]+$'
+          description: 닉네임 (2~20자, 특수문자 제한)
+          example: 점심마스터
+        notificationSettings:
+          $ref: '#/components/schemas/NotificationSettings'
+
+    TasteProfile:
+      type: object
+      description: 추천·이력 서비스가 추천 생성 시 사용하는 취향 프로파일 (내부 API 응답)
+      properties:
+        memberId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440001
+        tasteVector:
+          type: object
+          description: 카테고리별 선호도 벡터 (0.0~1.0)
+          additionalProperties:
+            type: number
+            format: float
+          example:
+            한식: 0.85
+            일식: 0.70
+            중식: 0.40
+            양식: 0.55
+            분식: 0.60
+        allergenFilter:
+          type: array
+          description: 하드 필터 적용 알레르겐 목록
+          items:
+            type: string
+          example: [땅콩, 새우]
+        dietType:
+          type: string
+          enum: [일반, 채식, 비건, 할랄, 기타]
+          example: 일반
+        feedbackCount:
+          type: integer
+          description: 누적 피드백 수 (5건 미만 시 콜드스타트 처리)
+          example: 12
+        isColdStart:
+          type: boolean
+          description: 콜드스타트 여부 (feedbackCount < 5)
+          example: false
+
+    SubscriptionStatus:
+      type: object
+      properties:
+        plan:
+          type: string
+          enum: [FREE, PREMIUM]
+          example: FREE
+        historyLimitDays:
+          type: integer
+          nullable: true
+          description: "이력 조회 제한 일수 (무료: 30, 프리미엄: null = 무제한)"
+          example: 30
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: 구독 만료일 (무료이면 null)
+          example: null
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 에러 코드
+          example: INVALID_REQUEST
+        message:
+          type: string
+          description: 사용자 친화적 에러 메시지
+          example: 요청 데이터를 확인해주세요.
+        timestamp:
+          type: string
+          format: date-time
+          example: '2026-02-26T12:00:00Z'
+
+  responses:
+    Unauthorized:
+      description: 인증 실패 (JWT 토큰 없거나 만료)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: UNAUTHORIZED
+            message: 로그인이 필요합니다.
+            timestamp: '2026-02-26T12:00:00Z'
+
+  examples:
+
+    KakaoLoginRequestExample:
+      value:
+        authorizationCode: 4BQ3X5Y_f8z2Kp9mNjR
+
+    AuthResponseNewUserExample:
+      value:
+        accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjU1MGU4NDAwLWUyOWItNDFkNC1hNzE2LTQ0NjY1NTQ0MDAwMSJ9.sample
+        tokenType: Bearer
+        expiresIn: 3600
+        memberId: 550e8400-e29b-41d4-a716-446655440001
+        isNewUser: true
+        onboardingCompleted: false
+
+    AuthResponseExistingUserExample:
+      value:
+        accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjU1MGU4NDAwLWUyOWItNDFkNC1hNzE2LTQ0NjY1NTQ0MDAwMSJ9.sample
+        tokenType: Bearer
+        expiresIn: 3600
+        memberId: 550e8400-e29b-41d4-a716-446655440001
+        isNewUser: false
+        onboardingCompleted: true
+
+    OnboardingRequestExample:
+      value:
+        swipeResults:
+          - cardId: card-korean-001
+            liked: true
+            category: 한식
+          - cardId: card-japanese-001
+            liked: true
+            category: 일식
+          - cardId: card-chinese-001
+            liked: false
+            category: 중식
+          - cardId: card-western-001
+            liked: true
+            category: 양식
+          - cardId: card-bunsik-001
+            liked: true
+            category: 분식
+          - cardId: card-salad-001
+            liked: true
+            category: 샐러드/건강식
+          - cardId: card-fastfood-001
+            liked: false
+            category: 패스트푸드
+        healthInfoConsentGiven: true
+
+    OnboardingResponseExample:
+      value:
+        message: 취향 프로파일 완성!
+        topCategories:
+          - 한식
+          - 일식
+          - 샐러드/건강식
+        tasteVectorCreated: true
+
+    OnboardingProgressRequestExample:
+      value:
+        swipeResults:
+          - cardId: card-korean-001
+            liked: true
+            category: 한식
+          - cardId: card-japanese-001
+            liked: true
+            category: 일식
+          - cardId: card-chinese-001
+            liked: false
+            category: 중식
+          - cardId: card-western-001
+            liked: true
+            category: 양식
+
+    LocationConsentAgreeExample:
+      value:
+        consented: true
+        consentedAt: '2026-02-26T12:01:30Z'
+
+    LocationConsentDisagreeExample:
+      value:
+        consented: false
+        consentedAt: '2026-02-26T12:01:30Z'
+
+    DietaryRestrictionsRequestExample:
+      value:
+        healthInfoConsentGiven: true
+        allergens:
+          - 땅콩
+          - 새우
+        customAllergens:
+          - 참깨
+        dietType: 일반
+
+    DietaryRestrictionsResponseExample:
+      value:
+        message: 식이제한 필터가 등록되었어요.
+        appliedAllergens:
+          - 땅콩
+          - 새우
+          - 참깨
+        dietType: 일반
+
+    MemberProfileExample:
+      value:
+        memberId: 550e8400-e29b-41d4-a716-446655440001
+        nickname: 런치왕김과장
+        email: kimkwajang@example.com
+        dietType: 일반
+        allergens:
+          - 땅콩
+        locationEnabled: true
+        notificationSettings:
+          recommendationAlert: true
+          feedbackReminder: true
+        subscription:
+          plan: FREE
+          historyLimitDays: 30
+          expiresAt: null
+        onboardingCompleted: true
+        createdAt: '2026-02-26T09:00:00Z'
+
+    UpdateProfileRequestExample:
+      value:
+        nickname: 점심마스터
+        notificationSettings:
+          recommendationAlert: true
+          feedbackReminder: false
+
+    TasteProfileExample:
+      value:
+        memberId: 550e8400-e29b-41d4-a716-446655440001
+        tasteVector:
+          한식: 0.85
+          일식: 0.70
+          중식: 0.40
+          양식: 0.55
+          분식: 0.60
+          샐러드/건강식: 0.65
+        allergenFilter:
+          - 땅콩
+          - 새우
+        dietType: 일반
+        feedbackCount: 12
+        isColdStart: false

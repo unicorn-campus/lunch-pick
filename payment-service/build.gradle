@@ -1,0 +1,34 @@
+// payment-service: 포트 8083, Layered Architecture
+// Spring Boot 플러그인 및 공통 의존성은 루트 build.gradle에서 적용됨
+
+bootJar {
+    archiveFileName = 'payment-service.jar'
+}
+
+dependencies {
+    // Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Data JPA + PostgreSQL (결제 이력 INSERT ONLY, 5년 보존)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Redis (구독 플랜 캐시, 중복 결제 Lock — DB 3)
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // JWT
+    implementation libs.jjwt.api
+    runtimeOnly libs.jjwt.impl
+    runtimeOnly libs.jjwt.jackson
+
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Redis Streams MQ 발행은 spring-data-redis(opsForStream) 사용 — Kafka binder 불필요
+
+    // Resilience4j Circuit Breaker (PG 게이트웨이 호출 보호)
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+}

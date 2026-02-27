@@ -1,0 +1,129 @@
+:root {
+  /* ===========================
+     브랜드 컬러 — style-guide.md
+     =========================== */
+  --color-primary: #FF6B35;
+  --color-primary-hover: #E55A24;
+  --color-secondary: #1A1A2E;
+  --color-accent: #4ECDC4;
+
+  /* 텍스트 컬러 */
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #6B7280;
+  --color-text-disabled: #9CA3AF;
+  --color-text-inverse: #FFFFFF;
+
+  /* 배경 */
+  --color-background: #FAFAFA;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #FFFFFF;
+  --color-overlay: rgba(0, 0, 0, 0.40);
+
+  /* 상태 컬러 */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+
+  /* 카테고리 태그 컬러 */
+  --color-category-korean: #FF6B35;
+  --color-category-western: #3B82F6;
+  --color-category-chinese: #10B981;
+  --color-category-japanese: #8B5CF6;
+  --color-category-etc: #6B7280;
+
+  /* Border */
+  --color-border: #E5E7EB;
+  --color-border-focus: #FF6B35;
+
+  /* ===========================
+     타이포그래피 — style-guide.md
+     =========================== */
+  --font-family: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* 타입 스케일 */
+  --font-size-h1: 1.75rem;   /* 28px */
+  --font-size-h2: 1.5rem;    /* 24px */
+  --font-size-h3: 1.125rem;  /* 18px */
+  --font-size-body1: 1rem;   /* 16px */
+  --font-size-body2: 0.875rem; /* 14px */
+  --font-size-caption: 0.75rem; /* 12px */
+  --font-size-label: 0.875rem;  /* 14px */
+  --font-size-badge: 0.75rem;   /* 12px */
+
+  /* 폰트 굵기 */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* 줄 높이 */
+  --line-height-h1: 2.25rem;   /* 36px */
+  --line-height-h2: 2rem;      /* 32px */
+  --line-height-h3: 1.625rem;  /* 26px */
+  --line-height-body1: 1.5rem; /* 24px */
+  --line-height-body2: 1.25rem; /* 20px */
+  --line-height-caption: 1rem; /* 16px */
+  --line-height-label: 1.25rem; /* 20px */
+  --line-height-badge: 1rem;   /* 16px */
+
+  /* letter-spacing */
+  --letter-spacing-base: -0.02em;
+
+  /* ===========================
+     간격 시스템 — style-guide.md
+     =========================== */
+  --space-xs: 4px;
+  --space-s: 8px;
+  --space-m: 16px;
+  --space-l: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+
+  /* 화면 마진 */
+  --margin-mobile: 16px;
+  --margin-tablet: 24px;
+  --margin-desktop: 32px;
+
+  /* ===========================
+     모서리 반경 — style-guide.md
+     =========================== */
+  --radius-xs: 4px;
+  --radius-s: 8px;
+  --radius-m: 12px;
+  --radius-l: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* ===========================
+     그림자 — style-guide.md
+     =========================== */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-2: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-3: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-4: 0 8px 24px rgba(0, 0, 0, 0.16);
+
+  /* ===========================
+     애니메이션 — style-guide.md
+     =========================== */
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ===========================
+     반응형 브레이크포인트 참조값
+     =========================== */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* ===========================
+     레이아웃
+     =========================== */
+  --max-content-width: 480px;
+  --header-height: 56px;
+  --bottom-tab-height: 56px;
+}

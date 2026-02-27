@@ -1,0 +1,138 @@
+@startuml recommendation-service-simple
+!theme mono
+
+title 추천·이력 서비스(recommendation-service) - 클래스 다이어그램 (요약)
+' 작성자: 홍길동 (아키) + 한승우 (마법사)
+
+package "com.unicorn.lunchpick.recommendation" {
+
+    package "controller" {
+        class RecommendationController
+        class MealController
+        class HistoryController
+        class InsightController
+    }
+
+    package "service" {
+        interface RecommendationService
+        class RecommendationServiceImpl
+        interface MealRecordService
+        class MealRecordServiceImpl
+        interface FeedbackService
+        class FeedbackServiceImpl
+        interface InsightService
+        class InsightServiceImpl
+        interface TasteLearningService
+        class TasteLearningServiceImpl
+        class TasteVectorCalculator
+        class ContextCollector
+        class CacheService
+    }
+
+    package "repository" {
+        interface RecommendationRepository
+        interface MealRecordRepository
+        interface FeedbackRepository
+    }
+
+    package "repository/entity" {
+        class RecommendationEntity
+        class MealRecordEntity
+        class FeedbackEntity
+        class PreferenceVectorEntity
+        class LearningMessageEntity
+    }
+
+    package "client" {
+        class AiPipelineClient
+        class MemberServiceClient
+        class WeatherApiClient
+        class MapApiClient
+    }
+
+    package "dto/request" {
+        class AcceptRecommendationRequest
+        class RejectRecommendationRequest
+        class RefreshRecommendationsRequest
+        class CreateMealRequest
+        class UpdateMealRequest
+        class FeedbackRequest
+    }
+
+    package "dto/response" {
+        class TodayRecommendationsResponse
+        class RecommendationReasonResponse
+        class AcceptRecommendationResponse
+        class RejectRecommendationResponse
+        class MealResponse
+        class FeedbackResponse
+        class MealHistoryResponse
+        class InsightsResponse
+    }
+}
+
+' Controller -> Service
+RecommendationController --> RecommendationService
+MealController --> MealRecordService
+MealController --> FeedbackService
+HistoryController --> MealRecordService
+InsightController --> InsightService
+
+' Service Implementation
+RecommendationServiceImpl ..|> RecommendationService
+RecommendationServiceImpl --> RecommendationRepository
+RecommendationServiceImpl --> CacheService
+RecommendationServiceImpl --> ContextCollector
+RecommendationServiceImpl --> AiPipelineClient
+RecommendationServiceImpl --> MemberServiceClient
+
+MealRecordServiceImpl ..|> MealRecordService
+MealRecordServiceImpl --> MealRecordRepository
+MealRecordServiceImpl --> CacheService
+
+FeedbackServiceImpl ..|> FeedbackService
+FeedbackServiceImpl --> FeedbackRepository
+FeedbackServiceImpl --> MealRecordRepository
+
+InsightServiceImpl ..|> InsightService
+InsightServiceImpl --> MealRecordRepository
+InsightServiceImpl --> FeedbackRepository
+
+TasteLearningServiceImpl ..|> TasteLearningService
+TasteLearningServiceImpl --> FeedbackRepository
+TasteLearningServiceImpl --> MemberServiceClient
+TasteLearningServiceImpl --> AiPipelineClient
+TasteLearningServiceImpl --> TasteVectorCalculator
+
+ContextCollector --> MemberServiceClient
+ContextCollector --> WeatherApiClient
+ContextCollector --> MealRecordRepository
+
+RecommendationRepository ..> RecommendationEntity
+MealRecordRepository ..> MealRecordEntity
+FeedbackRepository ..> FeedbackEntity
+
+note as N1
+  **Controller API 매핑표**
+  ─────────────────────────────────────────────────────────
+  **RecommendationController**
+  GET    /api/v1/recommendations/today                    오늘의 추천 3개 조회
+  GET    /api/v1/recommendations/{recommendationId}/reason 추천 이유 상세 확인
+  POST   /api/v1/recommendations/{recommendationId}/accept 추천 수락
+  POST   /api/v1/recommendations/{recommendationId}/reject 추천 거절 및 대체 추천 요청
+  POST   /api/v1/recommendations/refresh                  추천 전체 새로고침
+
+  **MealController**
+  POST   /api/v1/meals                                    식사 완료 원탭 기록
+  PUT    /api/v1/meals/{mealId}                           식사 기록 수정
+  DELETE /api/v1/meals/{mealId}                           식사 기록 취소 (30초 이내)
+  POST   /api/v1/meals/{mealId}/feedback                  식사 피드백 제출
+
+  **HistoryController**
+  GET    /api/v1/history/timeline                         식사 이력 타임라인 조회
+
+  **InsightController**
+  GET    /api/v1/insights                                 취향 인사이트 리포트 조회
+end note
+
+@enduml

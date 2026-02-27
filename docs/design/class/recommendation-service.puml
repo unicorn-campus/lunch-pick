@@ -1,0 +1,662 @@
+@startuml recommendation-service
+!theme mono
+
+title 추천·이력 서비스(recommendation-service) - 클래스 다이어그램 (상세)
+' 작성자: 홍길동 (아키) + 한승우 (마법사)
+
+package "com.unicorn.lunchpick.recommendation" {
+
+    ' ── Controller Layer ──────────────────────────────────────────
+    package "controller" {
+
+        class RecommendationController {
+            - recommendationService: RecommendationService
+            + getTodayRecommendations(memberId: String, latitude: double, longitude: double, requestedAt: LocalDateTime): ResponseEntity<ApiResponse<TodayRecommendationsResponse>>
+            + getRecommendationReason(memberId: String, recommendationId: String): ResponseEntity<ApiResponse<RecommendationReasonResponse>>
+            + acceptRecommendation(memberId: String, recommendationId: String, request: AcceptRecommendationRequest): ResponseEntity<ApiResponse<AcceptRecommendationResponse>>
+            + rejectRecommendation(memberId: String, recommendationId: String, request: RejectRecommendationRequest): ResponseEntity<ApiResponse<RejectRecommendationResponse>>
+            + refreshRecommendations(memberId: String, request: RefreshRecommendationsRequest): ResponseEntity<ApiResponse<TodayRecommendationsResponse>>
+        }
+
+        class MealController {
+            - mealRecordService: MealRecordService
+            - feedbackService: FeedbackService
+            + createMealRecord(memberId: String, request: CreateMealRequest): ResponseEntity<ApiResponse<MealResponse>>
+            + updateMealRecord(memberId: String, mealId: String, request: UpdateMealRequest): ResponseEntity<ApiResponse<MealResponse>>
+            + deleteMealRecord(memberId: String, mealId: String): ResponseEntity<ApiResponse<Void>>
+            + submitFeedback(memberId: String, mealId: String, request: FeedbackRequest): ResponseEntity<ApiResponse<FeedbackResponse>>
+        }
+
+        class HistoryController {
+            - mealRecordService: MealRecordService
+            + getMealHistoryTimeline(memberId: String, startDate: LocalDate, endDate: LocalDate): ResponseEntity<ApiResponse<MealHistoryResponse>>
+        }
+
+        class InsightController {
+            - insightService: InsightService
+            + getTasteInsights(memberId: String): ResponseEntity<ApiResponse<InsightsResponse>>
+        }
+    }
+
+    ' ── Service Layer ─────────────────────────────────────────────
+    package "service" {
+
+        interface RecommendationService {
+            + getTodayRecommendations(memberId: String, latitude: double, longitude: double, requestedAt: LocalDateTime): TodayRecommendationsResult
+            + getRecommendationReason(memberId: String, recommendationId: String): RecommendationReasonResult
+            + acceptRecommendation(memberId: String, recommendationId: String, acceptedAt: LocalDateTime, reactionTimeMs: int): AcceptResult
+            + rejectRecommendation(memberId: String, recommendationId: String, rejectReason: String): RejectResult
+            + refreshRecommendations(memberId: String, rejectedIds: List<String>, latitude: double, longitude: double): TodayRecommendationsResult
+        }
+
+        class RecommendationServiceImpl {
+            - recommendationRepository: RecommendationRepository
+            - cacheService: CacheService
+            - contextCollector: ContextCollector
+            - aiPipelineClient: AiPipelineClient
+            - memberServiceClient: MemberServiceClient
+            + getTodayRecommendations(memberId: String, latitude: double, longitude: double, requestedAt: LocalDateTime): TodayRecommendationsResult
+            + getRecommendationReason(memberId: String, recommendationId: String): RecommendationReasonResult
+            + acceptRecommendation(memberId: String, recommendationId: String, acceptedAt: LocalDateTime, reactionTimeMs: int): AcceptResult
+            + rejectRecommendation(memberId: String, recommendationId: String, rejectReason: String): RejectResult
+            + refreshRecommendations(memberId: String, rejectedIds: List<String>, latitude: double, longitude: double): TodayRecommendationsResult
+            - buildAiRecommendationRequest(context: RecommendationContext): AiRecommendationRequest
+        }
+
+        interface MealRecordService {
+            + recordMeal(memberId: String, request: CreateMealRequest): MealRecordResult
+            + updateMeal(memberId: String, mealId: String, request: UpdateMealRequest): MealRecordResult
+            + cancelMeal(memberId: String, mealId: String): void
+            + getMealHistoryTimeline(memberId: String, startDate: LocalDate, endDate: LocalDate): MealHistoryResult
+        }
+
+        class MealRecordServiceImpl {
+            - mealRecordRepository: MealRecordRepository
+            - cacheService: CacheService
+            + recordMeal(memberId: String, request: CreateMealRequest): MealRecordResult
+            + updateMeal(memberId: String, mealId: String, request: UpdateMealRequest): MealRecordResult
+            + cancelMeal(memberId: String, mealId: String): void
+            + getMealHistoryTimeline(memberId: String, startDate: LocalDate, endDate: LocalDate): MealHistoryResult
+            - validateMealTime(recordedAt: LocalDateTime): void
+            - checkDuplicate(memberId: String, date: LocalDate): void
+            - checkCancelTimeout(recordedAt: LocalDateTime): void
+        }
+
+        interface FeedbackService {
+            + submitFeedback(memberId: String, mealId: String, satisfaction: String, keyword: String): FeedbackResult
+            + submitDefaultFeedback(memberId: String, mealId: String): FeedbackResult
+        }
+
+        class FeedbackServiceImpl {
+            - feedbackRepository: FeedbackRepository
+            - mealRecordRepository: MealRecordRepository
+            + submitFeedback(memberId: String, mealId: String, satisfaction: String, keyword: String): FeedbackResult
+            + submitDefaultFeedback(memberId: String, mealId: String): FeedbackResult
+            - validateMealOwnership(memberId: String, mealId: String): void
+            - countTotalFeedback(memberId: String): int
+        }
+
+        interface InsightService {
+            + getTasteInsights(memberId: String): InsightsResult
+        }
+
+        class InsightServiceImpl {
+            - mealRecordRepository: MealRecordRepository
+            - feedbackRepository: FeedbackRepository
+            - memberServiceClient: MemberServiceClient
+            + getTasteInsights(memberId: String): InsightsResult
+            - calculateTopCategories(meals: List<MealRecordEntity>): List<CategoryDistribution>
+            - calculateWeeklyPattern(meals: List<MealRecordEntity>): List<WeeklyPattern>
+            - calculateSatisfactionTrend(feedbacks: List<FeedbackEntity>): List<SatisfactionTrend>
+            - checkMilestone(totalCount: int): MilestoneBadge
+        }
+
+        interface TasteLearningService {
+            + runDailyTasteLearning(): void
+        }
+
+        class TasteLearningServiceImpl {
+            - feedbackRepository: FeedbackRepository
+            - mealRecordRepository: MealRecordRepository
+            - memberServiceClient: MemberServiceClient
+            - aiPipelineClient: AiPipelineClient
+            - tasteVectorCalculator: TasteVectorCalculator
+            - redisTemplate: StringRedisTemplate
+            + runDailyTasteLearning(): void
+            - getActiveUsersWithFeedback(): List<String>
+            - updateTasteVector(memberId: String): void
+        }
+
+        class TasteVectorCalculator {
+            + calculateUpdatedVector(feedbackHistory: List<FeedbackEntity>): Map<String, Double>
+            - applyTimeDecay(feedbacks: List<FeedbackEntity>): List<WeightedFeedback>
+            - aggregateByCategory(weightedFeedbacks: List<WeightedFeedback>): Map<String, Double>
+        }
+
+        class ContextCollector {
+            - memberServiceClient: MemberServiceClient
+            - weatherApiClient: WeatherApiClient
+            - mealRecordRepository: MealRecordRepository
+            + collectContext(memberId: String, latitude: double, longitude: double): RecommendationContext
+            - fetchTasteProfile(memberId: String): TasteProfileDto
+            - fetchWeather(latitude: double, longitude: double): WeatherContext
+            - fetchRecentMealHistory(memberId: String): List<RecentMealHistory>
+            - determineIsColdStart(feedbackCount: int): boolean
+        }
+
+        class CacheService {
+            - redisTemplate: StringRedisTemplate
+            + getCachedRecommendation(memberId: String, location: LocationKey): Optional<String>
+            + cacheRecommendation(cacheKey: String, result: String): void
+            + getStaleCachedResult(memberId: String): Optional<String>
+            + invalidateRecommendationCache(memberId: String): void
+            - buildCacheKey(memberId: String, latitude: double, longitude: double, weatherCode: String, weekday: String): String
+        }
+    }
+
+    ' ── Repository Layer ──────────────────────────────────────────
+    package "repository" {
+
+        interface RecommendationRepository {
+            + findByRecommendationId(recommendationId: String): Optional<RecommendationEntity>
+            + findByMemberIdAndCreatedAtAfter(memberId: String, after: LocalDateTime): List<RecommendationEntity>
+            + save(entity: RecommendationEntity): RecommendationEntity
+        }
+
+        interface MealRecordRepository {
+            + findByMealId(mealId: String): Optional<MealRecordEntity>
+            + findByMemberIdAndDate(memberId: String, date: LocalDate): Optional<MealRecordEntity>
+            + findByMemberIdAndRecordedAtBetween(memberId: String, start: LocalDateTime, end: LocalDateTime): List<MealRecordEntity>
+            + findByMemberIdAndRecordedAtAfter(memberId: String, after: LocalDateTime): List<MealRecordEntity>
+            + countByMemberId(memberId: String): int
+            + save(entity: MealRecordEntity): MealRecordEntity
+            + delete(entity: MealRecordEntity): void
+        }
+
+        interface FeedbackRepository {
+            + findByMealId(mealId: String): Optional<FeedbackEntity>
+            + findByMemberIdOrderByCreatedAtDesc(memberId: String): List<FeedbackEntity>
+            + findDistinctMemberIdByCreatedAtBetween(start: LocalDateTime, end: LocalDateTime): List<String>
+            + countByMemberId(memberId: String): int
+            + save(entity: FeedbackEntity): FeedbackEntity
+        }
+
+        ' ── Entity (JPA) ──────────────────────────────────────────
+        package "entity" {
+
+            class RecommendationEntity {
+                - id: Long
+                - recommendationId: String
+                - memberId: String
+                - restaurantId: String
+                - restaurantName: String
+                - representativeMenu: String
+                - reasonSummary: String
+                - confidenceScore: int
+                - distanceMeters: int
+                - estimatedWalkMinutes: int
+                - category: String
+                - isFallback: boolean
+                - status: String
+                - reactionTimeMs: Integer
+                - rejectReason: String
+                - createdAt: LocalDateTime
+                - updatedAt: LocalDateTime
+            }
+
+            class MealRecordEntity {
+                - id: Long
+                - mealId: String
+                - memberId: String
+                - recommendationId: String
+                - restaurantId: String
+                - restaurantName: String
+                - menuName: String
+                - category: String
+                - recordedAt: LocalDateTime
+                - createdAt: LocalDateTime
+                - updatedAt: LocalDateTime
+            }
+
+            class FeedbackEntity {
+                - id: Long
+                - feedbackId: String
+                - memberId: String
+                - mealId: String
+                - satisfaction: String
+                - keyword: String
+                - skipped: boolean
+                - createdAt: LocalDateTime
+                - updatedAt: LocalDateTime
+            }
+
+            class PreferenceVectorEntity {
+                - id: Long
+                - memberId: String
+                - vectorJson: String
+                - feedbackCount: int
+                - isColdStart: boolean
+                - calculatedAt: LocalDateTime
+            }
+
+            class LearningMessageEntity {
+                - id: Long
+                - memberId: String
+                - message: String
+                - generatedAt: LocalDateTime
+            }
+        }
+    }
+
+    ' ── External Client Layer ─────────────────────────────────────
+    package "client" {
+
+        class AiPipelineClient {
+            - aiPipelineBaseUrl: String
+            - restTemplate: RestTemplate
+            + generateRecommendations(request: AiRecommendationRequest): AiRecommendationResponse
+            + generateReason(request: AiReasonRequest): AiReasonResponse
+        }
+
+        class MemberServiceClient {
+            - memberServiceBaseUrl: String
+            - restTemplate: RestTemplate
+            + getTasteProfile(memberId: String): TasteProfileDto
+            + updateTasteVector(memberId: String, tasteVector: Map<String, Double>): void
+            + getSubscriptionStatus(memberId: String): SubscriptionStatusDto
+        }
+
+        class WeatherApiClient {
+            - weatherApiBaseUrl: String
+            - weatherApiKey: String
+            - restTemplate: RestTemplate
+            + getCurrentWeather(latitude: double, longitude: double): WeatherContext
+        }
+
+        class MapApiClient {
+            - mapApiBaseUrl: String
+            - mapApiKey: String
+            - restTemplate: RestTemplate
+            + calculateDistance(fromLat: double, fromLng: double, toLat: double, toLng: double): int
+            + getRestaurantsByLocation(latitude: double, longitude: double, radiusMeters: int): List<RestaurantInfo>
+        }
+    }
+
+    ' ── DTO Layer ─────────────────────────────────────────────────
+    package "dto" {
+
+        package "request" {
+            class AcceptRecommendationRequest {
+                - acceptedAt: LocalDateTime
+                - reactionTimeMs: int
+            }
+
+            class RejectRecommendationRequest {
+                - rejectReason: String
+            }
+
+            class RefreshRecommendationsRequest {
+                - rejectedIds: List<String>
+                - latitude: double
+                - longitude: double
+            }
+
+            class CreateMealRequest {
+                - recommendationId: String
+                - restaurantId: String
+                - menuName: String
+                - recordedAt: LocalDateTime
+            }
+
+            class UpdateMealRequest {
+                - restaurantId: String
+                - menuName: String
+                - recordedAt: LocalDateTime
+            }
+
+            class FeedbackRequest {
+                - satisfaction: String
+                - keyword: String
+            }
+
+            class AiRecommendationRequest {
+                - memberId: String
+                - latitude: double
+                - longitude: double
+                - requestedAt: LocalDateTime
+                - isColdStart: boolean
+                - feedbackCount: int
+                - tasteVector: Map<String, Double>
+                - onboardingSwipes: List<OnboardingSwipeData>
+                - allergenFilter: List<String>
+                - dietType: String
+                - weather: WeatherContext
+                - recentMealHistory: List<RecentMealHistory>
+                - excludeRestaurantIds: List<String>
+                - jobCluster: String
+            }
+
+            class AiReasonRequest {
+                - recommendationId: String
+                - restaurantId: String
+                - restaurantName: String
+                - category: String
+                - memberId: String
+                - tasteVector: Map<String, Double>
+                - weather: WeatherContext
+                - recentMealHistory: List<RecentMealHistory>
+                - confidenceScore: int
+            }
+        }
+
+        package "response" {
+            class TodayRecommendationsResponse {
+                - recommendations: List<RecommendationCard>
+                - isColdStart: boolean
+                - coldStartMessage: String
+                - isFallback: boolean
+                - fallbackMessage: String
+                - generatedAt: LocalDateTime
+            }
+
+            class RecommendationCard {
+                - recommendationId: String
+                - restaurantId: String
+                - restaurantName: String
+                - representativeMenu: String
+                - reasonSummary: String
+                - confidenceScore: int
+                - distanceMeters: int
+                - estimatedWalkMinutes: int
+                - category: String
+                - isFallback: boolean
+            }
+
+            class RecommendationReasonResponse {
+                - recommendationId: String
+                - naturalLanguageReason: String
+                - confidenceScore: int
+                - contextTags: List<String>
+                - isReasonReady: boolean
+                - fallbackMessage: String
+            }
+
+            class AcceptRecommendationResponse {
+                - acceptanceId: String
+                - restaurantId: String
+                - restaurantName: String
+                - restaurantAddress: String
+                - message: String
+            }
+
+            class RejectRecommendationResponse {
+                - rejected: boolean
+                - alternativeRecommendation: RecommendationCard
+                - hasAlternative: boolean
+                - message: String
+                - noAlternativeMessage: String
+            }
+
+            class MealResponse {
+                - mealId: String
+                - restaurantName: String
+                - menuName: String
+                - recordedAt: LocalDateTime
+                - message: String
+            }
+
+            class FeedbackResponse {
+                - message: String
+                - reflectionMessage: String
+                - totalFeedbackCount: int
+            }
+
+            class MealHistoryResponse {
+                - meals: List<MealHistoryItem>
+                - totalCount: int
+                - message: String
+            }
+
+            class MealHistoryItem {
+                - mealId: String
+                - date: LocalDate
+                - restaurantName: String
+                - menuName: String
+                - category: String
+                - categoryColor: String
+                - satisfaction: String
+                - recordedAt: LocalDateTime
+            }
+
+            class InsightsResponse {
+                - hasEnoughData: boolean
+                - currentRecordCount: int
+                - requiredRecordCount: int
+                - message: String
+                - topCategories: List<CategoryDistribution>
+                - weeklyPattern: List<WeeklyPattern>
+                - satisfactionTrend: List<SatisfactionTrend>
+                - weeklySummary: String
+                - milestone: MilestoneBadge
+            }
+
+            class AiRecommendationResponse {
+                - recommendations: List<RecommendedRestaurant>
+                - isFallback: boolean
+                - isColdStart: boolean
+                - coldStartTag: String
+                - cacheKey: String
+                - cachedUntil: LocalDateTime
+                - metadata: AiMetadata
+            }
+
+            class AiReasonResponse {
+                - recommendationId: String
+                - naturalLanguageReason: String
+                - confidenceScore: int
+                - contextTags: List<String>
+                - isReasonReady: boolean
+                - fallbackReason: String
+                - cachedUntil: LocalDateTime
+                - metadata: AiMetadata
+            }
+        }
+
+        package "internal" {
+            class RecommendationContext {
+                - memberId: String
+                - latitude: double
+                - longitude: double
+                - requestedAt: LocalDateTime
+                - tasteProfile: TasteProfileDto
+                - weather: WeatherContext
+                - recentMealHistory: List<RecentMealHistory>
+                - excludeRestaurantIds: List<String>
+                - isColdStart: boolean
+                - feedbackCount: int
+            }
+
+            class TasteProfileDto {
+                - memberId: String
+                - tasteVector: Map<String, Double>
+                - allergenFilter: List<String>
+                - dietType: String
+                - feedbackCount: int
+                - isColdStart: boolean
+            }
+
+            class WeatherContext {
+                - condition: String
+                - temperatureCelsius: double
+                - description: String
+            }
+
+            class RecentMealHistory {
+                - restaurantId: String
+                - category: String
+                - mealDate: LocalDate
+                - satisfaction: String
+            }
+
+            class OnboardingSwipeData {
+                - cardId: String
+                - category: String
+                - liked: boolean
+            }
+
+            class CategoryDistribution {
+                - category: String
+                - count: int
+                - percentage: double
+                - color: String
+            }
+
+            class WeeklyPattern {
+                - dayOfWeek: String
+                - topCategory: String
+                - averageSatisfaction: double
+            }
+
+            class SatisfactionTrend {
+                - week: LocalDate
+                - satisfactionRate: double
+            }
+
+            class MilestoneBadge {
+                - achieved: boolean
+                - count: int
+                - message: String
+                - accuracyImprovement: double
+            }
+
+            class AiMetadata {
+                - source: String
+                - modelUsed: String
+                - latencyMs: int
+                - tokenUsage: TokenUsage
+                - circuitBreakerState: String
+            }
+
+            class TokenUsage {
+                - promptTokens: int
+                - completionTokens: int
+                - totalTokens: int
+            }
+
+            class RecommendedRestaurant {
+                - restaurantId: String
+                - restaurantName: String
+                - representativeMenu: String
+                - category: String
+                - reasonSummary: String
+                - confidenceScore: int
+                - distanceMeters: int
+                - estimatedWalkMinutes: int
+            }
+
+            class SubscriptionStatusDto {
+                - plan: String
+                - historyLimitDays: Integer
+                - expiresAt: LocalDateTime
+            }
+
+            class WeightedFeedback {
+                - feedbackId: String
+                - category: String
+                - satisfaction: String
+                - weight: double
+            }
+
+            class RestaurantInfo {
+                - restaurantId: String
+                - restaurantName: String
+                - category: String
+                - latitude: double
+                - longitude: double
+            }
+        }
+    }
+
+    ' ── Enum ──────────────────────────────────────────────────────
+    enum Satisfaction {
+        GOOD
+        BAD
+        NEUTRAL
+    }
+
+    enum RejectReason {
+        MOOD_NOT_MATCH
+        TOO_FAR
+        RECENTLY_VISITED
+        OTHER
+    }
+
+    enum FeedbackKeyword {
+        TASTE
+        PORTION
+        SPEED
+    }
+}
+
+' ── 관계 정의 ─────────────────────────────────────────────────────
+
+' Controller -> Service
+RecommendationController --> RecommendationService
+MealController --> MealRecordService
+MealController --> FeedbackService
+HistoryController --> MealRecordService
+InsightController --> InsightService
+
+' Service Implementation
+RecommendationServiceImpl ..|> RecommendationService
+RecommendationServiceImpl --> RecommendationRepository
+RecommendationServiceImpl --> CacheService
+RecommendationServiceImpl --> ContextCollector
+RecommendationServiceImpl --> AiPipelineClient
+RecommendationServiceImpl --> MemberServiceClient
+
+MealRecordServiceImpl ..|> MealRecordService
+MealRecordServiceImpl --> MealRecordRepository
+MealRecordServiceImpl --> CacheService
+
+FeedbackServiceImpl ..|> FeedbackService
+FeedbackServiceImpl --> FeedbackRepository
+FeedbackServiceImpl --> MealRecordRepository
+
+InsightServiceImpl ..|> InsightService
+InsightServiceImpl --> MealRecordRepository
+InsightServiceImpl --> FeedbackRepository
+InsightServiceImpl --> MemberServiceClient
+
+TasteLearningServiceImpl ..|> TasteLearningService
+TasteLearningServiceImpl --> FeedbackRepository
+TasteLearningServiceImpl --> MealRecordRepository
+TasteLearningServiceImpl --> MemberServiceClient
+TasteLearningServiceImpl --> AiPipelineClient
+TasteLearningServiceImpl --> TasteVectorCalculator
+
+ContextCollector --> MemberServiceClient
+ContextCollector --> WeatherApiClient
+ContextCollector --> MealRecordRepository
+
+' Repository -> Entity
+RecommendationRepository ..> RecommendationEntity
+MealRecordRepository ..> MealRecordEntity
+FeedbackRepository ..> FeedbackEntity
+
+' Enum
+FeedbackEntity --> Satisfaction
+FeedbackEntity --> FeedbackKeyword
+RecommendationEntity --> RejectReason
+
+' Response composition
+TodayRecommendationsResponse "1" *-- "1..*" RecommendationCard
+InsightsResponse "1" *-- "0..*" CategoryDistribution
+InsightsResponse "1" *-- "0..*" WeeklyPattern
+InsightsResponse "1" *-- "0..*" SatisfactionTrend
+InsightsResponse "1" *-- "0..1" MilestoneBadge
+AiRecommendationResponse "1" *-- "0..*" RecommendedRestaurant
+AiRecommendationResponse "1" *-- "1" AiMetadata
+AiMetadata "1" *-- "1" TokenUsage
+
+@enduml

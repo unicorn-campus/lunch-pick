@@ -1,0 +1,12 @@
+# Dev 프로파일 — 테스트 편의를 위한 완화 설정
+
+# CircuitBreaker dev 완화: 실패율 임계값 100%, OPEN 방지
+resilience4j:
+  circuitbreaker:
+    instances:
+      pg-gateway:
+        failure-rate-threshold: 100
+        slow-call-rate-threshold: 100
+        wait-duration-in-open-state: 1s
+        sliding-window-size: 100
+        permitted-number-of-calls-in-half-open-state: 100

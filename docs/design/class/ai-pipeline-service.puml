@@ -1,0 +1,274 @@
+@startuml ai-pipeline-service
+!theme mono
+
+title AI Pipeline 서비스(ai-pipeline-service) - 클래스 다이어그램 (상세)
+' 설계자: 한승우 (마법사) / AI 엔지니어
+' 아키텍처 검토: 홍길동 (아키)
+' 기술 스택: Python / FastAPI
+
+package "ai_pipeline_service" {
+
+    ' ── Router Layer ──────────────────────────────────────────────
+    package "router" {
+
+        class RecommendationRouter <<fastapi_router>> {
+            - recommendation_service: RecommendationService
+            + generate_recommendations(request: AiRecommendationRequest): AiRecommendationResponse
+        }
+
+        class ReasonRouter <<fastapi_router>> {
+            - reason_service: ReasonService
+            + generate_reason(request: AiReasonRequest): AiReasonResponse
+        }
+    }
+
+    ' ── Service Layer ─────────────────────────────────────────────
+    package "service" {
+
+        class RecommendationService {
+            - prompt_builder: RecommendationPromptBuilder
+            - llm_client: LLMClient
+            - response_parser: RecommendationResponseParser
+            - cache_manager: CacheManager
+            - fallback_engine: FallbackEngine
+            + generate(request: AiRecommendationRequest): AiRecommendationResponse
+            - _build_cache_key(request: AiRecommendationRequest): str
+            - _is_cold_start(request: AiRecommendationRequest): bool
+            - _build_fallback_response(request: AiRecommendationRequest, source: str): AiRecommendationResponse
+        }
+
+        class ReasonService {
+            - prompt_builder: ReasonPromptBuilder
+            - llm_client: LLMClient
+            - response_parser: ReasonResponseParser
+            - cache_manager: CacheManager
+            + generate_reason(request: AiReasonRequest): AiReasonResponse
+            - _build_cache_key(recommendation_id: str): str
+            - _build_fallback_reason(request: AiReasonRequest): AiReasonResponse
+        }
+
+        class FallbackEngine {
+            + get_fallback_recommendation(latitude: float, longitude: float, allergen_filter: list): list
+            - _query_popular_restaurants(latitude: float, longitude: float, radius_meters: int): list
+            - _apply_allergen_filter(restaurants: list, allergen_filter: list): list
+            - _sort_by_distance(restaurants: list, latitude: float, longitude: float): list
+        }
+    }
+
+    ' ── PromptBuilder Layer ───────────────────────────────────────
+    package "prompt" {
+
+        class RecommendationPromptBuilder {
+            + build_prompt(request: AiRecommendationRequest): str
+            + build_cold_start_prompt(request: AiRecommendationRequest): str
+            - _convert_taste_vector_to_text(taste_vector: dict): str
+            - _build_context_description(weather: WeatherContext, recent_history: list): str
+            - _add_allergen_hard_filter(allergen_filter: list): str
+            - _add_exclusion_rules(exclude_ids: list): str
+            - _apply_bayesian_prior(job_cluster: str): str
+        }
+
+        class ReasonPromptBuilder {
+            + build_reason_prompt(request: AiReasonRequest): str
+            - _extract_context_elements(request: AiReasonRequest): list
+            - _format_recent_history(history: list): str
+            - _build_reason_template(context_elements: list): str
+        }
+    }
+
+    ' ── LLM Client Layer ──────────────────────────────────────────
+    package "llm" {
+
+        class LLMClient {
+            - primary_model: str
+            - fallback_model: str
+            - circuit_breaker: CircuitBreaker
+            - _failure_count: int
+            - _failure_threshold: int
+            + generate(prompt: str): str
+            + get_circuit_breaker_state(): str
+            - _call_with_retry(prompt: str): str
+            - _exponential_backoff(attempt: int): float
+            - _is_retryable_error(status_code: int): bool
+        }
+
+        class CircuitBreaker {
+            - state: str
+            - failure_count: int
+            - failure_threshold: int
+            - last_failure_time: float
+            - recovery_timeout: float
+            + is_open(): bool
+            + record_success(): void
+            + record_failure(): void
+            + get_state(): str
+            - _transition_to_open(): void
+            - _transition_to_half_open(): void
+            - _transition_to_closed(): void
+        }
+    }
+
+    ' ── ResponseParser Layer ──────────────────────────────────────
+    package "parser" {
+
+        class RecommendationResponseParser {
+            + parse(raw_response: str): list
+            - _validate_schema(data: dict): bool
+            - _extract_restaurants(data: dict): list
+            - _normalize_confidence_score(score: float): int
+            - _attach_cold_start_tag(recommendations: list, is_cold_start: bool): list
+        }
+
+        class ReasonResponseParser {
+            + parse(raw_response: str): ParsedReason
+            - _extract_natural_language_reason(data: dict): str
+            - _parse_confidence_score(data: dict): int
+            - _extract_context_tags(data: dict): list
+            - _validate_reason_format(reason: str): bool
+        }
+    }
+
+    ' ── Cache Manager ─────────────────────────────────────────────
+    package "cache" {
+
+        class CacheManager {
+            - redis_client: Redis
+            - default_ttl: int
+            + get(key: str): Optional[str]
+            + set(key: str, value: str, ttl: int): void
+            + get_stale(key: str): Optional[str]
+            + delete_pattern(pattern: str): void
+            - _calculate_ttl_until_1pm(): int
+            - _serialize(data: dict): str
+            - _deserialize(data: str): dict
+        }
+    }
+
+    ' ── Model (Pydantic) ──────────────────────────────────────────
+    package "model" {
+
+        class AiRecommendationRequest <<pydantic>> {
+            + member_id: str
+            + latitude: float
+            + longitude: float
+            + requested_at: datetime
+            + is_cold_start: bool
+            + feedback_count: int
+            + taste_vector: Optional[dict]
+            + onboarding_swipes: Optional[list]
+            + allergen_filter: list
+            + diet_type: str
+            + weather: Optional[WeatherContext]
+            + recent_meal_history: list
+            + exclude_restaurant_ids: list
+            + job_cluster: Optional[str]
+        }
+
+        class AiRecommendationResponse <<pydantic>> {
+            + recommendations: list
+            + is_fallback: bool
+            + is_cold_start: bool
+            + cold_start_tag: Optional[str]
+            + cache_key: str
+            + cached_until: Optional[datetime]
+            + metadata: AiMetadata
+        }
+
+        class AiReasonRequest <<pydantic>> {
+            + recommendation_id: str
+            + restaurant_id: str
+            + restaurant_name: str
+            + category: str
+            + member_id: str
+            + taste_vector: Optional[dict]
+            + weather: Optional[WeatherContext]
+            + recent_meal_history: Optional[list]
+            + confidence_score: int
+        }
+
+        class AiReasonResponse <<pydantic>> {
+            + recommendation_id: str
+            + natural_language_reason: str
+            + confidence_score: int
+            + context_tags: list
+            + is_reason_ready: bool
+            + fallback_reason: Optional[str]
+            + cached_until: Optional[datetime]
+            + metadata: AiMetadata
+        }
+
+        class WeatherContext <<pydantic>> {
+            + condition: str
+            + temperature_celsius: float
+            + description: str
+        }
+
+        class AiMetadata <<pydantic>> {
+            + source: str
+            + model_used: Optional[str]
+            + latency_ms: int
+            + token_usage: TokenUsage
+            + circuit_breaker_state: str
+        }
+
+        class TokenUsage <<pydantic>> {
+            + prompt_tokens: int
+            + completion_tokens: int
+            + total_tokens: int
+        }
+
+        class ParsedReason <<pydantic>> {
+            + natural_language_reason: str
+            + confidence_score: int
+            + context_tags: list
+        }
+
+        class RecommendedRestaurant <<pydantic>> {
+            + restaurant_id: str
+            + restaurant_name: str
+            + representative_menu: str
+            + category: str
+            + reason_summary: str
+            + confidence_score: int
+            + distance_meters: int
+            + estimated_walk_minutes: int
+        }
+    }
+}
+
+' ── 관계 정의 ─────────────────────────────────────────────────────
+
+' Router -> Service
+RecommendationRouter --> RecommendationService
+ReasonRouter --> ReasonService
+
+' Service 내부 의존
+RecommendationService --> RecommendationPromptBuilder
+RecommendationService --> LLMClient
+RecommendationService --> RecommendationResponseParser
+RecommendationService --> CacheManager
+RecommendationService --> FallbackEngine
+
+ReasonService --> ReasonPromptBuilder
+ReasonService --> LLMClient
+ReasonService --> ReasonResponseParser
+ReasonService --> CacheManager
+
+' LLM Client 내부
+LLMClient --> CircuitBreaker
+
+' Model 사용
+RecommendationService ..> AiRecommendationRequest
+RecommendationService ..> AiRecommendationResponse
+ReasonService ..> AiReasonRequest
+ReasonService ..> AiReasonResponse
+
+' Response 구성
+AiRecommendationResponse "1" *-- "1..*" RecommendedRestaurant
+AiRecommendationResponse "1" *-- "1" AiMetadata
+AiReasonResponse "1" *-- "1" AiMetadata
+AiMetadata "1" *-- "1" TokenUsage
+AiRecommendationRequest "1" *-- "0..1" WeatherContext
+AiReasonRequest "1" *-- "0..1" WeatherContext
+
+@enduml

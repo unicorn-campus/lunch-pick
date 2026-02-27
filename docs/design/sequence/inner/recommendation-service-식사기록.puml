@@ -1,0 +1,109 @@
+@startuml recommendation-service-식사기록
+!theme mono
+
+title 추천·이력 서비스 - 식사 기록 (UFR-REC-070)
+
+participant "MealController" as Controller
+participant "MealService" as MealService
+participant "IdempotencyChecker" as IdempotencyChecker
+participant "MealRepository" as MealRepo
+participant "CacheService" as CacheService
+database "추천·이력 DB" as RecDB
+database "Redis Cache(E)" as Redis
+
+Controller -> MealService: recordMeal(memberId, recommendationId, restaurantId, mealTime)
+activate MealService
+
+== 식사 시간대 유효성 검증 ==
+
+MealService -> MealService: 식사 시간대 합리성 확인\n(10:30 ~ 15:00 범위 내 여부)
+
+alt 식사 시간대 외
+    MealService --> Controller: ValidationException\n{code: INVALID_MEAL_TIME}
+
+else 식사 시간대 정상
+
+    == 중복 기록 방지 (멱등성 체크) ==
+
+    MealService -> IdempotencyChecker: checkDuplicate(memberId, date)
+    activate IdempotencyChecker
+    IdempotencyChecker -> MealRepo: 오늘 식사 기록 존재 여부 조회
+    activate MealRepo
+    MealRepo -> RecDB: SELECT COUNT 식사 기록\nWHERE memberId AND date = 오늘
+    RecDB --> MealRepo: 기록 수 반환
+    MealRepo --> IdempotencyChecker: 조회 결과
+    deactivate MealRepo
+
+    alt 이미 기록 존재
+        IdempotencyChecker --> MealService: 중복 감지
+        deactivate IdempotencyChecker
+        MealService --> Controller: ConflictException\n{code: DUPLICATE_MEAL, message: "이미 기록되었어요. 수정하시겠어요?"}
+
+    else 신규 기록 가능
+        IdempotencyChecker --> MealService: 중복 없음
+        deactivate IdempotencyChecker
+
+        == 식사 기록 저장 ==
+
+        MealService -> MealRepo: 식사 기록 저장
+        activate MealRepo
+        MealRepo -> RecDB: INSERT 식사 기록\n{mealId, memberId, restaurantId, recommendationId, mealTime, 기록 시각}
+        RecDB --> MealRepo: 생성된 mealId 반환
+        MealRepo --> MealService: mealId 반환
+        deactivate MealRepo
+
+        == 추천 캐시 무효화 ==
+
+        MealService -> CacheService: invalidateRecommendationCache(memberId)
+        activate CacheService
+        CacheService -> Redis: 캐시 삭제\n(rec:{memberId}:* 패턴)
+        activate Redis
+        Redis --> CacheService: 삭제 완료
+        deactivate Redis
+        CacheService --> MealService: 무효화 완료
+        deactivate CacheService
+
+        MealService --> Controller: MealRecordResult\n{mealId, message: "오늘 점심 기록 완료!"}
+    end
+end
+
+deactivate MealService
+
+== 식사 기록 취소 (UFR-REC-080, 30초 이내) ==
+
+Controller -> MealService: cancelMeal(memberId, mealId)
+activate MealService
+
+MealService -> MealRepo: 식사 기록 조회
+activate MealRepo
+MealRepo -> RecDB: SELECT 식사 기록 WHERE mealId AND memberId
+RecDB --> MealRepo: 식사 기록 반환
+MealRepo --> MealService: 기록 시각 포함 식사 기록 반환
+deactivate MealRepo
+
+MealService -> MealService: 30초 경과 여부 확인\n(현재 시각 - 기록 시각)
+
+alt 30초 이내
+    MealService -> MealRepo: 식사 기록 삭제
+    activate MealRepo
+    MealRepo -> RecDB: DELETE 식사 기록 WHERE mealId
+    RecDB --> MealRepo: 삭제 완료
+    MealRepo --> MealService: 완료
+    deactivate MealRepo
+
+    MealService -> CacheService: restoreRecommendationCache(memberId)
+    activate CacheService
+    CacheService -> Redis: 캐시 무효화 취소 불가\n(새 추천 요청 시 재생성)
+    Redis --> CacheService: 처리 완료
+    CacheService --> MealService: 완료
+    deactivate CacheService
+
+    MealService --> Controller: CancelResult\n{cancelled: true}
+
+else 30초 초과
+    MealService --> Controller: ConflictException\n{code: CANCEL_TIMEOUT, message: "이력 화면에서 수정할 수 있어요"}
+end
+
+deactivate MealService
+
+@enduml

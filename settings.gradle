@@ -1,0 +1,6 @@
+rootProject.name = 'lunchpick'
+
+include 'common'
+include 'member-service'
+include 'recommendation-service'
+include 'payment-service'

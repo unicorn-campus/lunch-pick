@@ -1,0 +1,135 @@
+@startuml recommendation-service-erd
+!theme mono
+title recommendation-service - Entity Relationship Diagram
+
+!define TABLE(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define PK(x) <b>x</b>
+!define FK(x) <i>x</i>
+!define UNIQUE(x) <u>x</u>
+
+TABLE(recommendation, "RECOMMENDATION\n(추천 결과)") {
+    PK(id: BIGSERIAL)
+    UNIQUE(recommendation_id: VARCHAR(36))
+    FK(member_id: VARCHAR(36))
+    restaurant_id: VARCHAR(36) NOT NULL
+    restaurant_name: VARCHAR(200) NOT NULL
+    representative_menu: VARCHAR(200) NOT NULL
+    reason_summary: VARCHAR(500)
+    confidence_score: INTEGER NOT NULL
+    distance_meters: INTEGER NOT NULL
+    estimated_walk_minutes: INTEGER NOT NULL
+    category: VARCHAR(50) NOT NULL
+    is_fallback: BOOLEAN NOT NULL
+    status: VARCHAR(20) NOT NULL
+    reaction_time_ms: INTEGER
+    reject_reason: VARCHAR(30)
+    --
+    created_at: TIMESTAMP NOT NULL
+    updated_at: TIMESTAMP NOT NULL
+}
+
+TABLE(meal_record, "MEAL_RECORD\n(식사 기록)") {
+    PK(id: BIGSERIAL)
+    UNIQUE(meal_id: VARCHAR(36))
+    FK(member_id: VARCHAR(36))
+    FK(recommendation_id: VARCHAR(36))
+    restaurant_id: VARCHAR(36) NOT NULL
+    restaurant_name: VARCHAR(200) NOT NULL
+    menu_name: VARCHAR(200) NOT NULL
+    category: VARCHAR(50) NOT NULL
+    recorded_at: TIMESTAMP NOT NULL
+    --
+    created_at: TIMESTAMP NOT NULL
+    updated_at: TIMESTAMP NOT NULL
+}
+
+TABLE(feedback, "FEEDBACK\n(피드백)") {
+    PK(id: BIGSERIAL)
+    UNIQUE(feedback_id: VARCHAR(36))
+    FK(member_id: VARCHAR(36))
+    UNIQUE(meal_id: VARCHAR(36))
+    satisfaction: VARCHAR(10) NOT NULL
+    keyword: VARCHAR(20)
+    skipped: BOOLEAN NOT NULL
+    --
+    created_at: TIMESTAMP NOT NULL
+    updated_at: TIMESTAMP NOT NULL
+}
+
+TABLE(preference_vector, "PREFERENCE_VECTOR\n(취향 벡터 스냅샷)") {
+    PK(id: BIGSERIAL)
+    FK(member_id: VARCHAR(36))
+    vector_json: JSONB NOT NULL
+    feedback_count: INTEGER NOT NULL
+    is_cold_start: BOOLEAN NOT NULL
+    --
+    calculated_at: TIMESTAMP NOT NULL
+}
+
+TABLE(learning_message, "LEARNING_MESSAGE\n(학습 메시지)") {
+    PK(id: BIGSERIAL)
+    FK(member_id: VARCHAR(36))
+    message: VARCHAR(500) NOT NULL
+    --
+    generated_at: TIMESTAMP NOT NULL
+}
+
+recommendation ||--o| meal_record : "accepted as meal\n(recommendation_id)"
+meal_record ||--o| feedback : "has feedback\n(meal_id)"
+meal_record }o--|| preference_vector : "used for learning\n(member_id)"
+
+note top of recommendation
+  <b>Indexes:</b>
+  UNIQUE: recommendation_id
+  INDEX: member_id, created_at DESC
+  <b>CHECK:</b>
+  status IN ('PENDING','ACCEPTED','REJECTED')
+  confidence_score BETWEEN 0 AND 100
+end note
+
+note top of meal_record
+  <b>Indexes:</b>
+  UNIQUE: meal_id
+  INDEX: member_id, recorded_at DESC
+  INDEX: member_id, DATE(recorded_at)
+end note
+
+note top of feedback
+  <b>Indexes:</b>
+  UNIQUE: feedback_id
+  UNIQUE: meal_id
+  INDEX: member_id, created_at DESC
+  <b>CHECK:</b>
+  satisfaction IN ('GOOD','BAD','NEUTRAL')
+  keyword IN ('TASTE','PORTION','SPEED',NULL)
+end note
+
+note top of preference_vector
+  <b>Indexes:</b>
+  INDEX: member_id, calculated_at DESC
+  <b>Note:</b>
+  vector_json: JSONB (카테고리별 가중치)
+  학습 이력 추적용 스냅샷
+end note
+
+note top of learning_message
+  <b>Indexes:</b>
+  INDEX: member_id, generated_at DESC
+end note
+
+legend right
+  <b>Database:</b> lunchpick_recommendation (PostgreSQL 15)
+  <b>Schema:</b> lunchpick_recommendation
+  --
+  <b>Legend:</b>
+  PK = Primary Key (BIGSERIAL)
+  UNIQUE = Unique Constraint
+  FK = Logical Foreign Key (no constraint)
+  --
+  <b>Data Independence:</b>
+  No cross-service FK constraints.
+  member_id is UUID string reference only.
+  recommendation_id / meal_id are logical refs.
+end legend
+
+@enduml

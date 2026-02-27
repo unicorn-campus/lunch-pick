@@ -1,0 +1,99 @@
+graph TB
+    %% 런치픽(LunchPick) 논리 아키텍처 - Context Map 스타일
+    %% 작성자: 홍길동(아키) / 소프트웨어 아키텍트 + 한승우(마법사) / AI 엔지니어
+    %% 작성일: 2026-02-26
+
+    %% ── Client Layer ──────────────────────────────────────────
+    subgraph ClientLayer["Client Layer"]
+        Client["클라이언트\nReact Web / 모바일 앱"]
+    end
+
+    %% ── Gateway Layer ─────────────────────────────────────────
+    subgraph GatewayLayer["Gateway Layer"]
+        Gateway["API Gateway\n• JWT 검증 / TLS 종료\n• 라우팅\n• Rate Limiting\n• 로깅"]
+    end
+
+    %% ── Service Layer ─────────────────────────────────────────
+    subgraph ServiceLayer["Service Layer"]
+        MemberSvc["회원 서비스\nmember-service\n• 카카오 소셜 로그인\n• 취향 프로파일 관리\n• 알레르기 필터\n• 구독 상태 관리"]
+
+        RecSvc["추천·이력 서비스\nrecommendation-service\n• 오늘의 추천 3개 조회\n• 식사 원탭 기록\n• 피드백 저장\n• 취향 학습 배치(03:00)"]
+
+        PaySvc["결제 서비스\npayment-service\n• 구독 플랜 조회\n• PG 결제 처리\n• 구독 해지"]
+
+        AIPipeline["AI Pipeline 서비스\nai-pipeline-service\nPython / FastAPI\n• LLM API 호출\n• 프롬프트 관리\n• 추천 이유 생성(A8)\n• 확신 스코어 계산\n• 폴백: 규칙 기반 추천"]
+    end
+
+    %% ── Data Layer ────────────────────────────────────────────
+    subgraph DataLayer["Data Layer"]
+        Redis["Redis Cache\n• 추천 결과 (TTL: 당일 13:00)\n• 세션 / JWT 블랙리스트\n• 구독 플랜 (TTL: 1h)"]
+
+        MemberDB["PostgreSQL\n회원 DB\n• 회원 정보\n• 취향 벡터\n• 알레르기/식이제한"]
+
+        RecDB["PostgreSQL\n추천·이력 DB\n• 추천 이력\n• 식사 기록\n• 피드백"]
+
+        PayDB["PostgreSQL\n결제 DB\n• 구독 플랜\n• 결제 이력"]
+
+        MsgQueue["메시지 큐\nRedis Streams\n• 구독 상태 갱신 이벤트"]
+    end
+
+    %% ── External Systems ──────────────────────────────────────
+    subgraph ExternalLayer["External Systems"]
+        KakaoAuth["카카오 로그인 API"]
+        LLMAPI["LLM API\nClaude / GPT\ninit_chat_model 추상화"]
+        MapAPI["지도 API\n도보 경로 / 식당 정보"]
+        WeatherAPI["날씨 API"]
+        PG["결제 게이트웨이\nPG"]
+    end
+
+    %% ── 연결선 ────────────────────────────────────────────────
+
+    %% 클라이언트 → Gateway (단일 연결)
+    Client -->|"HTTPS / TLS 1.3"| Gateway
+
+    %% Gateway → 서비스 (동기 라우팅)
+    Gateway -->|"인증 / 프로필"| MemberSvc
+    Gateway -->|"추천 조회 / 식사 기록"| RecSvc
+    Gateway -->|"구독 / 결제"| PaySvc
+
+    %% 서비스 간 동기 통신
+    RecSvc -->|"취향 조회"| MemberSvc
+    RecSvc -->|"추천 요청"| AIPipeline
+
+    %% 비동기: 결제 → 메시지 큐 → 회원 (구독 상태 갱신)
+    PaySvc -.->|"구독 상태 갱신 이벤트 발행"| MsgQueue
+    MsgQueue -.->|"구독 상태 갱신 소비"| MemberSvc
+
+    %% Cache-Aside: 추천·이력 서비스 ↔ Redis
+    RecSvc -.->|"캐시 조회 / 저장 / 무효화"| Redis
+
+    %% 서비스 → DB (각 서비스 전용)
+    MemberSvc --- MemberDB
+    RecSvc --- RecDB
+    PaySvc --- PayDB
+
+    %% 외부 시스템 연결
+    MemberSvc -->|"카카오 인증 위임\n[Circuit Breaker + Retry]"| KakaoAuth
+    AIPipeline -->|"LLM 추론 요청\n[Circuit Breaker + Retry + Rate Limiting]"| LLMAPI
+    RecSvc -->|"도보 경로 조회\n[Circuit Breaker]"| MapAPI
+    RecSvc -->|"날씨 조회\n[Circuit Breaker + Retry]"| WeatherAPI
+    PaySvc -->|"결제 처리\n[Circuit Breaker, Retry 미적용]"| PG
+
+    %% ── 스타일 ────────────────────────────────────────────────
+    classDef client fill:#BFDBFE,stroke:#3B82F6,stroke-width:2px
+    classDef gateway fill:#1E3A8A,stroke:#1E3A8A,stroke-width:2px,color:#fff
+    classDef service fill:#F0F9FF,stroke:#0284C7,stroke-width:2px
+    classDef aiService fill:#DCFCE7,stroke:#16A34A,stroke-width:2px
+    classDef cache fill:#FEF3C7,stroke:#F59E0B,stroke-width:2px
+    classDef db fill:#F3F4F6,stroke:#6B7280,stroke-width:1px
+    classDef queue fill:#FCE7F3,stroke:#EC4899,stroke-width:2px
+    classDef external fill:#F9FAFB,stroke:#9CA3AF,stroke-width:1px,stroke-dasharray:4
+
+    class Client client
+    class Gateway gateway
+    class MemberSvc,RecSvc,PaySvc service
+    class AIPipeline aiService
+    class Redis cache
+    class MemberDB,RecDB,PayDB db
+    class MsgQueue queue
+    class KakaoAuth,LLMAPI,MapAPI,WeatherAPI,PG external

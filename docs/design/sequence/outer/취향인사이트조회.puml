@@ -1,0 +1,98 @@
+@startuml 취향인사이트조회
+!theme mono
+
+title 취향 인사이트 조회
+
+actor "사용자" as User
+participant "프론트엔드" as Frontend
+participant "API Gateway" as Gateway
+participant "추천·이력 서비스" as RecService
+database "Redis" as Redis
+database "추천·이력 DB" as RecDB
+
+== 식사 이력 타임라인 조회 (UFR-REC-110) ==
+
+User -> Frontend: 이력 화면 진입
+Frontend -> Gateway: GET /api/v1/meals/history\n{기간: 최근 30일}\nAuthorization: Bearer {JWT}
+activate Gateway
+Gateway -> Gateway: JWT 검증
+Gateway -> RecService: 식사 이력 조회 요청
+activate RecService
+
+RecService -> RecService: 구독 상태 확인\n(무료: 30일 제한 / 프리미엄: 무제한)
+RecService -> RecDB: 식사 이력 조회\n(회원 ID + 날짜 범위 + 카테고리 태그)
+RecDB --> RecService: 식사 이력 반환
+
+alt 이력 데이터 존재
+    RecService --> Gateway: 200 OK\n{일별 식사 기록 목록, 카테고리 색상 태그}
+    Gateway --> Frontend: 이력 데이터 반환
+    deactivate RecService
+    deactivate Gateway
+    Frontend -> User: 달력 뷰 표시\n(일별 식사 기록 + 카테고리 색상 태그)
+
+else 이력 없음
+    RecService --> Gateway: 200 OK\n{빈 목록, "아직 기록이 없어요. 첫 식사를 기록해보세요!" 안내}
+    Gateway --> Frontend: 빈 이력 응답
+    deactivate RecService
+    deactivate Gateway
+    Frontend -> User: "아직 기록이 없어요.\n첫 식사를 기록해보세요!" 안내
+end
+
+User -> Frontend: 특정 날짜 탭 (상세 조회)
+Frontend -> Gateway: GET /api/v1/meals/history/{date}\nAuthorization: Bearer {JWT}
+activate Gateway
+Gateway -> RecService: 특정 날짜 식사 상세 조회
+activate RecService
+RecService -> RecDB: 해당 날짜 식사 기록 상세 조회
+RecDB --> RecService: 식사 상세 정보 반환
+RecService --> Gateway: 200 OK\n{식당명, 메뉴, 피드백, 추천 이유}
+deactivate RecService
+Gateway --> Frontend: 상세 정보 반환
+deactivate Gateway
+Frontend -> User: 식사 상세 정보 표시
+
+== 무료 사용자 30일 초과 접근 시 ==
+
+alt 무료 사용자이고 30일 초과 이력 요청
+    RecService --> Gateway: 403 Forbidden\n{"프리미엄에서 전체 이력을 확인하세요" 안내}
+    Gateway --> Frontend: 접근 제한 응답
+    Frontend -> User: "프리미엄에서 전체 이력을 확인하세요" 안내\n+ 구독 전환 유도
+end
+
+== 취향 인사이트 리포트 조회 (UFR-REC-120) ==
+
+User -> Frontend: 인사이트 화면 진입
+Frontend -> Gateway: GET /api/v1/insights/taste-report\nAuthorization: Bearer {JWT}
+activate Gateway
+Gateway -> RecService: 취향 인사이트 조회 요청
+activate RecService
+
+RecService -> Redis: 인사이트 캐시 조회\n(insight:{user_id})
+Redis --> RecService: 캐시 확인
+
+alt 기록 10건 이상 (의미 있는 인사이트 제공)
+    RecService -> RecDB: 취향 인사이트 집계\n(선호 카테고리 Top 5, 주간 패턴, 만족도 변화)
+    RecDB --> RecService: 집계 데이터 반환
+    RecService -> RecService: 주간 요약 문장 생성\n("이번 주 당신의 점심 패턴")
+    RecService -> RecService: 30끼 마일스톤 달성 확인
+    RecService --> Gateway: 200 OK\n{카테고리 분포, 주간 패턴, 만족도 추이, 주간 요약}
+    Gateway --> Frontend: 인사이트 데이터 반환
+    deactivate RecService
+    deactivate Gateway
+    Frontend -> User: 인사이트 대시보드 표시\n(카테고리 분포 + 패턴 + 만족도 추이)
+
+else 기록 10건 미만
+    RecService --> Gateway: 200 OK\n{"10끼 이상 기록하면 취향 인사이트가 열려요!" 안내, 현재 기록 수}
+    Gateway --> Frontend: 데이터 부족 응답
+    deactivate RecService
+    deactivate Gateway
+    Frontend -> User: "10끼 이상 기록하면 취향 인사이트가 열려요!" 안내\n+ 현재 기록 수 표시
+end
+
+== 30끼 마일스톤 달성 알림 ==
+
+alt 30끼 달성 시
+    Frontend -> User: 30끼 달성 축하 메시지 표시\n+ 정확도 향상률 표시
+end
+
+@enduml

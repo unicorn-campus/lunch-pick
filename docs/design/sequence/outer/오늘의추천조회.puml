@@ -1,0 +1,111 @@
+@startuml 오늘의추천조회
+!theme mono
+
+title 오늘의 추천 조회
+
+actor "사용자" as User
+participant "프론트엔드" as Frontend
+participant "API Gateway" as Gateway
+participant "추천·이력 서비스" as RecService
+participant "회원 서비스" as MemberService
+participant "AI Pipeline" as AIPipeline
+participant "날씨 API(E)" as WeatherAPI
+database "Redis" as Redis
+database "추천·이력 DB" as RecDB
+database "회원 DB" as MemberDB
+
+== 오늘의 추천 3개 조회 (UFR-REC-010) ==
+
+User -> Frontend: 앱 메인 화면 진입
+Frontend -> Frontend: 현재 위치 GPS 자동 인식
+
+alt 위치 인식 성공
+    Frontend -> Gateway: GET /api/v1/recommendations/today\n{위치(위도/경도), 현재 시간}\nAuthorization: Bearer {JWT}
+    activate Gateway
+    Gateway -> Gateway: JWT 검증
+    Gateway -> RecService: 오늘의 추천 조회 요청
+    activate RecService
+
+    RecService -> Redis: 추천 캐시 조회\n(rec:{user_id}:{location_grid}:{weather_code}:{weekday})
+    activate Redis
+
+    alt 캐시 히트 (< 200ms)
+        Redis --> RecService: 캐시된 추천 결과 반환
+        deactivate Redis
+        RecService --> Gateway: 200 OK\n{추천 3개 카드, 캐시 응답 표시}
+        Gateway --> Frontend: 추천 결과 반환
+        Frontend -> User: 추천 카드 3개 즉시 표시
+
+    else 캐시 미스
+        Redis --> RecService: 캐시 없음
+        deactivate Redis
+
+        RecService -> MemberService: GET /internal/members/{user_id}/taste-profile\n취향 벡터 + 알레르기 필터 조회
+        activate MemberService
+        MemberService -> MemberDB: 취향 벡터 + 알레르기 필터 조회
+        MemberDB --> MemberService: 취향 프로파일 반환
+        MemberService --> RecService: 취향 벡터 + 알레르기 필터 반환
+        deactivate MemberService
+
+        RecService -> WeatherAPI: GET /current-weather\n{위도, 경도}
+        activate WeatherAPI
+        WeatherAPI --> RecService: 현재 날씨 정보 반환
+        deactivate WeatherAPI
+
+        RecService -> RecDB: 최근 7일 식사 이력 조회\n(반복 방지, 최근 3일 내 동일 식당 제외)
+        RecDB --> RecService: 식사 이력 반환
+
+        RecService -> AIPipeline: POST /internal/ai/recommend\n{취향 벡터, 위치, 날씨, 요일, 식사 이력, 알레르기 필터}
+        activate AIPipeline
+
+        alt LLM 정상 응답 (< 3초)
+            AIPipeline -->> AIPipeline: LLM API 호출 + 추천 생성
+            AIPipeline --> RecService: 추천 3개\n{식당명, 대표 메뉴, 추천 이유, 확신 스코어, 거리, 예상 소요시간}
+            deactivate AIPipeline
+            RecService -> Redis: 추천 결과 캐싱\n(TTL: 당일 13:00)
+            RecService --> Gateway: 200 OK\n{추천 3개 카드}
+            Gateway --> Frontend: 추천 결과 반환
+            Frontend -> User: 추천 카드 3개 표시\n(식당명, 대표 메뉴, 추천 이유 한 줄, 확신 스코어, 거리)
+
+        else LLM Circuit Breaker Open (폴백)
+            AIPipeline --> RecService: 폴백 추천\n(규칙 기반: 반경 500m 인기 메뉴 + 알레르기 필터)
+            RecService -> Redis: 폴백 추천 캐싱
+            RecService --> Gateway: 200 OK\n{추천 3개, "최신 추천을 불러오고 있어요" 안내}
+            Gateway --> Frontend: 폴백 추천 반환
+            Frontend -> User: 캐시/폴백 추천 표시\n+ "최신 추천을 불러오고 있어요" 안내
+        end
+
+    end
+
+    deactivate RecService
+    deactivate Gateway
+
+else 위치 미확인
+    Frontend -> User: "위치를 설정해주세요" 안내\n+ 수동 입력 경로 제공
+end
+
+== 추천 이유 상세 확인 (UFR-REC-020) ==
+
+User -> Frontend: 추천 카드 "왜?" 버튼 탭
+Frontend -> Gateway: GET /api/v1/recommendations/{recommendation_id}/reason\nAuthorization: Bearer {JWT}
+activate Gateway
+Gateway -> RecService: 추천 이유 상세 조회
+activate RecService
+RecService -> Redis: 추천 이유 캐시 조회
+
+alt 추천 이유 조회 성공
+    Redis --> RecService: 추천 이유 데이터 반환
+    RecService --> Gateway: 200 OK\n{자연어 이유, 확신 스코어, 컨텍스트 태그(날씨/이력/취향)}
+    Gateway --> Frontend: 추천 이유 상세 반환
+    Frontend -> User: 추천 근거 상세 표시\n(자연어 이유 + 확신 스코어 + 컨텍스트 태그)
+
+else 설명 생성 실패
+    RecService --> Gateway: 200 OK\n{기본 추천 이유(거리/평점), "추천 이유를 준비 중이에요" 안내}
+    Gateway --> Frontend: 기본 이유 반환
+    Frontend -> User: "추천 이유를 준비 중이에요"\n+ 기본 추천 이유(거리/평점) 표시
+end
+
+deactivate RecService
+deactivate Gateway
+
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+!theme mono
+title 01. 회원가입 및 온보딩
+
+actor "사용자" as user
+participant "회원업무" as member
+participant "추천업무" as recommend
+participant "(E)카카오 로그인" as kakao
+
+== 회원가입 ==
+
+user -> member : [커맨드] 소셜 로그인 요청\n[데이터] (카카오 인증 토큰)
+member -> kakao : [커맨드] 사용자 인증 요청\n[데이터] (인증 토큰)
+kakao --> member : [이벤트] 카카오 인증 완료됨\n[데이터] (카카오 ID, 이메일)
+
+alt 신규 사용자
+  member -> member : [정책/규칙] 이메일 중복 확인
+  member --> user : [이벤트] 회원가입 완료됨\n[데이터] (회원 ID, 접근 토큰)
+  note right : 에러 처리: 가입 실패 시\n"다시 시도해주세요" 안내 메시지
+else 기존 사용자
+  member --> user : [이벤트] 로그인 완료됨\n[데이터] (회원 ID, 접근 토큰)
+end
+
+== 취향 온보딩 퀴즈 (3분) ==
+
+user -> member : [커맨드] 온보딩 시작 요청
+member --> user : [이벤트] 취향 퀴즈 카드 제시됨\n[데이터] (음식 카드 10장)
+note right : 안내 메시지: "3분이면 끝나요!\n좋아하는 음식을 골라주세요"
+
+loop 10회 스와이프
+  user -> member : [커맨드] 음식 카드 스와이프\n[데이터] (카드 ID, 좋아요/싫어요)
+  member --> user : [이벤트] 스와이프 반응 기록됨
+end
+
+member -> member : [정책/규칙] 최소 7장 이상 스와이프 완료 확인
+member -> recommend : [커맨드] 초기 취향 프로파일 생성 요청\n[데이터] (스와이프 결과 10건)
+recommend --> member : [이벤트] 초기 취향 프로파일 생성됨\n[데이터] (취향 벡터, 선호 카테고리)
+member --> user : [이벤트] 온보딩 완료됨\n[데이터] (취향 요약 카드)
+note right : 피드백: "당신의 취향 프로파일이\n완성되었어요! 첫 추천을 받아보세요"
+
+== 위치 정보 동의 ==
+
+user -> member : [커맨드] 위치 정보 이용 동의\n[데이터] (동의 여부)
+member -> member : [정책/규칙] 위치정보법 동의 절차 수행\n- 수집 목적 고지\n- 보유 기간 고지\n- 철회 방법 안내
+member --> user : [이벤트] 위치 정보 동의 완료됨
+
+== 알레르기/식이제한 설정 (선택) ==
+
+user -> member : [커맨드] 식이제한 설정\n[데이터] (알레르기 목록, 식이 유형)
+member -> member : [정책/규칙] 민감 정보 별도 동의 확인\n(건강 관련 민감 정보)
+member -> recommend : [커맨드] 하드 필터 등록\n[데이터] (제외 식재료 목록)
+recommend --> member : [이벤트] 식이제한 필터 등록됨
+member --> user : [이벤트] 식이제한 설정 완료됨\n[데이터] (등록된 제한 요약)
+
+@enduml

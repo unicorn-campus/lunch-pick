@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>런치픽 - 식이제한 설정</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .dietary-page {
+      min-height: 100vh;
+      padding: var(--space-l) var(--space-m);
+      background: var(--color-surface);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .dietary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-l);
+    }
+    .dietary-section {
+      margin-bottom: var(--space-xl);
+    }
+    .dietary-section__title {
+      font-size: var(--font-size-h3);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-s);
+    }
+    .dietary-section__desc {
+      font-size: var(--font-size-body2);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-m);
+    }
+    .dietary-consent {
+      background: #FFF5F0;
+      border-radius: var(--radius-m);
+      padding: var(--space-m);
+      margin-bottom: var(--space-l);
+      font-size: var(--font-size-body2);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-s);
+    }
+    .dietary-consent input {
+      margin-top: 2px;
+      accent-color: var(--color-primary);
+      width: 20px;
+      height: 20px;
+    }
+    .allergen-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-s);
+    }
+    .allergen-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-s);
+      padding: var(--space-m);
+      border: 1px solid #E5E7EB;
+      border-radius: var(--radius-s);
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--easing-standard);
+      min-height: 44px;
+    }
+    .allergen-item:hover {
+      border-color: var(--color-primary);
+    }
+    .allergen-item.selected {
+      background: #FFF5F0;
+      border-color: var(--color-primary);
+    }
+    .allergen-item input {
+      accent-color: var(--color-primary);
+      width: 20px;
+      height: 20px;
+    }
+    .diet-type-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+    }
+    .diet-type-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-s);
+      padding: var(--space-m);
+      border: 1px solid #E5E7EB;
+      border-radius: var(--radius-s);
+      cursor: pointer;
+      min-height: 44px;
+      transition: all var(--duration-fast) var(--easing-standard);
+    }
+    .diet-type-item:hover {
+      border-color: var(--color-primary);
+    }
+    .diet-type-item.selected {
+      background: #FFF5F0;
+      border-color: var(--color-primary);
+    }
+    .diet-type-item input {
+      accent-color: var(--color-primary);
+      width: 20px;
+      height: 20px;
+    }
+    .dietary-actions {
+      margin-top: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+    }
+  </style>
+</head>
+<body>
+  <main role="main" class="dietary-page">
+    <div class="dietary-header">
+      <h1>식이제한 설정</h1>
+      <button class="btn-text" onclick="navigateTo('05-홈.html')">나중에 하기</button>
+    </div>
+
+    <div class="dietary-consent">
+      <input type="checkbox" id="healthConsent" aria-label="건강 관련 정보 수집 동의">
+      <label for="healthConsent">
+        <strong>건강 관련 정보 수집 동의</strong><br>
+        <span class="caption">알레르기 정보는 안전한 추천을 위해서만 사용돼요</span>
+      </label>
+    </div>
+
+    <form id="dietaryForm">
+      <section class="dietary-section">
+        <h2 class="dietary-section__title">알레르기 항목</h2>
+        <p class="dietary-section__desc">해당하는 알레르기를 모두 선택해주세요</p>
+        <div class="allergen-grid" id="allergenGrid" role="group" aria-label="알레르기 항목 선택">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <section class="dietary-section">
+        <h2 class="dietary-section__title">식이 유형</h2>
+        <p class="dietary-section__desc">해당하는 식이 유형을 선택해주세요</p>
+        <div class="diet-type-list" id="dietTypeList" role="radiogroup" aria-label="식이 유형 선택">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+    </form>
+
+    <div class="dietary-actions">
+      <button class="btn btn-primary btn-full" onclick="saveDietary()">설정 완료</button>
+    </div>
+  </main>
+
+  <script src="common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var grid = document.getElementById('allergenGrid');
+      SAMPLE_DATA.allergens.forEach(function(allergen) {
+        var item = document.createElement('label');
+        item.className = 'allergen-item';
+        item.innerHTML = '<input type="checkbox" name="allergen" value="' + allergen + '" aria-label="' + allergen + '"> ' + allergen;
+        item.addEventListener('click', function() {
+          setTimeout(function() { item.classList.toggle('selected', item.querySelector('input').checked); }, 0);
+        });
+        grid.appendChild(item);
+      });
+
+      var list = document.getElementById('dietTypeList');
+      SAMPLE_DATA.dietTypes.forEach(function(type) {
+        var item = document.createElement('label');
+        item.className = 'diet-type-item';
+        item.innerHTML = '<input type="radio" name="dietType" value="' + type + '" aria-label="' + type + '"> ' + type;
+        item.addEventListener('click', function() {
+          setTimeout(function() {
+            document.querySelectorAll('.diet-type-item').forEach(function(el) { el.classList.remove('selected'); });
+            item.classList.add('selected');
+          }, 0);
+        });
+        list.appendChild(item);
+      });
+    });
+
+    function saveDietary() {
+      showToast('식이제한 설정이 완료되었어요!');
+      setTimeout(function() {
+        navigateTo('05-홈.html');
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

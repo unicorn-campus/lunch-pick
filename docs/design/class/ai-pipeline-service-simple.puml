@@ -1,0 +1,88 @@
+@startuml ai-pipeline-service-simple
+!theme mono
+
+title AI Pipeline 서비스(ai-pipeline-service) - 클래스 다이어그램 (요약)
+' 설계자: 한승우 (마법사) / AI 엔지니어
+' 아키텍처 검토: 홍길동 (아키)
+
+package "ai_pipeline_service" {
+
+    package "router" {
+        class RecommendationRouter <<fastapi_router>>
+        class ReasonRouter <<fastapi_router>>
+    }
+
+    package "service" {
+        class RecommendationService
+        class ReasonService
+        class FallbackEngine
+    }
+
+    package "prompt" {
+        class RecommendationPromptBuilder
+        class ReasonPromptBuilder
+    }
+
+    package "llm" {
+        class LLMClient
+        class CircuitBreaker
+    }
+
+    package "parser" {
+        class RecommendationResponseParser
+        class ReasonResponseParser
+    }
+
+    package "cache" {
+        class CacheManager
+    }
+
+    package "model" {
+        class AiRecommendationRequest <<pydantic>>
+        class AiRecommendationResponse <<pydantic>>
+        class AiReasonRequest <<pydantic>>
+        class AiReasonResponse <<pydantic>>
+        class WeatherContext <<pydantic>>
+        class AiMetadata <<pydantic>>
+        class TokenUsage <<pydantic>>
+        class RecommendedRestaurant <<pydantic>>
+    }
+}
+
+' Router -> Service
+RecommendationRouter --> RecommendationService
+ReasonRouter --> ReasonService
+
+' Service 의존
+RecommendationService --> RecommendationPromptBuilder
+RecommendationService --> LLMClient
+RecommendationService --> RecommendationResponseParser
+RecommendationService --> CacheManager
+RecommendationService --> FallbackEngine
+
+ReasonService --> ReasonPromptBuilder
+ReasonService --> LLMClient
+ReasonService --> ReasonResponseParser
+ReasonService --> CacheManager
+
+LLMClient --> CircuitBreaker
+
+note as N1
+  **Router API 매핑표**
+  ──────────────────────────────────────────────────────────
+  **RecommendationRouter**
+  POST   /api/v1/ai/recommendations         AI 추천 생성 요청 (내부 API)
+
+  **ReasonRouter**
+  POST   /api/v1/ai/recommendation-reason   추천 이유 생성 (내부 API)
+
+  ──────────────────────────────────────────────────────────
+  **핵심 패턴**
+  - Circuit Breaker: LLM 연속 5회 실패 시 Open → 폴백 즉시 반환
+  - Cache-Aside: Redis 캐시 히트 시 LLM 호출 없이 즉시 반환 (TTL: 당일 13:00)
+  - Retry: 지수 백오프 (500ms→1초→2초) 최대 3회
+  - Rate Limiting: 글로벌 분당 500회, 사용자별 분당 10회
+  - Cold Start: 피드백 5건 미만 시 Bayesian Prior + 온보딩 스와이프 활용
+end note
+
+@enduml

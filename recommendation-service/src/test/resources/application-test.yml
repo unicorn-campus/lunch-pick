@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: recommendation-service-test
+
+  # 인메모리 H2 데이터베이스 (테스트 전용)
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        default_schema: lunchpick_recommendation
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  # Redis 비활성화 (WireMock 테스트에서는 Redis 불필요)
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+# AI Pipeline URL — WireMock 서버 포트로 동적 주입
+internal:
+  ai-pipeline-service:
+    url: http://localhost:${wiremock.server.port:8084}
+  member-service:
+    url: http://localhost:${wiremock.server.port:8081}
+
+# JWT (테스트용 더미 시크릿)
+jwt:
+  secret: test-secret-key-for-unit-test-only-not-production
+  access-token-validity: 1800
+  refresh-token-validity: 86400
+
+# Resilience4j — 테스트에서 빠른 전환을 위해 짧게 설정
+resilience4j:
+  circuitbreaker:
+    instances:
+      ai-pipeline:
+        sliding-window-size: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 2s
+        permitted-number-of-calls-in-half-open-state: 2
+        minimum-number-of-calls: 3
+        record-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+  timelimiter:
+    instances:
+      ai-pipeline:
+        timeout-duration: 5s
+        cancel-running-future: true
+
+# Actuator 비활성화
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+logging:
+  level:
+    root: WARN
+    com.unicorn.lunchpick: DEBUG

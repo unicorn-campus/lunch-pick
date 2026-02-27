@@ -1,0 +1,39 @@
+// common 모듈: java-library 플러그인은 루트 build.gradle에서 적용
+// Spring Boot 플러그인 미적용 — 일반 jar 생성
+
+plugins {
+    id 'java-library'
+}
+
+// Spring Boot BOM 적용 (버전 없이 의존성 선언 가능하게)
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${libs.versions.spring.boot.get()}"
+    }
+}
+
+jar.enabled = true
+
+dependencies {
+    // Spring Boot Core
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    // Spring Data JPA (BaseTimeEntity, JPA Auditing)
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Spring Security (SecurityContext 접근용)
+    api 'org.springframework.boot:spring-boot-starter-security'
+
+    // JWT
+    api libs.jjwt.api
+    runtimeOnly libs.jjwt.impl
+    runtimeOnly libs.jjwt.jackson
+
+    // Validation
+    api 'org.springframework.boot:spring-boot-starter-validation'
+
+    // 테스트
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

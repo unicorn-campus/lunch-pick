@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import "../styles/global.css" layer(base);
+
+@theme inline {
+  /* 브랜드 컬러 */
+  --color-primary: #FF6B35;
+  --color-primary-hover: #E55A24;
+  --color-secondary: #1A1A2E;
+  --color-accent: #4ECDC4;
+
+  /* 텍스트 */
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #6B7280;
+  --color-text-disabled: #9CA3AF;
+  --color-text-inverse: #FFFFFF;
+
+  /* 배경 */
+  --color-background: #FAFAFA;
+  --color-surface: #FFFFFF;
+
+  /* 상태 */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+
+  /* 폰트 */
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* 타입 스케일 — Tailwind v4 타입 추론용 */
+  --font-size-h1: 1.75rem;
+  --font-size-h2: 1.5rem;
+  --font-size-h3: 1.125rem;
+  --font-size-body1: 1rem;
+  --font-size-body2: 0.875rem;
+  --font-size-caption: 0.75rem;
+  --font-size-label: 0.875rem;
+  --font-size-badge: 0.75rem;
+
+  /* 그림자 — Tailwind v4 타입 추론용 */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-2: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-3: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-4: 0 8px 24px rgba(0, 0, 0, 0.16);
+}

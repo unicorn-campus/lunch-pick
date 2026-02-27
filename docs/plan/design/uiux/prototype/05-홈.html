@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>런치픽 - 홈</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .home-greeting {
+      margin: var(--space-l) 0 var(--space-s);
+    }
+    .home-greeting__name {
+      font-size: var(--font-size-h2);
+      font-weight: var(--font-weight-bold);
+    }
+    .home-greeting__sub {
+      font-size: var(--font-size-body1);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-xs);
+    }
+    .coldstart-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-s);
+      padding: var(--space-m);
+      background: #FFFBEB;
+      border-radius: var(--radius-m);
+      margin-bottom: var(--space-m);
+      font-size: var(--font-size-body2);
+      color: #92400E;
+    }
+    .learning-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-s);
+      background: #EFF6FF;
+      color: var(--color-info);
+      border-radius: var(--radius-xs);
+      font-size: var(--font-size-caption);
+      font-weight: var(--font-weight-medium);
+      margin-bottom: var(--space-m);
+    }
+    .refresh-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-s);
+      width: 100%;
+      padding: var(--space-m);
+      background: none;
+      border: 1px dashed #D1D5DB;
+      border-radius: var(--radius-m);
+      color: var(--color-text-secondary);
+      font-family: var(--font-family);
+      font-size: var(--font-size-body2);
+      cursor: pointer;
+      margin-bottom: var(--space-l);
+      transition: all var(--duration-fast) var(--easing-standard);
+    }
+    .refresh-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+    /* Bottom sheet detail */
+    .detail-title {
+      font-size: var(--font-size-h3);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-m);
+    }
+    .detail-reason {
+      font-size: var(--font-size-body1);
+      line-height: var(--line-height-body1);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-l);
+      padding: var(--space-m);
+      background: var(--color-bg);
+      border-radius: var(--radius-s);
+    }
+    .detail-scores {
+      margin-bottom: var(--space-l);
+    }
+    .detail-scores__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-medium);
+      margin-bottom: var(--space-s);
+    }
+    .detail-tags {
+      margin-bottom: var(--space-l);
+    }
+    .detail-tags__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-medium);
+      margin-bottom: var(--space-s);
+    }
+    /* Reject bottom sheet */
+    .reject-title {
+      font-size: var(--font-size-h3);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-m);
+    }
+    .reject-reasons {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+    }
+    .reject-reason-btn {
+      width: 100%;
+      padding: var(--space-m);
+      background: var(--color-bg);
+      border: 1px solid #E5E7EB;
+      border-radius: var(--radius-s);
+      font-family: var(--font-family);
+      font-size: var(--font-size-body1);
+      cursor: pointer;
+      text-align: left;
+      transition: all var(--duration-fast) var(--easing-standard);
+    }
+    .reject-reason-btn:hover {
+      border-color: var(--color-primary);
+      background: #FFF5F0;
+    }
+  </style>
+</head>
+<body>
+  <app-header location notification></app-header>
+
+  <main role="main" class="page-container">
+    <div class="home-greeting">
+      <div class="home-greeting__name">안녕하세요, <span id="userName"></span>님!</div>
+      <div class="home-greeting__sub">오늘 점심 추천이에요 🍽️</div>
+    </div>
+
+    <div id="coldstartBanner" class="coldstart-banner" style="display:none;">
+      <span aria-hidden="true">💡</span>
+      <div>아직 취향을 학습 중이에요. 3일만 더 기록하면 추천이 확 달라져요!</div>
+    </div>
+
+    <div id="learningTag" class="learning-tag">
+      ✓ 어제 피드백 반영
+    </div>
+
+    <div id="recCards" role="list" aria-label="오늘의 추천">
+      <!-- Rendered by JS -->
+    </div>
+
+    <button class="refresh-btn" onclick="refreshAll()" aria-label="전체 새로고침">
+      🔄 전체 새로고침
+    </button>
+  </main>
+
+  <!-- Recommendation Detail Bottom Sheet -->
+  <div id="detailOverlay" class="bottom-sheet-overlay" onclick="closeDetail()"></div>
+  <div id="detailSheet" class="bottom-sheet" role="dialog" aria-label="추천 이유 상세">
+    <div class="bottom-sheet__handle"></div>
+    <div id="detailContent"></div>
+  </div>
+
+  <!-- Reject Reason Bottom Sheet -->
+  <div id="rejectOverlay" class="bottom-sheet-overlay" onclick="closeReject()"></div>
+  <div id="rejectSheet" class="bottom-sheet" role="dialog" aria-label="거절 사유 선택">
+    <div class="bottom-sheet__handle"></div>
+    <h3 class="reject-title">거절 사유를 알려주세요</h3>
+    <div class="reject-reasons" id="rejectReasons"></div>
+  </div>
+
+  <app-bottom-nav active="home"></app-bottom-nav>
+
+  <script src="common.js"></script>
+  <script>
+    var recs = SAMPLE_DATA.recommendations;
+    var rejectingRecId = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('userName').textContent = SAMPLE_DATA.user.nickname;
+
+      if (SAMPLE_DATA.user.feedbackCount < 5) {
+        document.getElementById('coldstartBanner').style.display = 'flex';
+        document.getElementById('learningTag').style.display = 'none';
+      }
+
+      renderCards();
+      renderRejectReasons();
+    });
+
+    function renderCards() {
+      var container = document.getElementById('recCards');
+      container.innerHTML = '';
+      recs.forEach(function(rec) {
+        var card = document.createElement('div');
+        card.className = 'card rec-card';
+        card.setAttribute('role', 'listitem');
+        card.setAttribute('aria-label', '추천 ' + rec.rank + ': ' + rec.restaurantName);
+        card.innerHTML =
+          '<div class="rec-card__rank">' + rec.rank + '.</div>' +
+          '<div class="rec-card__header">' +
+            '<span class="rec-card__name">' + rec.restaurantName + ' <span class="caption">(' + rec.category + ')</span></span>' +
+            '<span class="rec-card__score">⭐ ' + rec.score + '%</span>' +
+          '</div>' +
+          '<div class="rec-card__menu">대표: ' + rec.mainMenu + ' ' + formatPrice(rec.price) + '</div>' +
+          '<div class="rec-card__meta">📍 도보 ' + rec.walkTime + ' | ' + rec.distance + '</div>' +
+          '<div class="rec-card__reason">"' + rec.reason + '"</div>' +
+          '<div class="rec-card__actions">' +
+            '<div>' +
+              '<button class="btn-text" onclick="showDetail(\'' + rec.id + '\')" aria-label="추천 이유 상세 보기">왜?</button>' +
+              '<button class="btn-text" onclick="showReject(\'' + rec.id + '\')" aria-label="거절하기" style="color:var(--color-text-secondary);">거절</button>' +
+            '</div>' +
+            '<button class="btn btn-primary" onclick="acceptRec(\'' + rec.id + '\')">여기 갈래요 →</button>' +
+          '</div>';
+        container.appendChild(card);
+      });
+    }
+
+    function showDetail(recId) {
+      var rec = recs.find(function(r) { return r.id === recId; });
+      if (!rec) return;
+
+      var scoresHtml = recs.map(function(r) {
+        var color = r.score >= 80 ? 'var(--color-primary)' : r.score >= 60 ? 'var(--color-warning)' : 'var(--color-text-secondary)';
+        return '<div class="score-bar">' +
+          '<span class="score-bar__label">' + r.restaurantName + '</span>' +
+          '<div class="score-bar__track"><div class="score-bar__fill" style="width:' + r.score + '%;background:' + color + '"></div></div>' +
+          '<span class="score-bar__value">' + r.score + '%</span></div>';
+      }).join('');
+
+      var tagsHtml = rec.contextTags.map(function(t) {
+        return '<span class="tag tag--info">' + t + '</span>';
+      }).join(' ');
+
+      document.getElementById('detailContent').innerHTML =
+        '<h3 class="detail-title">' + rec.restaurantName + '을 추천한 이유</h3>' +
+        '<div class="detail-reason">"' + rec.reasonDetail + '"</div>' +
+        '<div class="detail-scores"><div class="detail-scores__title">확신 스코어</div>' + scoresHtml + '</div>' +
+        '<div class="detail-tags"><div class="detail-tags__title">반영된 컨텍스트</div><div class="chip-group">' + tagsHtml +
+        (rec.feedbackApplied ? ' <span class="tag tag--success">✓ 어제 피드백 반영</span>' : '') +
+        '</div></div>' +
+        '<button class="btn btn-primary btn-full" onclick="acceptRec(\'' + rec.id + '\');closeDetail();">여기 갈래요 →</button>';
+
+      document.getElementById('detailOverlay').classList.add('active');
+      document.getElementById('detailSheet').classList.add('active');
+    }
+
+    function closeDetail() {
+      document.getElementById('detailOverlay').classList.remove('active');
+      document.getElementById('detailSheet').classList.remove('active');
+    }
+
+    function showReject(recId) {
+      rejectingRecId = recId;
+      document.getElementById('rejectOverlay').classList.add('active');
+      document.getElementById('rejectSheet').classList.add('active');
+    }
+
+    function closeReject() {
+      document.getElementById('rejectOverlay').classList.remove('active');
+      document.getElementById('rejectSheet').classList.remove('active');
+      rejectingRecId = null;
+    }
+
+    function renderRejectReasons() {
+      var container = document.getElementById('rejectReasons');
+      SAMPLE_DATA.rejectReasons.forEach(function(reason) {
+        var btn = document.createElement('button');
+        btn.className = 'reject-reason-btn';
+        btn.textContent = reason;
+        btn.onclick = function() { handleReject(reason); };
+        container.appendChild(btn);
+      });
+    }
+
+    function handleReject(reason) {
+      closeReject();
+      showToast('이런 건 어때요? 대체 추천을 준비했어요');
+    }
+
+    function acceptRec(recId) {
+      var rec = recs.find(function(r) { return r.id === recId; });
+      navigateTo('06-길찾기.html', rec);
+    }
+
+    function refreshAll() {
+      showToast('새로운 추천을 준비하고 있어요...');
+      setTimeout(function() {
+        showToast('추천이 새로고침되었어요!');
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

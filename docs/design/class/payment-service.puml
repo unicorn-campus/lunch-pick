@@ -1,0 +1,320 @@
+@startuml payment-service
+!theme mono
+
+title 결제 서비스(payment-service) - 클래스 다이어그램 (상세)
+' 작성자: 홍길동 (아키) + 한승우 (마법사)
+
+package "com.unicorn.lunchpick.payment" {
+
+    ' ── Controller Layer ──────────────────────────────────────────
+    package "controller" {
+
+        class SubscriptionController {
+            - subscriptionService: SubscriptionService
+            + getSubscriptionPlans(memberId: String): ResponseEntity<ApiResponse<SubscriptionPlansResponse>>
+            + createSubscription(memberId: String, request: CreateSubscriptionRequest): ResponseEntity<ApiResponse<CreateSubscriptionResponse>>
+            + cancelSubscription(memberId: String, subscriptionId: String, request: CancelSubscriptionRequest): ResponseEntity<ApiResponse<CancelSubscriptionResponse>>
+            + extendTrial(memberId: String): ResponseEntity<ApiResponse<ExtendTrialResponse>>
+        }
+    }
+
+    ' ── Service Layer ─────────────────────────────────────────────
+    package "service" {
+
+        interface SubscriptionService {
+            + getSubscriptionPlans(memberId: String): SubscriptionPlansResult
+            + subscribe(memberId: String, planId: String, paymentMethod: PaymentMethodDto): SubscriptionResult
+            + cancelSubscription(memberId: String, subscriptionId: String, cancelReason: String, cancelReasonDetail: String): CancelResult
+            + extendTrial(memberId: String): ExtendTrialResult
+        }
+
+        class SubscriptionServiceImpl {
+            - subscriptionRepository: SubscriptionRepository
+            - paymentHistoryRepository: PaymentHistoryRepository
+            - paymentValidator: PaymentValidator
+            - pgGatewayClient: PgGatewayClient
+            - eventPublisher: SubscriptionEventPublisher
+            + getSubscriptionPlans(memberId: String): SubscriptionPlansResult
+            + subscribe(memberId: String, planId: String, paymentMethod: PaymentMethodDto): SubscriptionResult
+            + cancelSubscription(memberId: String, subscriptionId: String, cancelReason: String, cancelReasonDetail: String): CancelResult
+            + extendTrial(memberId: String): ExtendTrialResult
+            - checkDuplicateActiveSubscription(memberId: String): void
+            - checkDuplicatePaymentInProgress(memberId: String): void
+            - recordLegalConsent(memberId: String, planId: String): void
+        }
+
+        interface PaymentService {
+            + requestPayment(paymentId: String, amount: int, paymentMethod: PaymentMethodDto): PaymentResult
+        }
+
+        class PaymentServiceImpl {
+            - pgGatewayClient: PgGatewayClient
+            - paymentHistoryRepository: PaymentHistoryRepository
+            + requestPayment(paymentId: String, amount: int, paymentMethod: PaymentMethodDto): PaymentResult
+            - updatePaymentStatus(paymentId: String, status: String, pgTransactionId: String): void
+        }
+
+        class PaymentValidator {
+            + validatePaymentMethod(paymentMethod: PaymentMethodDto): void
+            - validateCardNumber(cardNumber: String): void
+            - validateExpiry(expiryMonth: int, expiryYear: int): void
+            - validateCvc(cvc: String): void
+            - validatePlanId(planId: String): void
+            - luhnCheck(cardNumber: String): boolean
+        }
+
+        class SubscriptionEventPublisher {
+            - redisTemplate: StringRedisTemplate
+            + publishSubscriptionActivated(memberId: String, planId: String, startDate: LocalDateTime, expiresAt: LocalDateTime): void
+            + publishSubscriptionCancelled(memberId: String, subscriptionId: String, cancelledAt: LocalDateTime): void
+            + publishSubscriptionExtended(memberId: String, newExpiresAt: LocalDateTime): void
+        }
+    }
+
+    ' ── Repository Layer ──────────────────────────────────────────
+    package "repository" {
+
+        interface SubscriptionRepository {
+            + findBySubscriptionId(subscriptionId: String): Optional<SubscriptionEntity>
+            + findActiveByMemberId(memberId: String): Optional<SubscriptionEntity>
+            + findByMemberId(memberId: String): List<SubscriptionEntity>
+            + existsActiveByMemberId(memberId: String): boolean
+            + save(entity: SubscriptionEntity): SubscriptionEntity
+        }
+
+        interface PaymentHistoryRepository {
+            + findByPaymentId(paymentId: String): Optional<PaymentHistoryEntity>
+            + findByMemberIdAndStatus(memberId: String, status: String): List<PaymentHistoryEntity>
+            + existsByMemberIdAndStatus(memberId: String, status: String): boolean
+            + countFailuresByMemberIdAfter(memberId: String, after: LocalDateTime): int
+            + save(entity: PaymentHistoryEntity): PaymentHistoryEntity
+        }
+
+        ' ── Entity (JPA) ──────────────────────────────────────────
+        package "entity" {
+
+            class SubscriptionEntity {
+                - id: Long
+                - subscriptionId: String
+                - memberId: String
+                - planId: String
+                - status: String
+                - startedAt: LocalDateTime
+                - nextBillingAt: LocalDateTime
+                - currentPeriodEndsAt: LocalDateTime
+                - trialExtensionUsed: boolean
+                - cancelReason: String
+                - cancelReasonDetail: String
+                - cancelledAt: LocalDateTime
+                - createdAt: LocalDateTime
+                - updatedAt: LocalDateTime
+            }
+
+            class PaymentHistoryEntity {
+                - id: Long
+                - paymentId: String
+                - memberId: String
+                - subscriptionId: String
+                - planId: String
+                - amount: int
+                - status: String
+                - pgTransactionId: String
+                - errorCode: String
+                - autoRenewalAgreed: boolean
+                - withdrawalRightAcknowledged: boolean
+                - withdrawalDeadline: LocalDateTime
+                - requestedAt: LocalDateTime
+                - approvedAt: LocalDateTime
+                - createdAt: LocalDateTime
+            }
+        }
+    }
+
+    ' ── External Client Layer ─────────────────────────────────────
+    package "client" {
+
+        class PgGatewayClient {
+            - pgBaseUrl: String
+            - pgApiKey: String
+            - restTemplate: RestTemplate
+            + requestPayment(paymentId: String, amount: int, cardInfo: CardInfo): PgPaymentResult
+            + cancelPayment(pgTransactionId: String): void
+            + checkCircuitBreakerState(): String
+        }
+    }
+
+    ' ── DTO Layer ─────────────────────────────────────────────────
+    package "dto" {
+
+        package "request" {
+            class CreateSubscriptionRequest {
+                - planId: String
+                - paymentMethod: PaymentMethodDto
+                - autoRenewalAgreed: boolean
+                - withdrawalRightAcknowledged: boolean
+            }
+
+            class CancelSubscriptionRequest {
+                - cancelReason: String
+                - cancelReasonDetail: String
+            }
+
+            class PaymentMethodDto {
+                - type: String
+                - cardNumber: String
+                - expiryMonth: int
+                - expiryYear: int
+                - cvc: String
+                - cardholderName: String
+            }
+        }
+
+        package "response" {
+            class SubscriptionPlansResponse {
+                - plans: List<SubscriptionPlan>
+                - currentPlan: String
+                - promotionMessage: String
+            }
+
+            class SubscriptionPlan {
+                - planId: String
+                - planName: String
+                - pricePerMonth: int
+                - totalPrice: int
+                - billingCycle: String
+                - discountRate: double
+                - features: List<String>
+            }
+
+            class CreateSubscriptionResponse {
+                - subscriptionId: String
+                - planId: String
+                - status: String
+                - startedAt: LocalDateTime
+                - nextBillingAt: LocalDateTime
+                - amount: int
+                - transactionId: String
+                - message: String
+                - withdrawalDeadline: LocalDateTime
+            }
+
+            class CancelSubscriptionResponse {
+                - subscriptionId: String
+                - status: String
+                - currentPeriodEndsAt: LocalDateTime
+                - freePlanStartsAt: LocalDateTime
+                - message: String
+                - dataWarningMessage: String
+            }
+
+            class ExtendTrialResponse {
+                - message: String
+                - newExpiresAt: LocalDateTime
+            }
+        }
+
+        package "internal" {
+            class PaymentResult {
+                - success: boolean
+                - pgTransactionId: String
+                - approvedAt: LocalDateTime
+                - errorCode: String
+            }
+
+            class PgPaymentResult {
+                - pgTransactionId: String
+                - approvalCode: String
+                - approvedAt: LocalDateTime
+                - errorCode: String
+                - errorMessage: String
+            }
+
+            class CardInfo {
+                - maskedCardNumber: String
+                - expiryMonth: int
+                - expiryYear: int
+                - cardholderName: String
+            }
+
+            class SubscriptionResult {
+                - subscriptionId: String
+                - planId: String
+                - startedAt: LocalDateTime
+                - nextBillingAt: LocalDateTime
+                - transactionId: String
+            }
+
+            class CancelResult {
+                - subscriptionId: String
+                - currentPeriodEndsAt: LocalDateTime
+                - freePlanStartsAt: LocalDateTime
+            }
+
+            class ExtendTrialResult {
+                - newExpiresAt: LocalDateTime
+            }
+        }
+    }
+
+    ' ── Enum ──────────────────────────────────────────────────────
+    enum SubscriptionStatus {
+        ACTIVE
+        PENDING_CANCEL
+        CANCELLED
+        EXPIRED
+    }
+
+    enum PaymentStatus {
+        PENDING
+        SUCCESS
+        FAILED
+        CANCELLED
+    }
+
+    enum PlanId {
+        FREE
+        PREMIUM_MONTHLY
+        PREMIUM_ANNUAL
+    }
+
+    enum CancelReason {
+        COST
+        NOT_USING
+        QUALITY
+        OTHER
+    }
+}
+
+' ── 관계 정의 ─────────────────────────────────────────────────────
+
+' Controller -> Service
+SubscriptionController --> SubscriptionService
+
+' Service Implementation
+SubscriptionServiceImpl ..|> SubscriptionService
+SubscriptionServiceImpl --> SubscriptionRepository
+SubscriptionServiceImpl --> PaymentHistoryRepository
+SubscriptionServiceImpl --> PaymentValidator
+SubscriptionServiceImpl --> PgGatewayClient
+SubscriptionServiceImpl --> SubscriptionEventPublisher
+
+PaymentServiceImpl ..|> PaymentService
+PaymentServiceImpl --> PgGatewayClient
+PaymentServiceImpl --> PaymentHistoryRepository
+
+SubscriptionServiceImpl --> PaymentService
+
+' Repository -> Entity
+SubscriptionRepository ..> SubscriptionEntity
+PaymentHistoryRepository ..> PaymentHistoryEntity
+
+' Enum
+SubscriptionEntity --> SubscriptionStatus
+SubscriptionEntity --> PlanId
+PaymentHistoryEntity --> PaymentStatus
+CancelSubscriptionRequest --> CancelReason
+
+' Response composition
+SubscriptionPlansResponse "1" *-- "1..*" SubscriptionPlan
+
+@enduml

@@ -1,0 +1,114 @@
+@startuml member-service-simple
+!theme mono
+
+title 회원 서비스(member-service) - 클래스 다이어그램 (요약)
+' 작성자: 홍길동 (아키) + 한승우 (마법사)
+
+package "com.unicorn.lunchpick.member" {
+
+    package "controller" {
+        class AuthController
+        class OnboardingController
+        class ProfileController
+        class InternalMemberController
+    }
+
+    package "service" {
+        interface AuthService
+        class AuthServiceImpl
+        interface MemberService
+        class MemberServiceImpl
+        interface OnboardingService
+        class OnboardingServiceImpl
+        class TasteVectorService
+        class TokenService
+        class KakaoOAuthClient
+    }
+
+    package "repository" {
+        interface MemberRepository
+        interface TasteProfileRepository
+        interface DietaryRestrictionRepository
+        interface LocationConsentRepository
+    }
+
+    package "repository/entity" {
+        class MemberEntity
+        class TasteProfileEntity
+        class DietaryRestrictionEntity
+        class LocationConsentEntity
+    }
+
+    package "dto/request" {
+        class KakaoLoginRequest
+        class OnboardingRequest
+        class OnboardingProgressRequest
+        class LocationConsentRequest
+        class DietaryRestrictionsRequest
+        class UpdateProfileRequest
+    }
+
+    package "dto/response" {
+        class AuthResponse
+        class OnboardingResponse
+        class LocationConsentResponse
+        class DietaryRestrictionsResponse
+        class MemberProfileResponse
+        class TasteProfileResponse
+        class SubscriptionStatusResponse
+    }
+
+    package "config" {
+        class KakaoOAuthConfig
+        class SecurityConfig
+    }
+}
+
+' 관계
+AuthController --> AuthService
+OnboardingController --> OnboardingService
+ProfileController --> MemberService
+InternalMemberController --> MemberService
+
+AuthServiceImpl ..|> AuthService
+AuthServiceImpl --> MemberService
+AuthServiceImpl --> TokenService
+AuthServiceImpl --> KakaoOAuthClient
+
+MemberServiceImpl ..|> MemberService
+MemberServiceImpl --> MemberRepository
+MemberServiceImpl --> TasteProfileRepository
+MemberServiceImpl --> DietaryRestrictionRepository
+
+OnboardingServiceImpl ..|> OnboardingService
+OnboardingServiceImpl --> MemberRepository
+OnboardingServiceImpl --> TasteProfileRepository
+OnboardingServiceImpl --> TasteVectorService
+
+MemberRepository ..> MemberEntity
+TasteProfileRepository ..> TasteProfileEntity
+DietaryRestrictionRepository ..> DietaryRestrictionEntity
+LocationConsentRepository ..> LocationConsentEntity
+
+note as N1
+  **Controller API 매핑표**
+  ─────────────────────────────────────────
+  **AuthController**
+  POST   /api/v1/auth/kakao                   카카오 소셜 로그인
+
+  **OnboardingController**
+  POST   /api/v1/members/onboarding           취향 온보딩 퀴즈 제출
+  PUT    /api/v1/members/onboarding/progress  온보딩 진행 상태 임시 저장
+  POST   /api/v1/members/location-consent     위치 정보 동의
+
+  **ProfileController**
+  PUT    /api/v1/members/dietary-restrictions 알레르기/식이제한 설정
+  GET    /api/v1/members/profile              프로필 조회
+  PUT    /api/v1/members/profile              프로필 수정
+
+  **InternalMemberController**
+  GET    /internal/members/{memberId}/taste-profile  취향 프로파일 조회 (내부 API)
+  GET    /api/v1/members/subscription                구독 상태 조회
+end note
+
+@enduml

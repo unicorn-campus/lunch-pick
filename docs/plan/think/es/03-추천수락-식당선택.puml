@@ -1,0 +1,44 @@
+@startuml
+!theme mono
+title 03. 추천 수락 및 식당 선택
+
+actor "사용자" as user
+participant "추천업무" as recommend
+participant "이력업무" as history
+participant "(E)지도 API" as map
+
+== 추천 카드 상호작용 ==
+
+user -> recommend : [커맨드] 추천 카드 상세 조회\n[데이터] (추천 ID)
+recommend --> user : [이벤트] 추천 상세 표시됨\n[데이터] (식당 상세, 메뉴,\n추천 이유 상세, 확신 스코어 근거)
+note right : A8: "비 오는 날 따뜻한 국물 +\n어제 양식 드셨으니 한식 추천\n확신도 87%"
+
+alt 추천 수락
+  user -> recommend : [커맨드] 추천 수락\n[데이터] (추천 ID, 수락 시간)
+  recommend -> recommend : [정책/규칙] 수락 반응 시간 기록\n(망설임/확신 구별 학습용)
+  recommend --> user : [이벤트] 추천 수락 완료됨
+
+  == 식당 안내 ==
+
+  user -> recommend : [커맨드] 식당 길찾기 요청\n[데이터] (식당 ID, 현재 위치)
+  recommend -> map : [커맨드] 도보 경로 조회\n[데이터] (출발 좌표, 도착 좌표)
+  map --> recommend : [이벤트] 경로 정보 수신됨\n[데이터] (도보 시간, 경로)
+  recommend --> user : [이벤트] 길찾기 안내 표시됨\n[데이터] (예상 도보 시간, 지도 링크)
+
+  recommend -> history : [커맨드] 추천 수락 이력 저장\n[데이터] (회원 ID, 추천 ID,\n식당 ID, 수락 시간)
+  history --> recommend : [이벤트] 수락 이력 저장됨
+
+else 추천 거절
+  user -> recommend : [커맨드] 추천 거절\n[데이터] (추천 ID, 거절 사유 선택)
+  recommend -> recommend : [정책/규칙] 거절 사유 기록\n(취향 학습 반영용)
+  recommend --> user : [이벤트] 거절 처리 완료됨\n[데이터] (대체 추천 카드 또는\n"다른 추천 보기" 안내)
+  note right : 복구 경로: "이런 건 어때요?"\n대체 추천 1개 추가 제시
+
+else 추천 전체 거절
+  user -> recommend : [커맨드] 전체 추천 새로고침\n[데이터] (거절한 추천 ID 목록)
+  recommend -> recommend : [정책/규칙] 거절 목록 제외 후\n새로운 추천 3개 생성
+  recommend --> user : [이벤트] 새로운 추천 제시됨\n[데이터] (추천 3개 카드)
+  note right : 안내 메시지: "취향을 더 배우고 있어요.\n새로운 추천이에요!"
+end
+
+@enduml

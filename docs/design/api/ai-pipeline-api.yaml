@@ -1,0 +1,786 @@
+openapi: 3.0.0
+info:
+  title: AI Pipeline 서비스 API
+  version: 1.0.0
+  description: |
+    런치픽 AI Pipeline 서비스 API 명세 — 추천 생성 및 추천 이유 생성
+
+    **설계자**: 한승우 (마법사) / AI 엔지니어
+
+    **주의**: 이 API는 내부 서비스 간 통신 전용입니다. API Gateway를 경유하지 않으며
+    추천·이력 서비스만 호출합니다. 외부 클라이언트 접근은 허용되지 않습니다.
+
+    **기술 스택**: Python / FastAPI, LangChain (init_chat_model), Claude(기본) / GPT(대체)
+
+    **핵심 패턴**:
+    - Circuit Breaker: LLM 연속 5회 실패 시 Open → 폴백(규칙 기반) 즉시 반환
+    - Cache-Aside: Redis 캐시 히트 시 LLM 호출 없이 즉시 반환 (TTL: 당일 13:00)
+    - Rate Limiting: 글로벌 분당 500회, 사용자별 분당 10회
+    - Retry: 지수 백오프(500ms→1초→2초) 최대 3회, 503/408/일시적 429에만 적용
+  contact:
+    name: 홍길동 (아키) + 한승우 (마법사)
+
+servers:
+  - url: https://mock.swaggerhub.com/lunch-menu-recommender/ai-pipeline-service/1.0.0
+    description: Mock Server (내부 서비스 간 통신 전용)
+
+tags:
+  - name: Recommendation
+    description: AI 추천 생성 (내부 API)
+  - name: Reason
+    description: AI 추천 이유 생성 (내부 API)
+
+paths:
+
+  /api/v1/ai/recommendations:
+    post:
+      tags:
+        - Recommendation
+      summary: AI 추천 생성 요청 (내부 API)
+      description: |
+        추천·이력 서비스가 호출하는 내부 API입니다.
+
+        **처리 순서:**
+        1. Redis 캐시 확인 (cacheKey: rec:{memberId}:{locationGrid}:{weatherCode}:{weekday})
+        2. 캐시 히트 → 즉시 반환
+        3. 캐시 미스 → 콜드스타트 판별 (피드백 5건 미만)
+        4. LLM Circuit Breaker 상태 확인
+        5. Closed → PromptBuilder → LLM API 호출 → ResponseParser → Redis 캐싱
+        6. Open → 만료 캐시 조회 → FallbackEngine (규칙 기반)
+
+        **콜드스타트 처리:**
+        - 피드백 5건 미만: 온보딩 스와이프 결과 + 직군 클러스터 Bayesian Prior + 지역 인기 메뉴 가중치
+        - 응답에 isColdStart: true + coldStartTag 포함
+
+        **응답 메타데이터 필수**: source, model_used, latency_ms, token_usage
+      operationId: generateAiRecommendations
+      x-internal: true
+      x-controller: RecommendRouter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiRecommendationRequest'
+            examples:
+              normalUser:
+                $ref: '#/components/examples/AiRecommendationNormalRequestExample'
+              coldStartUser:
+                $ref: '#/components/examples/AiRecommendationColdStartRequestExample'
+      responses:
+        '200':
+          description: 추천 생성 성공 (LLM 정상 또는 폴백 모두 200 반환)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiRecommendationResponse'
+              examples:
+                llmSuccess:
+                  $ref: '#/components/examples/AiRecommendationLlmSuccessExample'
+                fallbackCircuitOpen:
+                  $ref: '#/components/examples/AiRecommendationFallbackCircuitOpenExample'
+                fallbackStaleCached:
+                  $ref: '#/components/examples/AiRecommendationFallbackStaleCachedExample'
+                coldStart:
+                  $ref: '#/components/examples/AiRecommendationColdStartExample'
+        '400':
+          description: 잘못된 요청 파라미터
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: INVALID_REQUEST
+                message: 필수 파라미터가 누락되었습니다.
+                timestamp: '2026-02-26T12:00:00Z'
+        '429':
+          description: Rate Limit 초과
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: RATE_LIMIT_EXCEEDED
+                message: 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/ai/recommendation-reason:
+    post:
+      tags:
+        - Reason
+      summary: 추천 이유 생성 (내부 API)
+      description: |
+        추천·이력 서비스가 추천 이유 상세 조회 시 호출하는 내부 API입니다.
+
+        **처리 순서:**
+        1. Redis 캐시 확인 (reason:{recommendationId})
+        2. 캐시 히트 → 즉시 반환
+        3. 캐시 미스 → PromptBuilder → LLM API 호출 → ResponseParser → Redis 캐싱
+        4. LLM 실패 → 기본 이유(거리/평점) 반환
+
+        **생성 형태**: "비 오는 날 + 어제 양식 드셨으니 → 따뜻한 한식을 추천드려요"
+
+        **컨텍스트 태그**: 날씨/이력/취향/요일/시간 중 실제 반영된 요소만 포함
+
+        **응답 메타데이터 필수**: source, model_used, latency_ms, token_usage
+      operationId: generateRecommendationReason
+      x-internal: true
+      x-controller: ReasonRouter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiReasonRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/AiReasonRequestExample'
+      responses:
+        '200':
+          description: 추천 이유 생성 성공 (LLM 실패 시에도 200 반환 — 기본 이유 포함)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiReasonResponse'
+              examples:
+                llmSuccess:
+                  $ref: '#/components/examples/AiReasonLlmSuccessExample'
+                fallback:
+                  $ref: '#/components/examples/AiReasonFallbackExample'
+        '400':
+          description: 잘못된 요청 파라미터
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: INVALID_REQUEST
+                message: 필수 파라미터가 누락되었습니다.
+                timestamp: '2026-02-26T12:00:00Z'
+
+components:
+  schemas:
+
+    TasteVector:
+      type: object
+      description: 카테고리별 선호도 벡터 (0.0~1.0)
+      additionalProperties:
+        type: number
+        format: float
+      example:
+        한식: 0.85
+        일식: 0.70
+        중식: 0.40
+        양식: 0.55
+        분식: 0.60
+        샐러드/건강식: 0.65
+
+    WeatherContext:
+      type: object
+      properties:
+        condition:
+          type: string
+          enum: [CLEAR, CLOUDY, RAINY, SNOWY, WINDY, HOT, COLD]
+          description: 날씨 상태
+          example: RAINY
+        temperatureCelsius:
+          type: number
+          format: float
+          description: 현재 기온(섭씨)
+          example: 8.5
+        description:
+          type: string
+          description: 날씨 설명
+          example: 비 오는 날
+
+    RecentMealHistory:
+      type: object
+      properties:
+        restaurantId:
+          type: string
+          example: rest-002
+        category:
+          type: string
+          example: 양식
+        mealDate:
+          type: string
+          format: date
+          example: '2026-02-25'
+        satisfaction:
+          type: string
+          enum: [GOOD, BAD, NEUTRAL]
+          nullable: true
+          example: GOOD
+
+    OnboardingSwipeData:
+      type: object
+      description: 콜드스타트 사용자를 위한 온보딩 스와이프 데이터
+      properties:
+        cardId:
+          type: string
+          example: card-korean-001
+        category:
+          type: string
+          example: 한식
+        liked:
+          type: boolean
+          example: true
+
+    AiRecommendationRequest:
+      type: object
+      required:
+        - memberId
+        - latitude
+        - longitude
+        - requestedAt
+        - isColdStart
+        - allergenFilter
+      properties:
+        memberId:
+          type: string
+          format: uuid
+          description: 회원 ID
+          example: 550e8400-e29b-41d4-a716-446655440001
+        latitude:
+          type: number
+          format: double
+          description: 현재 위치 위도
+          example: 37.5665
+        longitude:
+          type: number
+          format: double
+          description: 현재 위치 경도
+          example: 126.9780
+        requestedAt:
+          type: string
+          format: date-time
+          description: 추천 요청 시각
+          example: '2026-02-26T12:00:00Z'
+        isColdStart:
+          type: boolean
+          description: 콜드스타트 여부 (누적 피드백 5건 미만)
+          example: false
+        feedbackCount:
+          type: integer
+          description: 누적 피드백 수
+          example: 12
+        tasteVector:
+          $ref: '#/components/schemas/TasteVector'
+          nullable: true
+          description: 취향 벡터 (isColdStart=true이면 null 가능)
+        onboardingSwipes:
+          type: array
+          nullable: true
+          description: 온보딩 스와이프 결과 (isColdStart=true일 때 사용)
+          items:
+            $ref: '#/components/schemas/OnboardingSwipeData'
+        allergenFilter:
+          type: array
+          description: 알레르기 하드 필터 (추천에서 완전 제거)
+          items:
+            type: string
+          example: [땅콩, 새우]
+        dietType:
+          type: string
+          enum: [일반, 채식, 비건, 할랄, 기타]
+          example: 일반
+        weather:
+          $ref: '#/components/schemas/WeatherContext'
+        recentMealHistory:
+          type: array
+          description: 최근 7일 식사 이력 (반복 방지용)
+          items:
+            $ref: '#/components/schemas/RecentMealHistory'
+        excludeRestaurantIds:
+          type: array
+          description: 최근 3일 내 방문한 식당 ID 목록 (추천 제외)
+          items:
+            type: string
+          example: [rest-005, rest-006]
+        jobCluster:
+          type: string
+          nullable: true
+          description: 직군 클러스터 (콜드스타트 Prior 적용용)
+          example: IT_OFFICE_WORKER
+
+    RecommendedRestaurant:
+      type: object
+      properties:
+        restaurantId:
+          type: string
+          example: rest-001
+        restaurantName:
+          type: string
+          example: 광화문 된장마을
+        representativeMenu:
+          type: string
+          example: 된장찌개 정식
+        category:
+          type: string
+          example: 한식
+        reasonSummary:
+          type: string
+          description: 추천 이유 한 줄 요약
+          example: 비 오는 날엔 따뜻한 한식이 딱이에요
+        confidenceScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 추천 확신 스코어 (%)
+          example: 87
+        distanceMeters:
+          type: integer
+          description: 현재 위치에서 거리(m)
+          example: 320
+        estimatedWalkMinutes:
+          type: integer
+          description: 도보 예상 소요시간(분)
+          example: 4
+
+    AiMetadata:
+      type: object
+      description: AI Pipeline 응답 메타데이터 (필수)
+      required:
+        - source
+        - model_used
+        - latency_ms
+        - token_usage
+      properties:
+        source:
+          type: string
+          enum: [LLM, CACHE, STALE_CACHE, FALLBACK_RULE_BASED, COLD_START_LLM]
+          description: |
+            응답 출처:
+            - LLM: LLM API 정상 응답
+            - CACHE: Redis 캐시 히트
+            - STALE_CACHE: 만료 캐시 (Circuit Breaker Open 상태)
+            - FALLBACK_RULE_BASED: 규칙 기반 폴백 (LLM 장애)
+            - COLD_START_LLM: 콜드스타트 LLM 추천
+          example: LLM
+        model_used:
+          type: string
+          nullable: true
+          description: 사용된 LLM 모델명 (폴백 시 null)
+          example: claude-3-5-sonnet-20241022
+        latency_ms:
+          type: integer
+          description: AI Pipeline 내부 처리 지연시간(ms)
+          example: 1250
+        token_usage:
+          $ref: '#/components/schemas/TokenUsage'
+        circuit_breaker_state:
+          type: string
+          enum: [CLOSED, OPEN, HALF_OPEN]
+          description: LLM Circuit Breaker 현재 상태
+          example: CLOSED
+
+    TokenUsage:
+      type: object
+      description: LLM 토큰 사용량 (폴백 시 모두 0)
+      properties:
+        prompt_tokens:
+          type: integer
+          description: 프롬프트 토큰 수
+          example: 842
+        completion_tokens:
+          type: integer
+          description: 완성 토큰 수
+          example: 312
+        total_tokens:
+          type: integer
+          description: 총 토큰 수
+          example: 1154
+
+    AiRecommendationResponse:
+      type: object
+      properties:
+        recommendations:
+          type: array
+          minItems: 1
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/RecommendedRestaurant'
+        isFallback:
+          type: boolean
+          description: 폴백 추천 여부
+          example: false
+        isColdStart:
+          type: boolean
+          description: 콜드스타트 안전망 적용 여부
+          example: false
+        coldStartTag:
+          type: string
+          nullable: true
+          description: 콜드스타트 시 안내 태그
+          example: null
+        cacheKey:
+          type: string
+          description: 캐싱에 사용된 캐시 키
+          example: rec:550e8400-e29b-41d4-a716-446655440001:3756:RAINY:WED
+        cachedUntil:
+          type: string
+          format: date-time
+          nullable: true
+          description: 캐시 만료 시각 (당일 13:00)
+          example: '2026-02-26T13:00:00Z'
+        metadata:
+          $ref: '#/components/schemas/AiMetadata'
+
+    AiReasonRequest:
+      type: object
+      required:
+        - recommendationId
+        - restaurantId
+        - restaurantName
+        - category
+        - memberId
+      properties:
+        recommendationId:
+          type: string
+          format: uuid
+          description: 추천 ID
+          example: rec-550e8400-e29b-41d4-a716-446655440010
+        restaurantId:
+          type: string
+          description: 식당 ID
+          example: rest-001
+        restaurantName:
+          type: string
+          description: 식당명
+          example: 광화문 된장마을
+        category:
+          type: string
+          description: 식당 카테고리
+          example: 한식
+        memberId:
+          type: string
+          format: uuid
+          description: 회원 ID
+          example: 550e8400-e29b-41d4-a716-446655440001
+        tasteVector:
+          $ref: '#/components/schemas/TasteVector'
+          nullable: true
+        weather:
+          $ref: '#/components/schemas/WeatherContext'
+          nullable: true
+        recentMealHistory:
+          type: array
+          nullable: true
+          description: 최근 식사 이력 (이유 생성 컨텍스트)
+          items:
+            $ref: '#/components/schemas/RecentMealHistory'
+        confidenceScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 이미 계산된 추천 확신 스코어 (%)
+          example: 87
+
+    AiReasonResponse:
+      type: object
+      properties:
+        recommendationId:
+          type: string
+          format: uuid
+          example: rec-550e8400-e29b-41d4-a716-446655440010
+        naturalLanguageReason:
+          type: string
+          description: 자연어 추천 이유 (한 줄)
+          example: 비 오는 날 + 어제 양식 드셨으니 → 따뜻한 한식을 추천드려요
+        confidenceScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: 추천 확신 스코어 (%)
+          example: 87
+        contextTags:
+          type: array
+          description: 반영된 컨텍스트 태그 목록
+          items:
+            type: string
+            enum: [날씨, 이력, 취향, 요일, 시간]
+          example: [날씨, 이력]
+        isReasonReady:
+          type: boolean
+          description: 이유 생성 완료 여부 (false이면 기본 이유)
+          example: true
+        fallbackReason:
+          type: string
+          nullable: true
+          description: LLM 실패 시 기본 이유 (거리/평점 기반)
+          example: null
+        cachedUntil:
+          type: string
+          format: date-time
+          nullable: true
+          description: 캐시 만료 시각
+          example: '2026-02-26T13:00:00Z'
+        metadata:
+          $ref: '#/components/schemas/AiMetadata'
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 에러 코드
+          example: INVALID_REQUEST
+        message:
+          type: string
+          description: 에러 메시지
+          example: 필수 파라미터가 누락되었습니다.
+        timestamp:
+          type: string
+          format: date-time
+          example: '2026-02-26T12:00:00Z'
+
+  examples:
+
+    AiRecommendationNormalRequestExample:
+      value:
+        memberId: 550e8400-e29b-41d4-a716-446655440001
+        latitude: 37.5665
+        longitude: 126.9780
+        requestedAt: '2026-02-26T12:00:00Z'
+        isColdStart: false
+        feedbackCount: 12
+        tasteVector:
+          한식: 0.85
+          일식: 0.70
+          중식: 0.40
+          양식: 0.55
+          분식: 0.60
+          샐러드/건강식: 0.65
+        onboardingSwipes: null
+        allergenFilter:
+          - 땅콩
+          - 새우
+        dietType: 일반
+        weather:
+          condition: RAINY
+          temperatureCelsius: 8.5
+          description: 비 오는 날
+        recentMealHistory:
+          - restaurantId: rest-007
+            category: 양식
+            mealDate: '2026-02-25'
+            satisfaction: GOOD
+          - restaurantId: rest-008
+            category: 분식
+            mealDate: '2026-02-24'
+            satisfaction: BAD
+        excludeRestaurantIds:
+          - rest-005
+          - rest-006
+        jobCluster: null
+
+    AiRecommendationColdStartRequestExample:
+      value:
+        memberId: 550e8400-e29b-41d4-a716-446655440002
+        latitude: 37.5665
+        longitude: 126.9780
+        requestedAt: '2026-02-26T12:00:00Z'
+        isColdStart: true
+        feedbackCount: 2
+        tasteVector: null
+        onboardingSwipes:
+          - cardId: card-korean-001
+            category: 한식
+            liked: true
+          - cardId: card-japanese-001
+            category: 일식
+            liked: true
+          - cardId: card-fastfood-001
+            category: 패스트푸드
+            liked: false
+        allergenFilter: []
+        dietType: 일반
+        weather:
+          condition: CLEAR
+          temperatureCelsius: 15.0
+          description: 맑은 날
+        recentMealHistory: []
+        excludeRestaurantIds: []
+        jobCluster: IT_OFFICE_WORKER
+
+    AiRecommendationLlmSuccessExample:
+      value:
+        recommendations:
+          - restaurantId: rest-001
+            restaurantName: 광화문 된장마을
+            representativeMenu: 된장찌개 정식
+            category: 한식
+            reasonSummary: 비 오는 날엔 따뜻한 한식이 딱이에요
+            confidenceScore: 87
+            distanceMeters: 320
+            estimatedWalkMinutes: 4
+          - restaurantId: rest-002
+            restaurantName: 사쿠라 스시
+            representativeMenu: 런치 세트
+            category: 일식
+            reasonSummary: 어제 양식 드셔서 오늘은 가볍게 일식
+            confidenceScore: 72
+            distanceMeters: 480
+            estimatedWalkMinutes: 6
+          - restaurantId: rest-003
+            restaurantName: 그린 샐러드바
+            representativeMenu: 프레시 볼
+            category: 샐러드/건강식
+            reasonSummary: 건강을 중요하게 생각하시는 취향에 맞춰 추천해요
+            confidenceScore: 65
+            distanceMeters: 250
+            estimatedWalkMinutes: 3
+        isFallback: false
+        isColdStart: false
+        coldStartTag: null
+        cacheKey: rec:550e8400-e29b-41d4-a716-446655440001:3756:RAINY:WED
+        cachedUntil: '2026-02-26T13:00:00Z'
+        metadata:
+          source: LLM
+          model_used: claude-3-5-sonnet-20241022
+          latency_ms: 1250
+          token_usage:
+            prompt_tokens: 842
+            completion_tokens: 312
+            total_tokens: 1154
+          circuit_breaker_state: CLOSED
+
+    AiRecommendationFallbackCircuitOpenExample:
+      value:
+        recommendations:
+          - restaurantId: rest-001
+            restaurantName: 광화문 된장마을
+            representativeMenu: 된장찌개 정식
+            category: 한식
+            reasonSummary: 주변 인기 식당이에요
+            confidenceScore: 60
+            distanceMeters: 320
+            estimatedWalkMinutes: 4
+        isFallback: true
+        isColdStart: false
+        coldStartTag: null
+        cacheKey: rec:550e8400-e29b-41d4-a716-446655440001:3756:RAINY:WED
+        cachedUntil: null
+        metadata:
+          source: FALLBACK_RULE_BASED
+          model_used: null
+          latency_ms: 45
+          token_usage:
+            prompt_tokens: 0
+            completion_tokens: 0
+            total_tokens: 0
+          circuit_breaker_state: OPEN
+
+    AiRecommendationFallbackStaleCachedExample:
+      value:
+        recommendations:
+          - restaurantId: rest-001
+            restaurantName: 광화문 된장마을
+            representativeMenu: 된장찌개 정식
+            category: 한식
+            reasonSummary: 비 오는 날엔 따뜻한 한식이 딱이에요
+            confidenceScore: 87
+            distanceMeters: 320
+            estimatedWalkMinutes: 4
+        isFallback: true
+        isColdStart: false
+        coldStartTag: null
+        cacheKey: rec:550e8400-e29b-41d4-a716-446655440001:3756:RAINY:WED
+        cachedUntil: null
+        metadata:
+          source: STALE_CACHE
+          model_used: null
+          latency_ms: 12
+          token_usage:
+            prompt_tokens: 0
+            completion_tokens: 0
+            total_tokens: 0
+          circuit_breaker_state: OPEN
+
+    AiRecommendationColdStartExample:
+      value:
+        recommendations:
+          - restaurantId: rest-010
+            restaurantName: 종로 한식뷔페
+            representativeMenu: 한식 뷔페
+            category: 한식
+            reasonSummary: 이 근처 직장인들이 즐겨 찾는 한식 식당이에요
+            confidenceScore: 55
+            distanceMeters: 400
+            estimatedWalkMinutes: 5
+        isFallback: false
+        isColdStart: true
+        coldStartTag: 아직 취향을 학습 중이에요. 3일만 더 기록하면 추천이 확 달라져요!
+        cacheKey: rec:550e8400-e29b-41d4-a716-446655440002:3756:CLEAR:WED
+        cachedUntil: '2026-02-26T13:00:00Z'
+        metadata:
+          source: COLD_START_LLM
+          model_used: claude-3-5-sonnet-20241022
+          latency_ms: 1480
+          token_usage:
+            prompt_tokens: 620
+            completion_tokens: 280
+            total_tokens: 900
+          circuit_breaker_state: CLOSED
+
+    AiReasonRequestExample:
+      value:
+        recommendationId: rec-550e8400-e29b-41d4-a716-446655440010
+        restaurantId: rest-001
+        restaurantName: 광화문 된장마을
+        category: 한식
+        memberId: 550e8400-e29b-41d4-a716-446655440001
+        tasteVector:
+          한식: 0.85
+          일식: 0.70
+          중식: 0.40
+        weather:
+          condition: RAINY
+          temperatureCelsius: 8.5
+          description: 비 오는 날
+        recentMealHistory:
+          - restaurantId: rest-007
+            category: 양식
+            mealDate: '2026-02-25'
+            satisfaction: GOOD
+        confidenceScore: 87
+
+    AiReasonLlmSuccessExample:
+      value:
+        recommendationId: rec-550e8400-e29b-41d4-a716-446655440010
+        naturalLanguageReason: 비 오는 날 + 어제 양식 드셨으니 → 따뜻한 한식을 추천드려요
+        confidenceScore: 87
+        contextTags:
+          - 날씨
+          - 이력
+        isReasonReady: true
+        fallbackReason: null
+        cachedUntil: '2026-02-26T13:00:00Z'
+        metadata:
+          source: LLM
+          model_used: claude-3-5-sonnet-20241022
+          latency_ms: 890
+          token_usage:
+            prompt_tokens: 520
+            completion_tokens: 180
+            total_tokens: 700
+          circuit_breaker_state: CLOSED
+
+    AiReasonFallbackExample:
+      value:
+        recommendationId: rec-550e8400-e29b-41d4-a716-446655440010
+        naturalLanguageReason: 거리 320m, 평점 4.2
+        confidenceScore: 87
+        contextTags: []
+        isReasonReady: false
+        fallbackReason: 추천 이유를 준비 중이에요.
+        cachedUntil: null
+        metadata:
+          source: FALLBACK_RULE_BASED
+          model_used: null
+          latency_ms: 15
+          token_usage:
+            prompt_tokens: 0
+            completion_tokens: 0
+            total_tokens: 0
+          circuit_breaker_state: OPEN

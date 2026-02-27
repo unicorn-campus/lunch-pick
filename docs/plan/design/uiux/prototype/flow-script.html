@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>런치픽 — 사용자 플로우 프리젠테이션</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0F0F14;
+      --surface: #1A1A24;
+      --surface-hover: #24243A;
+      --border: #2E2E42;
+      --text: #E8E8F0;
+      --text-dim: #8888A0;
+      --primary: #FF6B35;
+      --primary-dim: rgba(255,107,53,0.15);
+      --success: #10B981;
+      --radius: 12px;
+      --font: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== Top Bar ===== */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      background: var(--surface);
+    }
+    .top-bar__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .top-bar__logo {
+      width: 32px; height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .top-bar__title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .top-bar__subtitle {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-left: 8px;
+    }
+    .top-bar__controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .flow-selector {
+      display: flex;
+      gap: 4px;
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .flow-tab {
+      padding: 6px 14px;
+      border: none;
+      background: none;
+      color: var(--text-dim);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .flow-tab:hover { color: var(--text); }
+    .flow-tab.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .kbd-hint {
+      font-size: 11px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 5px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: var(--font);
+      color: var(--text-dim);
+    }
+
+    /* ===== Main 3-Panel Layout ===== */
+    .main-layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ===== Left: Step List ===== */
+    .step-list {
+      width: 260px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    .step-list__flow-title {
+      padding: 8px 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .step-item:hover { background: var(--surface-hover); }
+    .step-item.active { background: var(--primary-dim); }
+    .step-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--primary);
+      border-radius: 0 3px 3px 0;
+    }
+    .step-item.completed .step-num {
+      background: var(--success);
+      border-color: var(--success);
+    }
+    .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .step-item.active .step-num {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .step-item.completed .step-num { color: #fff; }
+    .step-label {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    .step-label__sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+    .step-connector {
+      width: 1px;
+      height: 12px;
+      background: var(--border);
+      margin-left: 32px;
+    }
+
+    /* ===== Center: Phone Frame ===== */
+    .phone-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+    }
+    .phone-frame {
+      width: 375px;
+      height: 680px;
+      border: 2px solid var(--border);
+      border-radius: 40px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .phone-frame__notch {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 28px;
+      background: #000;
+      border-radius: 0 0 16px 16px;
+      z-index: 10;
+    }
+    .phone-frame__screen {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .phone-nav {
+      position: absolute;
+      bottom: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    .nav-btn:disabled:hover {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .nav-counter {
+      font-size: 13px;
+      color: var(--text-dim);
+      min-width: 50px;
+      text-align: center;
+    }
+
+    /* ===== Right: Narration ===== */
+    .narration-panel {
+      width: 320px;
+      flex-shrink: 0;
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 24px;
+      background: var(--surface);
+    }
+    .narration__screen-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .narration__title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .narration__desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+    .narration__section {
+      margin-bottom: 20px;
+    }
+    .narration__section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .narration__list {
+      list-style: none;
+      padding: 0;
+    }
+    .narration__list li {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-dim);
+      padding: 3px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    .narration__list li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+    }
+    .narration__tag {
+      display: inline-flex;
+      padding: 3px 8px;
+      background: var(--primary-dim);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+    .narration__divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+    }
+    .narration__solution {
+      padding: 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      border-left: 3px solid var(--primary);
+    }
+    .narration__solution-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .narration__solution-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-dim);
+    }
+
+    /* ===== Progress Bar ===== */
+    .progress-bar {
+      height: 3px;
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+    .progress-bar__fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1100px) {
+      .narration-panel { display: none; }
+    }
+    @media (max-width: 800px) {
+      .step-list { display: none; }
+      .phone-frame {
+        width: 320px;
+        height: 580px;
+        border-radius: 32px;
+      }
+    }
+    @media (max-width: 600px) {
+      .top-bar { padding: 10px 16px; }
+      .flow-selector { overflow-x: auto; }
+      .kbd-hint { display: none; }
+      .phone-area { padding: 16px; }
+      .phone-frame {
+        width: 280px;
+        height: 510px;
+        border-radius: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar__brand">
+      <div class="top-bar__logo">LP</div>
+      <span class="top-bar__title">런치픽 Flow</span>
+      <span class="top-bar__subtitle">Interactive Prototype Walkthrough</span>
+    </div>
+    <div class="top-bar__controls">
+      <div class="flow-selector" id="flowSelector"></div>
+      <div class="kbd-hint">
+        <kbd class="kbd">←</kbd><kbd class="kbd">→</kbd> 이동
+        <kbd class="kbd">1</kbd>~<kbd class="kbd">4</kbd> 플로우
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar">
+    <div class="progress-bar__fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Left: Steps -->
+    <div class="step-list" id="stepList"></div>
+
+    <!-- Center: Phone -->
+    <div class="phone-area">
+      <div class="phone-frame">
+        <div class="phone-frame__notch"></div>
+        <iframe class="phone-frame__screen" id="phoneScreen" src="01-로그인.html"></iframe>
+      </div>
+      <div class="phone-nav">
+        <button class="nav-btn" id="btnPrev" onclick="prevStep()" aria-label="이전">&#8592;</button>
+        <span class="nav-counter" id="navCounter">1 / 5</span>
+        <button class="nav-btn" id="btnNext" onclick="nextStep()" aria-label="다음">&#8594;</button>
+      </div>
+    </div>
+
+    <!-- Right: Narration -->
+    <div class="narration-panel" id="narrationPanel"></div>
+  </div>
+
+  <script>
+    /* ========== Flow Data ========== */
+    var FLOWS = [
+      {
+        id: 'onboarding',
+        name: '신규 온보딩',
+        steps: [
+          {
+            screen: '01-로그인.html',
+            label: '로그인',
+            sub: '소셜 로그인',
+            narration: {
+              screenName: 'SCREEN 01',
+              title: '첫 만남 — 간편 로그인',
+              desc: '사용자가 앱을 처음 열면 런치픽 브랜드와 만납니다. 카카오 간편 로그인으로 3초 안에 진입할 수 있습니다.',
+              ux: ['스플래시 → 로그인 전환 시 자연스러운 페이드', '카카오 노란색 버튼으로 즉시 인지', '가입 허들 최소화 (별도 폼 없음)'],
+              solution: { code: 'A1', text: '취향 해자 구독 플라이휠의 첫 단계. 가입이 쉬울수록 데이터 축적 시작이 빨라집니다.' },
+              tags: ['진입장벽 최소화', 'OAuth 2.0']
+            }
+          },
+          {
+            screen: '02-취향퀴즈.html',
+            label: '취향 퀴즈',
+            sub: '음식 카드 스와이프',
+            narration: {
+              screenName: 'SCREEN 02',
+              title: '10장의 카드로 취향 파악',
+              desc: '틴더 스타일 카드 UI로 음식 이미지를 좋아요/싫어요 스와이프합니다. 진행률 바와 격려 메시지로 이탈을 방지합니다.',
+              ux: ['카드 스와이프 제스처 + 버튼 양방향 지원', '진행률 바로 완료까지 남은 양 시각화', '6장째 "벌써 절반!" 격려 메시지', '건너뛰기 옵션으로 부담 감소'],
+              solution: { code: 'A1', text: '콜드스타트 문제 해결. 10개 음식 선호도만으로 첫 추천 정확도를 확보합니다.' },
+              tags: ['콜드스타트 해결', '게이미피케이션']
+            }
+          },
+          {
+            screen: '03-위치동의.html',
+            label: '위치 동의',
+            sub: '위치 정보 제공 동의',
+            narration: {
+              screenName: 'SCREEN 03',
+              title: '위치 기반 추천을 위한 동의',
+              desc: '근처 식당을 추천하려면 위치 정보가 필요합니다. 수집 목적과 보관 기간을 투명하게 안내합니다.',
+              ux: ['이용 목적·보관 기간·철회 방법 3단 안내', '"나중에" 옵션으로 강제 수집 방지', '법적 고지 접근 용이 (하단 링크)'],
+              solution: { code: 'A8', text: '투명한 정보 공개 원칙. 데이터 수집도 근거를 밝혀 신뢰를 구축합니다.' },
+              tags: ['개인정보 보호', '위치 기반 서비스']
+            }
+          },
+          {
+            screen: '04-식이제한설정.html',
+            label: '식이제한 설정',
+            sub: '알레르기·식이 유형',
+            narration: {
+              screenName: 'SCREEN 04',
+              title: '안전한 추천을 위한 식이제한',
+              desc: '8대 알레르기 유발 식품과 5가지 식이 유형을 설정합니다. 안전 필터로 위험 메뉴를 사전 차단합니다.',
+              ux: ['이모지 아이콘으로 알레르기 항목 직관적 인지', '체크박스 그리드로 다중 선택 편리', '식이 유형은 라디오(단일 선택)로 명확한 구분', '"건강 데이터 활용 동의" 명시적 안내'],
+              solution: { code: 'A8', text: '추천 신뢰도의 기본. 알레르기 정보는 필터링에 직접 반영되어 위험 메뉴를 제외합니다.' },
+              tags: ['안전 필터링', '식이 다양성']
+            }
+          },
+          {
+            screen: '05-홈.html',
+            label: '홈 (첫 추천)',
+            sub: '3개 메뉴 추천',
+            narration: {
+              screenName: 'SCREEN 05',
+              title: '드디어! 첫 3개 추천',
+              desc: '온보딩 완료 후 즉시 3개 메뉴를 추천합니다. 각 카드에 매치 스코어와 한 줄 이유가 표시됩니다.',
+              ux: ['콜드스타트 배너 "아직 배우는 중!" 으로 기대치 관리', '매치 스코어(%) + 한 줄 이유로 결정 근거 제공', '"왜?" 버튼으로 상세 추천 근거 열람', '거절 시 사유 선택으로 학습 데이터 확보'],
+              solution: { code: 'A8', text: '투명한 추천 근거 + 확신 스코어. 사용자가 "왜 이 메뉴인지" 이해하면 결정이 빨라집니다.' },
+              tags: ['3초 결정', '추천 근거 투명성']
+            }
+          }
+        ]
+      },
+      {
+        id: 'core-loop',
+        name: '추천→결정→기록',
+        steps: [
+          {
+            screen: '05-홈.html',
+            label: '홈',
+            sub: '메뉴 선택',
+            narration: {
+              screenName: 'SCREEN 05',
+              title: '오늘의 추천 3가지',
+              desc: '매일 점심시간 전, 사용자의 취향과 상황에 맞는 3개 메뉴를 추천합니다. "왜?" 버튼으로 추천 이유를 확인하고 결정합니다.',
+              ux: ['카드 탭 → "왜?" 바텀시트에서 점수 상세 확인', '확신 스코어 바(맛 취향, 위치, 가격, 영양 균형)', '콘텍스트 태그로 오늘 상황 반영 근거 표시', '"여기로 갈게요" 원탭 수락'],
+              solution: { code: 'A8', text: '투명한 추천 근거 + 확신 스코어. 4가지 축 점수와 상황 태그가 불확실성을 제거합니다.' },
+              tags: ['핵심 루프', '의사결정 지원']
+            }
+          },
+          {
+            screen: '06-길찾기.html',
+            label: '길찾기',
+            sub: '도보 경로 안내',
+            narration: {
+              screenName: 'SCREEN 06',
+              title: '식당까지 길 안내',
+              desc: '메뉴 수락 후 바로 도보 경로를 보여줍니다. 외부 지도 앱 연동으로 실제 내비게이션도 가능합니다.',
+              ux: ['도보 시간·거리 명확한 표시', '카카오맵/네이버맵 외부 연동 버튼', '"12:45까지 돌아올 수 있어요" 귀환 시간 안내', '뒤로가기로 다른 메뉴 재선택 가능'],
+              solution: { code: 'A8', text: '결정 후 행동까지 끊김 없는 경험. 추천 → 수락 → 길찾기가 하나의 흐름으로 연결됩니다.' },
+              tags: ['End-to-End 경험', '외부 서비스 연동']
+            }
+          },
+          {
+            screen: '07-식사기록.html',
+            label: '식사 기록',
+            sub: '원탭 기록 + 피드백',
+            narration: {
+              screenName: 'SCREEN 07',
+              title: '원탭으로 식사 기록, 피드백까지',
+              desc: '120px 대형 원형 버튼 한 번으로 식사를 기록합니다. 이후 이모지 피드백(좋아요/별로)과 키워드 선택으로 학습 데이터를 수집합니다.',
+              ux: ['120px 원형 버튼으로 "원탭 기록" 실현', '기록 후 ✅ 애니메이션 + 토스트 즉시 피드백', '30초 실행 취소 바로 오입력 보정', '이모지(👍👎) + 키워드 칩 조합 피드백', '"내일 추천에 반영할게요!" 가치 메시지'],
+              solution: { code: 'A5', text: '원탭 기록 + 빠른 수정 위젯. 기록 마찰을 최소화하여 데이터 축적률을 높입니다.' },
+              tags: ['원탭 기록', '학습 루프']
+            }
+          }
+        ]
+      },
+      {
+        id: 'insight',
+        name: '인사이트 조회',
+        steps: [
+          {
+            screen: '05-홈.html',
+            label: '홈',
+            sub: '하단 탭 이동',
+            narration: {
+              screenName: 'SCREEN 05',
+              title: '홈에서 인사이트로',
+              desc: '하단 내비게이션 바의 "인사이트" 탭을 눌러 나의 식사 패턴을 확인합니다.',
+              ux: ['하단 탭 4개: 홈/탐색/인사이트/프로필', '인사이트 탭에 배지로 새 데이터 알림 가능', '탭 전환 시 부드러운 화면 전환'],
+              solution: { code: 'A1', text: '취향 해자 플라이휠. 기록이 쌓일수록 인사이트가 풍성해지고, 이것이 구독 가치로 이어집니다.' },
+              tags: ['네비게이션', '가치 발견']
+            }
+          },
+          {
+            screen: '08-인사이트.html',
+            label: '이력 캘린더',
+            sub: '월간 식사 기록',
+            narration: {
+              screenName: 'SCREEN 08 — 이력 탭',
+              title: '캘린더로 한눈에 보는 식사 기록',
+              desc: '이력 탭에서 월간 캘린더 뷰로 식사 기록을 확인합니다. 카테고리별 색상 도트로 패턴이 직관적으로 보입니다.',
+              ux: ['캘린더 그리드에 카테고리 색상 도트', '한식(주황)/양식(파랑)/중식(빨강)/일식(녹색) 범례', '월 이동 화살표로 과거 기록 탐색', '무료 플랜: 30일 제한 안내 + 프리미엄 유도'],
+              solution: { code: 'A1', text: '데이터가 쌓이면 캘린더가 풍성해집니다. 30일 제한은 프리미엄 전환의 자연스러운 트리거입니다.' },
+              tags: ['데이터 시각화', '구독 트리거']
+            }
+          },
+          {
+            screen: '08-인사이트.html',
+            label: '인사이트 리포트',
+            sub: '취향 분석·만족도',
+            narration: {
+              screenName: 'SCREEN 08 — 인사이트 탭',
+              title: '나의 점심 패턴 분석',
+              desc: '인사이트 탭에서 선호 카테고리 Top 5, 주간 패턴 분석, 만족도 추세를 확인합니다. 30끼 마일스톤 달성 시 축하 배너가 표시됩니다.',
+              ux: ['선호 카테고리 Top 5 수평 바 차트', '주간 패턴 텍스트 인사이트', '만족도 평균 + 상승/하락 추세', '30끼 마일스톤 배너 "추천 정확도 42% 향상!"', '10끼 미만 시 "더 기록하면 인사이트가 열려요"'],
+              solution: { code: 'A1', text: '점진적 가치 체감. 기록이 쌓일수록 인사이트가 구체화되어 서비스 이탈을 방지합니다.' },
+              tags: ['점진적 가치', '마일스톤 축하']
+            }
+          }
+        ]
+      },
+      {
+        id: 'subscription',
+        name: '구독 전환',
+        steps: [
+          {
+            screen: '09-프로필설정.html',
+            label: '프로필 설정',
+            sub: '구독 관리 진입',
+            narration: {
+              screenName: 'SCREEN 09',
+              title: '설정에서 구독 관리로',
+              desc: '프로필 화면에서 현재 플랜 상태를 확인하고 구독 관리로 이동합니다. 계정/식이제한/알림/위치 등 전체 설정을 한 곳에서 관리합니다.',
+              ux: ['아바타 + 닉네임 + 현재 플랜 표시', '설정 섹션 그룹핑 (계정/식이/알림/구독/위치)', '토글 스위치로 알림·위치 즉시 온오프', '닉네임 수정 모달'],
+              solution: { code: 'A1', text: '구독 관리 진입점. "구독 관리" 항목에서 현재 플랜과 업그레이드 경로를 자연스럽게 노출합니다.' },
+              tags: ['설정 관리', '구독 진입점']
+            }
+          },
+          {
+            screen: '10-구독플랜.html',
+            label: '플랜 비교',
+            sub: '무료 vs 프리미엄',
+            narration: {
+              screenName: 'SCREEN 10 — 플랜 비교',
+              title: '30일간 쌓인 데이터가 사라져요',
+              desc: '손실 회피 메시지("30일간 쌓인 취향 데이터가 내일 사라져요")로 프리미엄의 가치를 체감시킵니다. 무료와 프리미엄 기능을 나란히 비교합니다.',
+              ux: ['감정적 트리거 메시지 (데이터 손실 경고)', '누적 기록 건수 + 정확도 향상률 개인화 데이터', '무료/프리미엄 나란히 비교 카드', '프리미엄 차별점: 이력 무제한, 고급 인사이트, 우선 학습', '7일 무료 체험 CTA'],
+              solution: { code: 'A1', text: '취향 해자 구독 플라이휠의 핵심. 축적된 데이터의 가치를 수치로 보여주어 전환 동기를 만듭니다.' },
+              tags: ['손실 회피', '가치 증명']
+            }
+          },
+          {
+            screen: '10-구독플랜.html',
+            label: '결제',
+            sub: '월간/연간 선택 + 카드 입력',
+            narration: {
+              screenName: 'SCREEN 10 — 결제 시트',
+              title: '결제까지 원스텝',
+              desc: '월간(4,900원)/연간(3,900원, 20% 할인) 선택 후 카드 정보를 입력합니다. 법적 고지(청약철회 7일, 언제든 해지)를 명확히 안내합니다.',
+              ux: ['월간/연간 라디오 카드 선택', '20% 할인 강조로 연간 유도', '카드 번호·유효기간·CVC 입력 폼', '법적 고지 4항목 명시', '결제 완료 후 축하 토스트 2연속'],
+              solution: { code: 'A1', text: '전환 퍼널 마지막 단계. 심리적 안전장치(7일 무료, 언제든 해지)가 결제 허들을 낮춥니다.' },
+              tags: ['결제 UX', '심리적 안전장치']
+            }
+          }
+        ]
+      }
+    ];
+
+    /* ========== State ========== */
+    var currentFlowIdx = 0;
+    var currentStepIdx = 0;
+
+    /* ========== Init ========== */
+    document.addEventListener('DOMContentLoaded', function() {
+      renderFlowTabs();
+      loadFlow(0);
+    });
+
+    /* ========== Flow Tabs ========== */
+    function renderFlowTabs() {
+      var container = document.getElementById('flowSelector');
+      FLOWS.forEach(function(flow, i) {
+        var btn = document.createElement('button');
+        btn.className = 'flow-tab' + (i === 0 ? ' active' : '');
+        btn.textContent = flow.name;
+        btn.onclick = function() { loadFlow(i); };
+        btn.dataset.idx = i;
+        container.appendChild(btn);
+      });
+    }
+
+    /* ========== Load Flow ========== */
+    function loadFlow(flowIdx) {
+      currentFlowIdx = flowIdx;
+      currentStepIdx = 0;
+
+      // Update tabs
+      document.querySelectorAll('.flow-tab').forEach(function(tab, i) {
+        tab.classList.toggle('active', i === flowIdx);
+      });
+
+      renderStepList();
+      goToStep(0);
+    }
+
+    /* ========== Step List ========== */
+    function renderStepList() {
+      var flow = FLOWS[currentFlowIdx];
+      var list = document.getElementById('stepList');
+      list.innerHTML = '';
+
+      var title = document.createElement('div');
+      title.className = 'step-list__flow-title';
+      title.textContent = 'FLOW ' + (currentFlowIdx + 1) + ' — ' + flow.name;
+      list.appendChild(title);
+
+      flow.steps.forEach(function(step, i) {
+        if (i > 0) {
+          var conn = document.createElement('div');
+          conn.className = 'step-connector';
+          list.appendChild(conn);
+        }
+        var item = document.createElement('div');
+        item.className = 'step-item';
+        item.dataset.idx = i;
+        item.onclick = function() { goToStep(i); };
+        item.innerHTML =
+          '<div class="step-num">' + (i + 1) + '</div>' +
+          '<div><div class="step-label">' + step.label + '</div>' +
+          '<div class="step-label__sub">' + step.sub + '</div></div>';
+        list.appendChild(item);
+      });
+    }
+
+    /* ========== Go To Step ========== */
+    function goToStep(stepIdx) {
+      var flow = FLOWS[currentFlowIdx];
+      if (stepIdx < 0 || stepIdx >= flow.steps.length) return;
+
+      currentStepIdx = stepIdx;
+      var step = flow.steps[stepIdx];
+
+      // Update iframe
+      document.getElementById('phoneScreen').src = step.screen;
+
+      // Update step list active/completed
+      document.querySelectorAll('.step-item').forEach(function(item, i) {
+        item.classList.remove('active', 'completed');
+        if (i < stepIdx) item.classList.add('completed');
+        if (i === stepIdx) item.classList.add('active');
+      });
+
+      // Scroll active step into view
+      var activeItem = document.querySelector('.step-item.active');
+      if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // Update nav counter
+      document.getElementById('navCounter').textContent = (stepIdx + 1) + ' / ' + flow.steps.length;
+      document.getElementById('btnPrev').disabled = stepIdx === 0;
+      document.getElementById('btnNext').disabled = stepIdx === flow.steps.length - 1;
+
+      // Update progress
+      var pct = flow.steps.length > 1 ? (stepIdx / (flow.steps.length - 1)) * 100 : 100;
+      document.getElementById('progressFill').style.width = pct + '%';
+
+      // Update narration
+      renderNarration(step.narration);
+    }
+
+    /* ========== Narration ========== */
+    function renderNarration(n) {
+      var panel = document.getElementById('narrationPanel');
+      var html = '';
+
+      html += '<div class="narration__screen-name">' + n.screenName + '</div>';
+      html += '<h2 class="narration__title">' + n.title + '</h2>';
+      html += '<p class="narration__desc">' + n.desc + '</p>';
+
+      // Tags
+      if (n.tags && n.tags.length) {
+        html += '<div style="margin-bottom:16px;">';
+        n.tags.forEach(function(t) {
+          html += '<span class="narration__tag">' + t + '</span>';
+        });
+        html += '</div>';
+      }
+
+      html += '<hr class="narration__divider">';
+
+      // UX Points
+      html += '<div class="narration__section">';
+      html += '<div class="narration__section-title">UX 포인트</div>';
+      html += '<ul class="narration__list">';
+      n.ux.forEach(function(point) {
+        html += '<li>' + point + '</li>';
+      });
+      html += '</ul></div>';
+
+      // Solution Mapping
+      if (n.solution) {
+        html += '<div class="narration__solution">';
+        html += '<div class="narration__solution-label">핵심 솔루션 ' + n.solution.code + '</div>';
+        html += '<div class="narration__solution-text">' + n.solution.text + '</div>';
+        html += '</div>';
+      }
+
+      panel.innerHTML = html;
+    }
+
+    /* ========== Navigation ========== */
+    function prevStep() { goToStep(currentStepIdx - 1); }
+    function nextStep() { goToStep(currentStepIdx + 1); }
+
+    /* ========== Keyboard ========== */
+    document.addEventListener('keydown', function(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.key === 'ArrowLeft' || e.key === 'Left') {
+        e.preventDefault();
+        prevStep();
+      } else if (e.key === 'ArrowRight' || e.key === 'Right') {
+        e.preventDefault();
+        nextStep();
+      } else if (e.key >= '1' && e.key <= '4') {
+        var idx = parseInt(e.key) - 1;
+        if (idx < FLOWS.length) loadFlow(idx);
+      }
+    });
+  </script>
+</body>
+</html>

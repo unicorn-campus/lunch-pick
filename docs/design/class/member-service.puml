@@ -1,0 +1,394 @@
+@startuml member-service
+!theme mono
+
+title 회원 서비스(member-service) - 클래스 다이어그램 (상세)
+' 작성자: 홍길동 (아키) + 한승우 (마법사)
+
+package "com.unicorn.lunchpick.member" {
+
+    ' ── Controller Layer ──────────────────────────────────────────
+    package "controller" {
+
+        class AuthController {
+            - authService: AuthService
+            + kakaoLogin(request: KakaoLoginRequest): ResponseEntity<ApiResponse<AuthResponse>>
+        }
+
+        class OnboardingController {
+            - onboardingService: OnboardingService
+            + submitOnboarding(memberId: String, request: OnboardingRequest): ResponseEntity<ApiResponse<OnboardingResponse>>
+            + saveOnboardingProgress(memberId: String, request: OnboardingProgressRequest): ResponseEntity<ApiResponse<OnboardingProgressSaveResponse>>
+            + submitLocationConsent(memberId: String, request: LocationConsentRequest): ResponseEntity<ApiResponse<LocationConsentResponse>>
+        }
+
+        class ProfileController {
+            - memberService: MemberService
+            + updateDietaryRestrictions(memberId: String, request: DietaryRestrictionsRequest): ResponseEntity<ApiResponse<DietaryRestrictionsResponse>>
+            + getProfile(memberId: String): ResponseEntity<ApiResponse<MemberProfileResponse>>
+            + updateProfile(memberId: String, request: UpdateProfileRequest): ResponseEntity<ApiResponse<MemberProfileResponse>>
+        }
+
+        class InternalMemberController {
+            - memberService: MemberService
+            + getTasteProfile(memberId: String): ResponseEntity<TasteProfileResponse>
+            + getSubscriptionStatus(memberId: String): ResponseEntity<SubscriptionStatusResponse>
+        }
+    }
+
+    ' ── Service Layer ─────────────────────────────────────────────
+    package "service" {
+
+        interface AuthService {
+            + kakaoLogin(authorizationCode: String): AuthResult
+        }
+
+        class AuthServiceImpl {
+            - kakaoOAuthClient: KakaoOAuthClient
+            - memberService: MemberService
+            - tokenService: TokenService
+            - redisTemplate: StringRedisTemplate
+            + kakaoLogin(authorizationCode: String): AuthResult
+            - exchangeKakaoToken(authorizationCode: String): String
+            - fetchKakaoProfile(accessToken: String): KakaoProfile
+        }
+
+        interface MemberService {
+            + findOrCreateMember(kakaoId: String, email: String, nickname: String): MemberResult
+            + getProfile(memberId: String): MemberProfile
+            + updateProfile(memberId: String, request: UpdateProfileRequest): MemberProfile
+            + updateDietaryRestrictions(memberId: String, request: DietaryRestrictionsRequest): void
+            + getTasteProfile(memberId: String): TasteProfile
+            + getSubscriptionStatus(memberId: String): SubscriptionStatus
+        }
+
+        class MemberServiceImpl {
+            - memberRepository: MemberRepository
+            - tasteProfileRepository: TasteProfileRepository
+            - dietaryRestrictionRepository: DietaryRestrictionRepository
+            + findOrCreateMember(kakaoId: String, email: String, nickname: String): MemberResult
+            + getProfile(memberId: String): MemberProfile
+            + updateProfile(memberId: String, request: UpdateProfileRequest): MemberProfile
+            + updateDietaryRestrictions(memberId: String, request: DietaryRestrictionsRequest): void
+            + getTasteProfile(memberId: String): TasteProfile
+            + getSubscriptionStatus(memberId: String): SubscriptionStatus
+            - validateNickname(nickname: String): void
+        }
+
+        interface OnboardingService {
+            + submitOnboarding(memberId: String, swipeResults: List<CardSwipeResult>, healthConsentGiven: boolean): OnboardingResult
+            + saveProgress(memberId: String, swipeResults: List<CardSwipeResult>): ProgressSavedResult
+            + getProgress(memberId: String): OnboardingProgress
+            + submitLocationConsent(memberId: String, consented: boolean, consentedAt: LocalDateTime): LocationConsentResult
+        }
+
+        class OnboardingServiceImpl {
+            - memberRepository: MemberRepository
+            - tasteProfileRepository: TasteProfileRepository
+            - tasteVectorService: TasteVectorService
+            + submitOnboarding(memberId: String, swipeResults: List<CardSwipeResult>, healthConsentGiven: boolean): OnboardingResult
+            + saveProgress(memberId: String, swipeResults: List<CardSwipeResult>): ProgressSavedResult
+            + getProgress(memberId: String): OnboardingProgress
+            + submitLocationConsent(memberId: String, consented: boolean, consentedAt: LocalDateTime): LocationConsentResult
+            - validateMinSwipes(swipeResults: List<CardSwipeResult>): void
+        }
+
+        class TasteVectorService {
+            + buildInitialVector(swipeResults: List<CardSwipeResult>): TasteVectorResult
+            - extractLikedCategories(swipeResults: List<CardSwipeResult>): Map<String, Double>
+            - calculateCategoryWeight(likedCount: int, totalCount: int): double
+            - resolveTopCategories(vectorMap: Map<String, Double>): List<String>
+        }
+
+        class TokenService {
+            - jwtTokenProvider: JwtTokenProvider
+            + generateJwt(memberId: String): String
+            + validateJwt(token: String): boolean
+            + getMemberIdFromJwt(token: String): String
+        }
+
+        class KakaoOAuthClient {
+            - kakaoOAuthConfig: KakaoOAuthConfig
+            + exchangeToken(authorizationCode: String): String
+            + fetchProfile(accessToken: String): KakaoProfile
+        }
+    }
+
+    ' ── Repository Layer ──────────────────────────────────────────
+    package "repository" {
+
+        interface MemberRepository {
+            + findByKakaoId(kakaoId: String): Optional<MemberEntity>
+            + findByEmail(email: String): Optional<MemberEntity>
+            + findByMemberId(memberId: String): Optional<MemberEntity>
+            + existsByEmail(email: String): boolean
+        }
+
+        interface TasteProfileRepository {
+            + findByMemberId(memberId: String): Optional<TasteProfileEntity>
+            + save(entity: TasteProfileEntity): TasteProfileEntity
+        }
+
+        interface DietaryRestrictionRepository {
+            + findByMemberId(memberId: String): Optional<DietaryRestrictionEntity>
+            + save(entity: DietaryRestrictionEntity): DietaryRestrictionEntity
+        }
+
+        interface LocationConsentRepository {
+            + findByMemberId(memberId: String): Optional<LocationConsentEntity>
+            + save(entity: LocationConsentEntity): LocationConsentEntity
+        }
+
+        ' ── Entity (JPA) ──────────────────────────────────────────
+        package "entity" {
+
+            class MemberEntity {
+                - id: Long
+                - memberId: String
+                - kakaoId: String
+                - email: String
+                - nickname: String
+                - onboardingCompleted: boolean
+                - locationEnabled: boolean
+                - recommendationAlert: boolean
+                - feedbackReminder: boolean
+                - createdAt: LocalDateTime
+                - updatedAt: LocalDateTime
+            }
+
+            class TasteProfileEntity {
+                - id: Long
+                - memberId: String
+                - tasteVector: String
+                - feedbackCount: int
+                - isColdStart: boolean
+                - updatedAt: LocalDateTime
+            }
+
+            class DietaryRestrictionEntity {
+                - id: Long
+                - memberId: String
+                - allergens: String
+                - customAllergens: String
+                - dietType: String
+                - healthInfoConsentGiven: boolean
+                - updatedAt: LocalDateTime
+            }
+
+            class LocationConsentEntity {
+                - id: Long
+                - memberId: String
+                - consented: boolean
+                - consentedAt: LocalDateTime
+                - createdAt: LocalDateTime
+            }
+        }
+    }
+
+    ' ── DTO Layer ─────────────────────────────────────────────────
+    package "dto" {
+
+        package "request" {
+            class KakaoLoginRequest {
+                - authorizationCode: String
+            }
+
+            class OnboardingRequest {
+                - swipeResults: List<CardSwipeResult>
+                - healthInfoConsentGiven: boolean
+            }
+
+            class CardSwipeResult {
+                - cardId: String
+                - liked: boolean
+                - category: String
+            }
+
+            class OnboardingProgressRequest {
+                - swipeResults: List<CardSwipeResult>
+            }
+
+            class LocationConsentRequest {
+                - consented: boolean
+                - consentedAt: LocalDateTime
+            }
+
+            class DietaryRestrictionsRequest {
+                - healthInfoConsentGiven: boolean
+                - allergens: List<String>
+                - customAllergens: List<String>
+                - dietType: String
+            }
+
+            class UpdateProfileRequest {
+                - nickname: String
+                - notificationSettings: NotificationSettingsDto
+            }
+        }
+
+        package "response" {
+            class AuthResponse {
+                - accessToken: String
+                - tokenType: String
+                - expiresIn: int
+                - memberId: String
+                - isNewUser: boolean
+                - onboardingCompleted: boolean
+            }
+
+            class OnboardingResponse {
+                - message: String
+                - topCategories: List<String>
+                - tasteVectorCreated: boolean
+            }
+
+            class OnboardingProgressSaveResponse {
+                - message: String
+                - savedCount: int
+            }
+
+            class LocationConsentResponse {
+                - locationEnabled: boolean
+                - message: String
+            }
+
+            class DietaryRestrictionsResponse {
+                - message: String
+                - appliedAllergens: List<String>
+                - dietType: String
+            }
+
+            class MemberProfileResponse {
+                - memberId: String
+                - nickname: String
+                - email: String
+                - dietType: String
+                - allergens: List<String>
+                - locationEnabled: boolean
+                - notificationSettings: NotificationSettingsDto
+                - subscription: SubscriptionStatusDto
+                - onboardingCompleted: boolean
+                - createdAt: LocalDateTime
+            }
+
+            class TasteProfileResponse {
+                - memberId: String
+                - tasteVector: Map<String, Double>
+                - allergenFilter: List<String>
+                - dietType: String
+                - feedbackCount: int
+                - isColdStart: boolean
+            }
+
+            class SubscriptionStatusResponse {
+                - plan: String
+                - historyLimitDays: Integer
+                - expiresAt: LocalDateTime
+            }
+        }
+
+        package "internal" {
+            class NotificationSettingsDto {
+                - recommendationAlert: boolean
+                - feedbackReminder: boolean
+            }
+
+            class SubscriptionStatusDto {
+                - plan: String
+                - historyLimitDays: Integer
+                - expiresAt: LocalDateTime
+            }
+
+            class KakaoProfile {
+                - kakaoId: String
+                - email: String
+                - nickname: String
+            }
+
+            class AuthResult {
+                - jwt: String
+                - memberId: String
+                - isNewMember: boolean
+                - onboardingCompleted: boolean
+            }
+
+            class MemberResult {
+                - memberId: String
+                - isNewMember: boolean
+            }
+
+            class TasteVectorResult {
+                - vectorMap: Map<String, Double>
+                - topCategories: List<String>
+            }
+        }
+    }
+
+    ' ── Config ────────────────────────────────────────────────────
+    package "config" {
+
+        class KakaoOAuthConfig {
+            - clientId: String
+            - clientSecret: String
+            - redirectUri: String
+            - tokenUri: String
+            - profileUri: String
+        }
+
+        class SecurityConfig {
+            - jwtTokenProvider: JwtTokenProvider
+            + securityFilterChain(): SecurityFilterChain
+            + passwordEncoder(): PasswordEncoder
+        }
+    }
+
+    ' ── Enum ──────────────────────────────────────────────────────
+    enum DietType {
+        일반
+        채식
+        비건
+        할랄
+        기타
+    }
+}
+
+' ── 관계 정의 ─────────────────────────────────────────────────────
+
+' Controller -> Service
+AuthController --> AuthService
+OnboardingController --> OnboardingService
+ProfileController --> MemberService
+InternalMemberController --> MemberService
+
+' Service Implementation
+AuthServiceImpl ..|> AuthService
+AuthServiceImpl --> MemberService
+AuthServiceImpl --> TokenService
+AuthServiceImpl --> KakaoOAuthClient
+
+MemberServiceImpl ..|> MemberService
+MemberServiceImpl --> MemberRepository
+MemberServiceImpl --> TasteProfileRepository
+MemberServiceImpl --> DietaryRestrictionRepository
+
+OnboardingServiceImpl ..|> OnboardingService
+OnboardingServiceImpl --> MemberRepository
+OnboardingServiceImpl --> TasteProfileRepository
+OnboardingServiceImpl --> TasteVectorService
+
+TokenService --> JwtTokenProvider
+KakaoOAuthClient --> KakaoOAuthConfig
+
+' Repository -> Entity
+MemberRepository ..> MemberEntity
+TasteProfileRepository ..> TasteProfileEntity
+DietaryRestrictionRepository ..> DietaryRestrictionEntity
+LocationConsentRepository ..> LocationConsentEntity
+
+' Domain Enum
+MemberEntity --> DietType
+DietaryRestrictionEntity --> DietType
+
+' Config
+SecurityConfig --> JwtTokenProvider
+
+@enduml

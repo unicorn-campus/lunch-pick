@@ -1,0 +1,9 @@
+{
+  "swipeResults": [
+    {"foodCardId": "card-001", "liked": true},
+    {"foodCardId": "card-002", "liked": false},
+    {"foodCardId": "card-003", "liked": true},
+    {"foodCardId": "card-004", "liked": true}
+  ],
+  "currentStep": 4
+}

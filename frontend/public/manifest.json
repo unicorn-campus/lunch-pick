@@ -1,0 +1,9 @@
+{
+  "name": "런치픽",
+  "short_name": "런치픽",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#F97316",
+  "icons": []
+}

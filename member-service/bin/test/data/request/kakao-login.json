@@ -1,0 +1,4 @@
+{
+  "authorizationCode": "test-kakao-auth-code-12345",
+  "redirectUri": "http://localhost:3000/api/auth/callback/kakao"
+}

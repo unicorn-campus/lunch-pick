@@ -1,0 +1,140 @@
+@startuml ai-pipeline-service-추천생성
+!theme mono
+
+title AI Pipeline 서비스 - 추천 생성 (UFR-REC-010, UFR-REC-030)
+
+participant "RecommendRouter" as Router
+participant "PromptBuilder" as PromptBuilder
+participant "LLMClient" as LLMClient
+participant "ResponseParser" as ResponseParser
+participant "FallbackEngine" as FallbackEngine
+participant "CacheManager" as CacheManager
+participant "LLM API(E)\n(Claude / GPT)" as LLM
+database "Redis Cache(E)" as Redis
+
+== 추천 생성 요청 수신 ==
+
+Router -> CacheManager: getCachedResult(cacheKey)
+activate CacheManager
+CacheManager -> Redis: 캐시 조회\n(rec:{memberId}:{locationGrid}:{weatherCode}:{weekday})
+activate Redis
+Redis --> CacheManager: 캐시 결과
+deactivate Redis
+
+alt 캐시 히트
+    CacheManager --> Router: 캐시된 추천 결과 반환
+    deactivate CacheManager
+    Router --> Router: 캐시 결과 즉시 반환
+
+else 캐시 미스
+    CacheManager --> Router: 캐시 없음
+    deactivate CacheManager
+
+    == 콜드스타트 판별 ==
+
+    Router -> Router: 콜드스타트 여부 확인\n(누적 피드백 5건 미만 체크)
+
+    alt 콜드스타트 (피드백 5건 미만)
+        Router -> PromptBuilder: buildColdStartPrompt(onboardingData, clusterPrior, location)
+        activate PromptBuilder
+        PromptBuilder -> PromptBuilder: 직군 클러스터 Bayesian Prior 적용
+        PromptBuilder -> PromptBuilder: 온보딩 스와이프 결과 → 초기 취향 벡터 변환
+        PromptBuilder -> PromptBuilder: 지역 인기 메뉴 가중치 추가
+        PromptBuilder --> Router: 콜드스타트 프롬프트
+        deactivate PromptBuilder
+
+    else 정상 사용자
+        Router -> PromptBuilder: buildRecommendPrompt(tasteVector, context)
+        activate PromptBuilder
+        PromptBuilder -> PromptBuilder: 취향 벡터 → 자연어 선호도 변환
+        PromptBuilder -> PromptBuilder: 컨텍스트 조립\n(날씨, 요일, 시간, 최근 식사 이력)
+        PromptBuilder -> PromptBuilder: 알레르기 하드 필터 명시
+        PromptBuilder -> PromptBuilder: 반복 방지 규칙 추가\n(최근 3일 내 동일 식당 제외)
+        PromptBuilder --> Router: 개인화 추천 프롬프트
+        deactivate PromptBuilder
+    end
+
+    == LLM 호출 ==
+
+    Router -> LLMClient: generateRecommendation(prompt)
+    activate LLMClient
+
+    LLMClient -> LLMClient: Circuit Breaker 상태 확인
+
+    alt Circuit Breaker Closed (정상)
+        LLMClient -> LLMClient: Rate Limiting 확인\n(글로벌: 분당 500회, 사용자: 분당 10회)
+
+        LLMClient -> LLM: LLM API 호출\n(init_chat_model 추상화 — Claude 또는 GPT)
+        activate LLM
+
+        alt LLM 정상 응답
+            LLM -->> LLMClient: 추천 결과 JSON 반환\n{식당 목록, 이유, 확신 스코어}
+            deactivate LLM
+
+            LLMClient --> Router: LLM 원시 응답
+            deactivate LLMClient
+
+            Router -> ResponseParser: parse(rawResponse)
+            activate ResponseParser
+            ResponseParser -> ResponseParser: JSON 파싱 및 스키마 검증
+            ResponseParser -> ResponseParser: 추천 3개 추출\n(식당명, 대표 메뉴, 추천 이유 한 줄)
+            ResponseParser -> ResponseParser: 확신 스코어 정규화 (0~100%)
+            ResponseParser -> ResponseParser: 콜드스타트 태그 부착 (해당 시)
+            ResponseParser --> Router: ParsedRecommendation\n{추천 3개, 확신 스코어, 태그}
+            deactivate ResponseParser
+
+            Router -> CacheManager: cacheResult(cacheKey, result)
+            activate CacheManager
+            CacheManager -> Redis: 결과 저장\n(TTL: 당일 13:00)
+            Redis --> CacheManager: 저장 완료
+            CacheManager --> Router: 완료
+            deactivate CacheManager
+
+            Router --> Router: 추천 결과 반환
+
+        else LLM 오류 (Retry 적용)
+            LLM -->> LLMClient: 오류 응답 (503/408/429)
+            deactivate LLM
+            LLMClient -> LLMClient: 지수 백오프 재시도\n(500ms → 1초 → 2초, 최대 3회)
+
+            alt 재시도 성공
+                LLMClient --> Router: LLM 응답
+                deactivate LLMClient
+            else 재시도 모두 실패
+                LLMClient -> LLMClient: Circuit Breaker 실패 카운트 증가\n(5회 연속 실패 시 Open 전환)
+                LLMClient --> Router: LLMException
+                deactivate LLMClient
+                Router -> FallbackEngine: getFallbackRecommendation(location, allergyFilter)
+                activate FallbackEngine
+                FallbackEngine -> FallbackEngine: 반경 500m 인기 메뉴 조회
+                FallbackEngine -> FallbackEngine: 알레르기 필터 적용
+                FallbackEngine -> FallbackEngine: 거리 기반 정렬
+                FallbackEngine --> Router: FallbackRecommendation\n{규칙 기반 추천 3개, fallback: true}
+                deactivate FallbackEngine
+            end
+        end
+
+    else Circuit Breaker Open (즉시 폴백)
+        LLMClient --> Router: CircuitBreakerOpenException
+        deactivate LLMClient
+
+        Router -> CacheManager: getStaleCachedResult(memberId)
+        activate CacheManager
+        CacheManager -> Redis: 만료 캐시 포함 조회
+        Redis --> CacheManager: 캐시 결과 (만료 포함)
+        CacheManager --> Router: 캐시 결과
+        deactivate CacheManager
+
+        alt 만료 캐시 존재
+            Router --> Router: 캐시 추천 반환\n(fallback: true, staleCache: true)
+        else 캐시 없음
+            Router -> FallbackEngine: getFallbackRecommendation(location, allergyFilter)
+            activate FallbackEngine
+            FallbackEngine -> FallbackEngine: 규칙 기반 폴백 추천 생성
+            FallbackEngine --> Router: FallbackRecommendation
+            deactivate FallbackEngine
+        end
+    end
+end
+
+@enduml

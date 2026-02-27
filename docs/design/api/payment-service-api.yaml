@@ -1,0 +1,574 @@
+openapi: 3.0.0
+info:
+  title: 결제 서비스 API
+  version: 1.0.0
+  description: 런치픽 결제 서비스 API 명세 — 구독 플랜 조회, 구독 결제, 구독 해지
+  contact:
+    name: 홍길동 (아키) + 한승우 (마법사)
+
+servers:
+  - url: https://mock.swaggerhub.com/lunch-menu-recommender/payment-service/1.0.0
+    description: Mock Server
+
+tags:
+  - name: Subscription
+    description: 구독 플랜 조회 및 결제/해지 관리
+
+paths:
+
+  /api/v1/subscriptions/plans:
+    get:
+      tags:
+        - Subscription
+      summary: 구독 플랜 조회
+      description: |
+        무료/프리미엄 플랜의 기능 비교표와 가격을 반환합니다.
+        - 월간: 4,900원 / 연간: 월 3,900원 (20% 할인)
+        플랜 정보는 Redis에 1시간 캐싱됩니다.
+        30일 기억 제한 도달 시 프론트엔드에서 전환 트리거 메시지를 표시합니다.
+      operationId: getSubscriptionPlans
+      x-user-story: UFR-PAY-010
+      x-controller: SubscriptionController
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 구독 플랜 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionPlansResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/SubscriptionPlansResponseExample'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/subscriptions:
+    post:
+      tags:
+        - Subscription
+      summary: 구독 결제
+      description: |
+        선택한 플랜(월간/연간)에 대해 PG사를 통해 결제를 처리합니다.
+        전자상거래법 준수: 청약철회권 7일 보장, 자동 갱신 고지.
+        결제 성공 시 구독 상태 갱신 이벤트를 메시지 큐(Redis Streams)에 발행합니다.
+        회원 서비스의 구독 상태는 비동기로 갱신됩니다 (결제 완료 응답과 분리).
+        이중결제 방지를 위해 PG 결제에는 Retry를 적용하지 않습니다.
+      operationId: createSubscription
+      x-user-story: UFR-PAY-020
+      x-controller: SubscriptionController
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionRequest'
+            examples:
+              monthly:
+                $ref: '#/components/examples/CreateSubscriptionMonthlyExample'
+              annual:
+                $ref: '#/components/examples/CreateSubscriptionAnnualExample'
+      responses:
+        '201':
+          description: 구독 결제 성공 — 프리미엄 즉시 활성화
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSubscriptionResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/CreateSubscriptionResponseExample'
+        '400':
+          description: 결제 정보 유효성 오류
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: INVALID_PAYMENT_INFO
+                message: 카드 정보를 다시 확인해주세요.
+                timestamp: '2026-02-26T12:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          description: PG 결제 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: PAYMENT_FAILED
+                message: 결제가 실패했어요. 다른 결제 수단을 시도해주세요.
+                timestamp: '2026-02-26T12:00:00Z'
+        '409':
+          description: 이미 활성 구독 존재
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: SUBSCRIPTION_ALREADY_ACTIVE
+                message: 이미 프리미엄 구독이 활성화되어 있어요.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/subscriptions/{subscriptionId}:
+    delete:
+      tags:
+        - Subscription
+      summary: 구독 해지
+      description: |
+        구독 해지 예약을 처리합니다. 즉시 해지가 아닌 결제 기간 종료 후 무료 플랜으로 전환됩니다.
+        전자상거래법: 청약철회권 7일 보장.
+        해지 사유(비용/미사용/품질/기타)를 수집합니다.
+        해지 예약 이벤트를 메시지 큐에 발행하여 회원 서비스가 비동기로 처리합니다.
+        복귀 유도: 해지 전 7일 무료 연장 제안 (1회 한정, /api/v1/subscriptions/extend-trial 사용).
+        무료 전환 후 30일 이전 이력은 열람 불가 안내를 포함합니다.
+      operationId: cancelSubscription
+      x-user-story: UFR-PAY-030
+      x-controller: SubscriptionController
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 구독 ID
+          example: sub-550e8400-e29b-41d4-a716-446655440050
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelSubscriptionRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/CancelSubscriptionRequestExample'
+      responses:
+        '200':
+          description: 구독 해지 예약 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelSubscriptionResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/CancelSubscriptionResponseExample'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 구독 정보 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: SUBSCRIPTION_NOT_FOUND
+                message: 활성 구독 정보를 찾을 수 없습니다.
+                timestamp: '2026-02-26T12:00:00Z'
+        '500':
+          description: 해지 처리 오류
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: CANCELLATION_ERROR
+                message: 해지 요청이 접수되었어요. 고객 지원팀이 도와드리겠습니다.
+                timestamp: '2026-02-26T12:00:00Z'
+
+  /api/v1/subscriptions/extend-trial:
+    post:
+      tags:
+        - Subscription
+      summary: 해지 전 7일 무료 연장 (복귀 유도)
+      description: |
+        해지 화면 진입 시 제공되는 7일 무료 연장입니다.
+        회원당 1회 한정으로 사용 가능합니다.
+        연장 이력을 결제 DB에 기록하고, 구독 연장 이벤트를 메시지 큐에 발행합니다.
+      operationId: extendTrial
+      x-user-story: UFR-PAY-030
+      x-controller: SubscriptionController
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 7일 무료 연장 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendTrialResponse'
+              examples:
+                default:
+                  value:
+                    message: 7일이 연장되었어요. 계속 사용해보세요!
+                    newExpiresAt: '2026-04-02T23:59:59Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: 이미 무료 연장 사용
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: TRIAL_EXTENSION_ALREADY_USED
+                message: 무료 연장은 1회만 사용 가능해요.
+                timestamp: '2026-02-26T12:00:00Z'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: API Gateway에서 발급한 JWT 액세스 토큰 (만료 1시간)
+
+  schemas:
+
+    SubscriptionPlan:
+      type: object
+      properties:
+        planId:
+          type: string
+          enum: [FREE, PREMIUM_MONTHLY, PREMIUM_ANNUAL]
+          example: PREMIUM_MONTHLY
+        planName:
+          type: string
+          example: 프리미엄 월간
+        pricePerMonth:
+          type: integer
+          description: 월 결제 금액(원)
+          example: 4900
+        totalPrice:
+          type: integer
+          description: 총 결제 금액(원) — 연간은 연 결제 금액
+          example: 4900
+        billingCycle:
+          type: string
+          enum: [MONTHLY, ANNUAL]
+          example: MONTHLY
+        discountRate:
+          type: number
+          format: float
+          description: 할인율 (%) — 연간 결제 20%
+          example: 0.0
+        features:
+          type: array
+          description: 플랜 제공 기능 목록
+          items:
+            type: string
+          example:
+            - AI 개인화 추천 3개/일
+            - 식사 이력 30일
+            - 기본 인사이트
+
+    SubscriptionPlansResponse:
+      type: object
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionPlan'
+        currentPlan:
+          type: string
+          enum: [FREE, PREMIUM_MONTHLY, PREMIUM_ANNUAL]
+          description: 현재 사용 중인 플랜
+          example: FREE
+        promotionMessage:
+          type: string
+          nullable: true
+          description: 전환 트리거 메시지 (30일 제한 도달 시)
+          example: 30일간 쌓인 데이터가 내일 사라져요.
+
+    CreateSubscriptionRequest:
+      type: object
+      required:
+        - planId
+        - paymentMethod
+        - autoRenewalAgreed
+        - withdrawalRightAcknowledged
+      properties:
+        planId:
+          type: string
+          enum: [PREMIUM_MONTHLY, PREMIUM_ANNUAL]
+          description: 선택한 구독 플랜
+          example: PREMIUM_MONTHLY
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethod'
+        autoRenewalAgreed:
+          type: boolean
+          description: 자동 갱신 동의 (전자상거래법 준수)
+          example: true
+        withdrawalRightAcknowledged:
+          type: boolean
+          description: 청약철회권 7일 고지 확인 (전자상거래법 준수)
+          example: true
+
+    PaymentMethod:
+      type: object
+      required:
+        - type
+        - cardNumber
+        - expiryMonth
+        - expiryYear
+        - cvc
+      properties:
+        type:
+          type: string
+          enum: [CREDIT_CARD, DEBIT_CARD]
+          description: 결제 수단 유형
+          example: CREDIT_CARD
+        cardNumber:
+          type: string
+          pattern: '^\d{4}-\d{4}-\d{4}-\d{4}$'
+          description: 카드 번호 (16자리)
+          example: 1234-5678-9012-3456
+        expiryMonth:
+          type: integer
+          minimum: 1
+          maximum: 12
+          description: 카드 유효기간 월
+          example: 12
+        expiryYear:
+          type: integer
+          description: 카드 유효기간 연도
+          example: 2028
+        cvc:
+          type: string
+          pattern: '^\d{3,4}$'
+          description: CVC 코드
+          example: '123'
+        cardholderName:
+          type: string
+          description: 카드 소유자 이름
+          example: 김성한
+
+    CreateSubscriptionResponse:
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          format: uuid
+          example: sub-550e8400-e29b-41d4-a716-446655440050
+        planId:
+          type: string
+          example: PREMIUM_MONTHLY
+        status:
+          type: string
+          enum: [ACTIVE, PENDING_CANCEL]
+          example: ACTIVE
+        startedAt:
+          type: string
+          format: date-time
+          description: 구독 시작일
+          example: '2026-02-26T12:10:00Z'
+        nextBillingAt:
+          type: string
+          format: date-time
+          description: 다음 결제일
+          example: '2026-03-26T12:10:00Z'
+        amount:
+          type: integer
+          description: 결제 금액(원)
+          example: 4900
+        transactionId:
+          type: string
+          description: PG사 거래 ID
+          example: pg-txn-20260226-001
+        message:
+          type: string
+          example: 프리미엄이 활성화되었어요! 이제 모든 기능을 사용할 수 있어요.
+        withdrawalDeadline:
+          type: string
+          format: date-time
+          description: 청약철회 가능 기한 (결제일 + 7일)
+          example: '2026-03-05T12:10:00Z'
+
+    CancelSubscriptionRequest:
+      type: object
+      required:
+        - cancelReason
+      properties:
+        cancelReason:
+          type: string
+          enum: [COST, NOT_USING, QUALITY, OTHER]
+          description: |
+            해지 사유:
+            - COST: 비용
+            - NOT_USING: 미사용
+            - QUALITY: 품질
+            - OTHER: 기타
+          example: COST
+        cancelReasonDetail:
+          type: string
+          nullable: true
+          description: 해지 사유 상세 (선택)
+          example: 가격이 부담돼요.
+
+    CancelSubscriptionResponse:
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          format: uuid
+          example: sub-550e8400-e29b-41d4-a716-446655440050
+        status:
+          type: string
+          enum: [PENDING_CANCEL]
+          example: PENDING_CANCEL
+        currentPeriodEndsAt:
+          type: string
+          format: date-time
+          description: 현재 구독 기간 종료일 (이 날까지 프리미엄 유지)
+          example: '2026-03-26T23:59:59Z'
+        freePlanStartsAt:
+          type: string
+          format: date-time
+          description: 무료 플랜 전환 예정일
+          example: '2026-03-27T00:00:00Z'
+        message:
+          type: string
+          example: 해지가 예약되었어요. 2026년 3월 26일까지 프리미엄을 이용할 수 있어요.
+        dataWarningMessage:
+          type: string
+          description: 무료 전환 후 이력 접근 제한 안내
+          example: 무료 전환 후 30일 이전 기록은 열람할 수 없어요.
+
+    ExtendTrialResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 7일이 연장되었어요. 계속 사용해보세요!
+        newExpiresAt:
+          type: string
+          format: date-time
+          description: 연장된 구독 만료일
+          example: '2026-04-02T23:59:59Z'
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: INVALID_REQUEST
+        message:
+          type: string
+          example: 요청 데이터를 확인해주세요.
+        timestamp:
+          type: string
+          format: date-time
+          example: '2026-02-26T12:00:00Z'
+
+  responses:
+    Unauthorized:
+      description: 인증 실패 (JWT 토큰 없거나 만료)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: UNAUTHORIZED
+            message: 로그인이 필요합니다.
+            timestamp: '2026-02-26T12:00:00Z'
+
+  examples:
+
+    SubscriptionPlansResponseExample:
+      value:
+        plans:
+          - planId: FREE
+            planName: 무료
+            pricePerMonth: 0
+            totalPrice: 0
+            billingCycle: MONTHLY
+            discountRate: 0.0
+            features:
+              - AI 개인화 추천 3개/일
+              - 식사 이력 30일
+              - 기본 인사이트
+          - planId: PREMIUM_MONTHLY
+            planName: 프리미엄 월간
+            pricePerMonth: 4900
+            totalPrice: 4900
+            billingCycle: MONTHLY
+            discountRate: 0.0
+            features:
+              - AI 개인화 추천 3개/일
+              - 식사 이력 무제한
+              - 상세 취향 인사이트
+              - 추천 이유 상세 확인
+              - 광고 없음
+          - planId: PREMIUM_ANNUAL
+            planName: 프리미엄 연간
+            pricePerMonth: 3900
+            totalPrice: 46800
+            billingCycle: ANNUAL
+            discountRate: 20.0
+            features:
+              - AI 개인화 추천 3개/일
+              - 식사 이력 무제한
+              - 상세 취향 인사이트
+              - 추천 이유 상세 확인
+              - 광고 없음
+              - 연간 20% 할인
+        currentPlan: FREE
+        promotionMessage: 30일간 쌓인 데이터가 내일 사라져요.
+
+    CreateSubscriptionMonthlyExample:
+      value:
+        planId: PREMIUM_MONTHLY
+        paymentMethod:
+          type: CREDIT_CARD
+          cardNumber: 1234-5678-9012-3456
+          expiryMonth: 12
+          expiryYear: 2028
+          cvc: '123'
+          cardholderName: 김성한
+        autoRenewalAgreed: true
+        withdrawalRightAcknowledged: true
+
+    CreateSubscriptionAnnualExample:
+      value:
+        planId: PREMIUM_ANNUAL
+        paymentMethod:
+          type: CREDIT_CARD
+          cardNumber: 9876-5432-1098-7654
+          expiryMonth: 6
+          expiryYear: 2027
+          cvc: '456'
+          cardholderName: 김성한
+        autoRenewalAgreed: true
+        withdrawalRightAcknowledged: true
+
+    CreateSubscriptionResponseExample:
+      value:
+        subscriptionId: sub-550e8400-e29b-41d4-a716-446655440050
+        planId: PREMIUM_MONTHLY
+        status: ACTIVE
+        startedAt: '2026-02-26T12:10:00Z'
+        nextBillingAt: '2026-03-26T12:10:00Z'
+        amount: 4900
+        transactionId: pg-txn-20260226-001
+        message: 프리미엄이 활성화되었어요! 이제 모든 기능을 사용할 수 있어요.
+        withdrawalDeadline: '2026-03-05T12:10:00Z'
+
+    CancelSubscriptionRequestExample:
+      value:
+        cancelReason: COST
+        cancelReasonDetail: 가격이 부담돼요.
+
+    CancelSubscriptionResponseExample:
+      value:
+        subscriptionId: sub-550e8400-e29b-41d4-a716-446655440050
+        status: PENDING_CANCEL
+        currentPeriodEndsAt: '2026-03-26T23:59:59Z'
+        freePlanStartsAt: '2026-03-27T00:00:00Z'
+        message: 해지가 예약되었어요. 2026년 3월 26일까지 프리미엄을 이용할 수 있어요.
+        dataWarningMessage: 무료 전환 후 30일 이전 기록은 열람할 수 없어요.

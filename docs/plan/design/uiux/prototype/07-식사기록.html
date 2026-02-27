@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>런치픽 - 식사 기록</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .record-section {
+      text-align: center;
+      padding: var(--space-xl) 0;
+    }
+    .record-question {
+      font-size: var(--font-size-h3);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-m);
+    }
+    .record-info {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-s);
+      padding: var(--space-m) var(--space-l);
+      background: var(--color-bg);
+      border-radius: var(--radius-m);
+      margin-bottom: var(--space-l);
+    }
+    .record-info__name {
+      font-weight: var(--font-weight-semibold);
+    }
+    .record-info__detail {
+      font-size: var(--font-size-body2);
+      color: var(--color-text-secondary);
+    }
+    .record-btn-area {
+      margin-bottom: var(--space-xl);
+    }
+    .record-main-btn {
+      width: 120px;
+      height: 120px;
+      border-radius: var(--radius-full);
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      font-family: var(--font-family);
+      font-size: var(--font-size-h3);
+      font-weight: var(--font-weight-bold);
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--easing-standard);
+      box-shadow: var(--shadow-3);
+    }
+    .record-main-btn:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-4);
+    }
+    .record-main-btn:active {
+      transform: scale(0.95);
+    }
+    .record-main-btn.done {
+      background: var(--color-success);
+      font-size: 48px;
+    }
+    /* Feedback section */
+    .feedback-section {
+      display: none;
+      padding: var(--space-l) 0;
+      border-top: 1px solid #E5E7EB;
+    }
+    .feedback-section.show {
+      display: block;
+    }
+    .feedback-title {
+      text-align: center;
+      font-size: var(--font-size-h3);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-l);
+    }
+    .feedback-subtitle {
+      text-align: center;
+      font-size: var(--font-size-body2);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-l);
+      margin-bottom: var(--space-m);
+    }
+    .feedback-keywords {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-s);
+      margin-bottom: var(--space-l);
+    }
+    .feedback-actions {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-m);
+      margin-top: var(--space-l);
+    }
+    .feedback-message {
+      text-align: center;
+      margin-top: var(--space-m);
+      font-size: var(--font-size-body2);
+      color: var(--color-primary);
+      font-weight: var(--font-weight-medium);
+    }
+    .feedback-count {
+      text-align: center;
+      margin-top: var(--space-s);
+      font-size: var(--font-size-caption);
+      color: var(--color-text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <app-header title="오늘의 점심" back="05-홈.html"></app-header>
+
+  <main role="main" class="page-container">
+    <!-- Record Section -->
+    <section id="recordSection" class="record-section" aria-label="식사 기록">
+      <h1 class="record-question" id="recordQuestion"></h1>
+
+      <div class="record-info">
+        <div>
+          <div class="record-info__name" id="recordName"></div>
+          <div class="record-info__detail" id="recordDetail"></div>
+        </div>
+      </div>
+
+      <div class="record-btn-area">
+        <button id="recordBtn" class="record-main-btn" onclick="recordMeal()" aria-label="식사 기록하기">
+          먹었어요!
+        </button>
+      </div>
+    </section>
+
+    <!-- Feedback Section -->
+    <section id="feedbackSection" class="feedback-section" aria-label="식사 피드백">
+      <h2 class="feedback-title">오늘 점심 어땠어요?</h2>
+
+      <div class="emoji-btn-group" role="radiogroup" aria-label="만족도 선택">
+        <button class="emoji-btn" id="btnGood" onclick="selectFeedback('good')" aria-label="좋아요">👍</button>
+        <button class="emoji-btn" id="btnBad" onclick="selectFeedback('bad')" aria-label="별로">👎</button>
+      </div>
+
+      <div class="feedback-subtitle">한 가지만 더! (선택)</div>
+
+      <div class="feedback-keywords" id="keywordChips" role="group" aria-label="키워드 선택">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="feedback-actions">
+        <button class="btn btn-primary" onclick="submitFeedback()">피드백 완료</button>
+        <button class="btn btn-secondary" onclick="skipFeedback()">건너뛰기</button>
+      </div>
+
+      <div id="feedbackMessage" class="feedback-message" style="display:none;">
+        💡 내일 추천에 반영할게요!
+      </div>
+      <div id="feedbackCount" class="feedback-count" style="display:none;"></div>
+    </section>
+  </main>
+
+  <!-- Undo Bar -->
+  <div id="undoBar" class="undo-bar" style="display:none;" role="alert">
+    <span class="undo-bar__text">🔄 실행 취소 (<span id="undoCountdown">30</span>초 남음)</span>
+    <button class="undo-bar__btn" onclick="undoRecord()">실행 취소</button>
+  </div>
+
+  <app-bottom-nav active="home"></app-bottom-nav>
+
+  <script src="common.js"></script>
+  <script>
+    var acceptedRec = null;
+    var feedbackChoice = null;
+    var selectedKeyword = null;
+    var undoTimer = null;
+    var undoSeconds = 30;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var stored = localStorage.getItem('lunchpick_accepted_rec');
+      acceptedRec = stored ? JSON.parse(stored) : SAMPLE_DATA.recommendations[0];
+
+      document.getElementById('recordQuestion').textContent = acceptedRec.restaurantName + '에서 식사하셨나요?';
+      document.getElementById('recordName').textContent = acceptedRec.restaurantName + ' | ' + acceptedRec.mainMenu;
+
+      var now = new Date();
+      var timeStr = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('recordDetail').textContent = '오늘 ' + timeStr;
+
+      renderKeywords();
+    });
+
+    function renderKeywords() {
+      var container = document.getElementById('keywordChips');
+      SAMPLE_DATA.feedbackKeywords.forEach(function(kw) {
+        var chip = document.createElement('button');
+        chip.className = 'chip';
+        chip.textContent = kw;
+        chip.onclick = function() {
+          document.querySelectorAll('#keywordChips .chip').forEach(function(c) { c.classList.remove('selected'); });
+          chip.classList.add('selected');
+          selectedKeyword = kw;
+        };
+        container.appendChild(chip);
+      });
+    }
+
+    function recordMeal() {
+      var btn = document.getElementById('recordBtn');
+      btn.classList.add('done');
+      btn.innerHTML = '✅';
+      btn.disabled = true;
+
+      showToast('오늘 점심 기록 완료!');
+
+      // Show undo bar
+      var undoBar = document.getElementById('undoBar');
+      undoBar.style.display = 'flex';
+      undoSeconds = 30;
+      document.getElementById('undoCountdown').textContent = undoSeconds;
+
+      undoTimer = setInterval(function() {
+        undoSeconds--;
+        document.getElementById('undoCountdown').textContent = undoSeconds;
+        if (undoSeconds <= 0) {
+          clearInterval(undoTimer);
+          undoBar.style.display = 'none';
+        }
+      }, 1000);
+
+      // Show feedback section
+      setTimeout(function() {
+        document.getElementById('feedbackSection').classList.add('show');
+      }, 800);
+    }
+
+    function undoRecord() {
+      clearInterval(undoTimer);
+      document.getElementById('undoBar').style.display = 'none';
+      var btn = document.getElementById('recordBtn');
+      btn.classList.remove('done');
+      btn.innerHTML = '먹었어요!';
+      btn.disabled = false;
+      document.getElementById('feedbackSection').classList.remove('show');
+      showToast('기록이 취소되었어요');
+    }
+
+    function selectFeedback(choice) {
+      feedbackChoice = choice;
+      var btnGood = document.getElementById('btnGood');
+      var btnBad = document.getElementById('btnBad');
+
+      btnGood.classList.remove('selected', 'dimmed');
+      btnBad.classList.remove('selected', 'dimmed');
+
+      if (choice === 'good') {
+        btnGood.classList.add('selected');
+        btnBad.classList.add('dimmed');
+      } else {
+        btnBad.classList.add('selected');
+        btnGood.classList.add('dimmed');
+      }
+    }
+
+    function submitFeedback() {
+      if (!feedbackChoice) {
+        showToast('좋아요 또는 별로를 선택해주세요');
+        return;
+      }
+      showCompletionMessage();
+    }
+
+    function skipFeedback() {
+      showCompletionMessage();
+    }
+
+    function showCompletionMessage() {
+      document.getElementById('feedbackMessage').style.display = 'block';
+      var count = SAMPLE_DATA.user.feedbackCount + 1;
+      var countEl = document.getElementById('feedbackCount');
+      countEl.textContent = '지금까지 ' + count + '번째 피드백!';
+      countEl.style.display = 'block';
+
+      showToast('피드백 감사해요!');
+    }
+  </script>
+</body>
+</html>

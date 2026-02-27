@@ -1,0 +1,84 @@
+@startuml member-service-취향온보딩
+!theme mono
+
+title 회원 서비스 - 취향 온보딩 (UFR-MBR-020)
+
+participant "OnboardingController" as Controller
+participant "OnboardingService" as OnboardingService
+participant "TasteVectorService" as TasteVectorService
+participant "MemberRepository" as MemberRepo
+participant "OnboardingRepository" as OnboardingRepo
+database "회원 DB" as MemberDB
+
+== 온보딩 퀴즈 결과 제출 ==
+
+Controller -> OnboardingService: submitOnboarding(memberId, swipeResults[])
+activate OnboardingService
+
+OnboardingService -> OnboardingService: 최소 스와이프 수 검증\n(7장 이상 완료 여부 확인)
+
+alt 7장 미만
+    OnboardingService --> Controller: ValidationException\n{code: INSUFFICIENT_SWIPES, message: "조금만 더!"}
+
+else 7장 이상 완료
+    OnboardingService -> TasteVectorService: buildInitialVector(swipeResults[])
+    activate TasteVectorService
+
+    TasteVectorService -> TasteVectorService: 좋아요 카테고리 추출\n(스와이프 결과에서 선호 항목 분류)
+    TasteVectorService -> TasteVectorService: 싫어요 카테고리 추출\n(스와이프 결과에서 비선호 항목 분류)
+    TasteVectorService -> TasteVectorService: 초기 취향 벡터 생성\n(카테고리별 선호도 가중치 계산)
+    TasteVectorService -> TasteVectorService: 선호 카테고리 Top 3 산출
+
+    TasteVectorService --> OnboardingService: TasteVector\n{카테고리 가중치 맵, 선호 Top 3}
+    deactivate TasteVectorService
+
+    OnboardingService -> MemberRepo: 취향 벡터 저장
+    activate MemberRepo
+    MemberRepo -> MemberDB: UPDATE 회원 취향 벡터\n{memberId, tasteVector JSON, 온보딩 완료 시각}
+    MemberDB --> MemberRepo: 저장 완료
+    MemberRepo --> OnboardingService: 완료
+    deactivate MemberRepo
+
+    OnboardingService -> OnboardingRepo: 온보딩 상세 기록 저장
+    activate OnboardingRepo
+    OnboardingRepo -> MemberDB: INSERT 온보딩 결과\n{memberId, 카드별 스와이프 결과, 완료 시각}
+    MemberDB --> OnboardingRepo: 저장 완료
+    OnboardingRepo --> OnboardingService: 완료
+    deactivate OnboardingRepo
+
+    OnboardingService --> Controller: OnboardingResult\n{선호 카테고리 Top 3, onboardingCompleted: true}
+end
+
+deactivate OnboardingService
+
+== 온보딩 진행 상태 임시 저장 (중간 이탈 시) ==
+
+Controller -> OnboardingService: saveProgress(memberId, partialSwipeResults[])
+activate OnboardingService
+
+OnboardingService -> OnboardingRepo: 진행 상태 임시 저장
+activate OnboardingRepo
+OnboardingRepo -> MemberDB: UPSERT 온보딩 진행 상태\n{memberId, 현재까지 스와이프 결과, 저장 시각}
+MemberDB --> OnboardingRepo: 저장 완료
+OnboardingRepo --> OnboardingService: 완료
+deactivate OnboardingRepo
+
+OnboardingService --> Controller: ProgressSaved\n{savedCount: N, remainingCount: M}
+deactivate OnboardingService
+
+== 온보딩 진행 상태 조회 (재진입 시) ==
+
+Controller -> OnboardingService: getProgress(memberId)
+activate OnboardingService
+
+OnboardingService -> OnboardingRepo: 진행 상태 조회
+activate OnboardingRepo
+OnboardingRepo -> MemberDB: SELECT 온보딩 진행 상태 WHERE memberId
+MemberDB --> OnboardingRepo: 진행 상태 반환
+OnboardingRepo --> OnboardingService: 저장된 진행 상태 반환
+deactivate OnboardingRepo
+
+OnboardingService --> Controller: OnboardingProgress\n{완료된 카드 목록, 남은 카드 목록}
+deactivate OnboardingService
+
+@enduml

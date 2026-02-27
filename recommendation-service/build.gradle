@@ -1,0 +1,41 @@
+// recommendation-service: 포트 8082, Layered Architecture
+// Spring Boot 플러그인 및 공통 의존성은 루트 build.gradle에서 적용됨
+
+bootJar {
+    archiveFileName = 'recommendation-service.jar'
+}
+
+dependencies {
+    // Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Data JPA + PostgreSQL
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Redis (추천 결과 캐시, 추천 이유 캐시 — DB 2)
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // JWT
+    implementation libs.jjwt.api
+    runtimeOnly libs.jjwt.impl
+    runtimeOnly libs.jjwt.jackson
+
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Resilience4j Circuit Breaker (ai-pipeline-service 호출 보호)
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+
+    // Spring WebFlux (WebClient — ai-pipeline, member-service 비동기 호출)
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // WireMock (AI Pipeline 클라이언트 통합 테스트용 HTTP 서버 모킹)
+    testImplementation 'org.wiremock:wiremock-standalone:3.3.1'
+
+    // H2 인메모리 DB (테스트 전용)
+    testRuntimeOnly 'com.h2database:h2'
+}

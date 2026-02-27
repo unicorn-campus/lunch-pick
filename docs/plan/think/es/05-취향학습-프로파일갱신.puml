@@ -1,0 +1,41 @@
+@startuml
+!theme mono
+title 05. 취향 학습 및 프로파일 갱신
+
+participant "시스템 스케줄러" as scheduler
+participant "추천업무" as recommend
+participant "이력업무" as history
+participant "(E)LLM API" as llm
+
+== 일일 취향 학습 (배치) ==
+
+scheduler -> recommend : [커맨드] 일일 취향 학습 실행\n[데이터] (실행 시간: 매일 03:00)
+
+recommend -> history : [커맨드] 전일 피드백 데이터 조회\n[데이터] (대상 날짜)
+history --> recommend : [이벤트] 피드백 데이터 조회됨\n[데이터] (전일 전체 피드백 목록)
+
+loop 사용자별 프로파일 갱신
+  recommend -> recommend : [정책/규칙] 장기 취향 벡터 업데이트\n- 최근 피드백 가중치 적용\n- 카테고리별 선호도 재계산\n- 반복 방지 패턴 갱신
+
+  recommend -> llm : [커맨드] 취향 임베딩 갱신 요청\n[데이터] (누적 이력, 최근 피드백,\n기존 취향 벡터)
+  llm --> recommend : [이벤트] 취향 임베딩 갱신됨\n[데이터] (갱신된 취향 벡터)
+
+  recommend -> recommend : [정책/규칙] 추천 품질 자가 검증\n- 전일 추천 수락률 확인\n- 만족 피드백 비율 확인\n- 임계값 미달 시 알림 발생
+end
+
+recommend --> scheduler : [이벤트] 일일 취향 학습 완료됨\n[데이터] (갱신 사용자 수, 평균 변화량)
+
+== 추천 반영 가시화 ==
+
+recommend -> recommend : [정책/규칙] 학습 반영 메시지 생성\n"어제 별로라고 한 매운 음식을\n오늘은 빼고 추천했어요"
+
+note right : A8: 추천 근거에\n"어제 피드백 반영" 태그 표시\n→ 학습이 실제로 작동함을 체감
+
+== 콜드스타트 프로파일 보완 ==
+
+alt 피드백 5건 미만 사용자
+  recommend -> recommend : [정책/규칙] 콜드스타트 안전망 유지\n- 직군 클러스터 Prior 적용\n- 온보딩 데이터 가중치 높게 유지
+  note right : 안내 메시지 준비:\n"3일만 더 기록하면\n추천이 확 달라져요!"
+end
+
+@enduml

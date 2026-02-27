@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>런치픽 - 위치 정보 동의</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .consent-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: var(--space-xl) var(--space-m);
+      background: var(--color-surface);
+    }
+    .consent-icon {
+      font-size: 64px;
+      margin-bottom: var(--space-l);
+    }
+    .consent-title {
+      text-align: center;
+      margin-bottom: var(--space-s);
+    }
+    .consent-desc {
+      text-align: center;
+      font-size: var(--font-size-body1);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-body1);
+      margin-bottom: var(--space-l);
+      max-width: 320px;
+    }
+    .consent-details {
+      width: 100%;
+      max-width: 360px;
+      background: var(--color-bg);
+      border-radius: var(--radius-m);
+      padding: var(--space-m);
+      margin-bottom: var(--space-xl);
+    }
+    .consent-details__item {
+      display: flex;
+      gap: var(--space-s);
+      padding: var(--space-s) 0;
+      font-size: var(--font-size-body2);
+      line-height: var(--line-height-body2);
+    }
+    .consent-details__icon {
+      flex-shrink: 0;
+      width: 20px;
+    }
+    .consent-details__label {
+      color: var(--color-text-secondary);
+      flex-shrink: 0;
+      width: 80px;
+      font-weight: var(--font-weight-medium);
+    }
+    .consent-actions {
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+    }
+    .consent-skip {
+      text-align: center;
+      margin-top: var(--space-m);
+    }
+  </style>
+</head>
+<body>
+  <main role="main" class="consent-page">
+    <div class="consent-icon" aria-hidden="true">📍</div>
+    <h1 class="consent-title">위치 정보를 허용해주세요</h1>
+    <p class="consent-desc">
+      주변 식당을 추천하기 위해<br>
+      위치 정보가 필요해요
+    </p>
+
+    <div class="consent-details" role="region" aria-label="위치 정보 수집 안내">
+      <div class="consent-details__item">
+        <span class="consent-details__icon" aria-hidden="true">📋</span>
+        <span class="consent-details__label">수집 목적</span>
+        <span>주변 식당 추천 및 거리 계산</span>
+      </div>
+      <div class="consent-details__item">
+        <span class="consent-details__icon" aria-hidden="true">⏰</span>
+        <span class="consent-details__label">보유 기간</span>
+        <span>6개월 (이후 자동 삭제)</span>
+      </div>
+      <div class="consent-details__item">
+        <span class="consent-details__icon" aria-hidden="true">🔒</span>
+        <span class="consent-details__label">철회 방법</span>
+        <span>프로필 > 설정에서 언제든 철회</span>
+      </div>
+    </div>
+
+    <div class="consent-actions">
+      <button class="btn btn-primary btn-full" onclick="handleConsent(true)">
+        동의하고 계속하기
+      </button>
+      <button class="btn btn-secondary btn-full" onclick="handleConsent(false)">
+        나중에 할게요
+      </button>
+    </div>
+
+    <div class="consent-skip">
+      <p class="caption">동의하지 않으면 위치를 직접 입력해 주셔야 해요</p>
+    </div>
+  </main>
+
+  <script src="common.js"></script>
+  <script>
+    function handleConsent(agreed) {
+      if (agreed) {
+        showToast('위치 정보가 허용되었어요!');
+      } else {
+        showToast('위치를 직접 입력해주세요');
+      }
+      setTimeout(function() {
+        navigateTo('04-식이제한설정.html');
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

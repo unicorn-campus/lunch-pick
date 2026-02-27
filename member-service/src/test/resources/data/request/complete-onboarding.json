@@ -1,0 +1,13 @@
+{
+  "swipeResults": [
+    {"foodCardId": "card-001", "liked": true},
+    {"foodCardId": "card-002", "liked": false},
+    {"foodCardId": "card-003", "liked": true},
+    {"foodCardId": "card-004", "liked": true},
+    {"foodCardId": "card-005", "liked": false},
+    {"foodCardId": "card-006", "liked": true},
+    {"foodCardId": "card-007", "liked": true}
+  ],
+  "jobType": "OFFICE_WORKER",
+  "healthInfoConsentGiven": true
+}

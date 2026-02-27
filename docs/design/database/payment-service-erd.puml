@@ -1,0 +1,92 @@
+@startuml payment-service-erd
+!theme mono
+title payment-service - Entity Relationship Diagram
+
+!define TABLE(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define PK(x) <b>x</b>
+!define FK(x) <i>x</i>
+!define UNIQUE(x) <u>x</u>
+
+TABLE(subscription, "SUBSCRIPTION\n(구독 정보)") {
+    PK(id: BIGSERIAL)
+    UNIQUE(subscription_id: VARCHAR(36))
+    FK(member_id: VARCHAR(36))
+    plan_id: VARCHAR(30) NOT NULL
+    status: VARCHAR(20) NOT NULL
+    started_at: TIMESTAMP NOT NULL
+    next_billing_at: TIMESTAMP
+    current_period_ends_at: TIMESTAMP
+    trial_extension_used: BOOLEAN NOT NULL
+    cancel_reason: VARCHAR(20)
+    cancel_reason_detail: VARCHAR(500)
+    cancelled_at: TIMESTAMP
+    --
+    created_at: TIMESTAMP NOT NULL
+    updated_at: TIMESTAMP NOT NULL
+}
+
+TABLE(payment_history, "PAYMENT_HISTORY\n(결제 이력)") {
+    PK(id: BIGSERIAL)
+    UNIQUE(payment_id: VARCHAR(36))
+    FK(member_id: VARCHAR(36))
+    FK(subscription_id: VARCHAR(36))
+    plan_id: VARCHAR(30) NOT NULL
+    amount: INTEGER NOT NULL
+    status: VARCHAR(20) NOT NULL
+    pg_transaction_id: VARCHAR(100)
+    error_code: VARCHAR(50)
+    auto_renewal_agreed: BOOLEAN NOT NULL
+    withdrawal_right_acknowledged: BOOLEAN NOT NULL
+    withdrawal_deadline: TIMESTAMP
+    requested_at: TIMESTAMP NOT NULL
+    approved_at: TIMESTAMP
+    --
+    created_at: TIMESTAMP NOT NULL
+}
+
+subscription ||--o{ payment_history : "has payment history\n(subscription_id)"
+
+note top of subscription
+  <b>Indexes:</b>
+  UNIQUE: subscription_id
+  INDEX: member_id, status
+  INDEX: status, next_billing_at
+  <b>CHECK:</b>
+  plan_id IN ('FREE','PREMIUM_MONTHLY','PREMIUM_ANNUAL')
+  status IN ('ACTIVE','PENDING_CANCEL','CANCELLED','EXPIRED')
+  cancel_reason IN ('COST','NOT_USING','QUALITY','OTHER',NULL)
+end note
+
+note top of payment_history
+  <b>Indexes:</b>
+  UNIQUE: payment_id
+  INDEX: member_id, requested_at DESC
+  INDEX: subscription_id
+  INDEX: status, requested_at
+  <b>CHECK:</b>
+  status IN ('PENDING','SUCCESS','FAILED','CANCELLED')
+  amount >= 0
+  <b>Policy:</b>
+  INSERT ONLY - 전자상거래법 5년 보존
+  UPDATE/DELETE 금지
+end note
+
+legend right
+  <b>Database:</b> lunchpick_payment (PostgreSQL 15)
+  <b>Schema:</b> lunchpick_payment
+  --
+  <b>Legend:</b>
+  PK = Primary Key (BIGSERIAL)
+  UNIQUE = Unique Constraint
+  FK = Logical Foreign Key (no constraint)
+  --
+  <b>Data Independence:</b>
+  No cross-service FK constraints.
+  member_id is UUID string reference only.
+  --
+  <b>Legal Note:</b>
+  payment_history: INSERT ONLY
+  Retained for 5 years per e-commerce law.
+end legend
+
+@enduml

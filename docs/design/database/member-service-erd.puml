@@ -1,0 +1,102 @@
+@startuml member-service-erd
+!theme mono
+title member-service - Entity Relationship Diagram
+
+!define TABLE(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define PK(x) <b>x</b>
+!define FK(x) <i>x</i>
+!define UNIQUE(x) <u>x</u>
+
+TABLE(member, "MEMBER\n(회원)") {
+    PK(id: BIGSERIAL)
+    UNIQUE(member_id: VARCHAR(36))
+    UNIQUE(kakao_id: VARCHAR(50))
+    email: VARCHAR(200)
+    nickname: VARCHAR(50) NOT NULL
+    onboarding_completed: BOOLEAN NOT NULL
+    location_enabled: BOOLEAN NOT NULL
+    recommendation_alert: BOOLEAN NOT NULL
+    feedback_reminder: BOOLEAN NOT NULL
+    --
+    created_at: TIMESTAMP NOT NULL
+    updated_at: TIMESTAMP NOT NULL
+}
+
+TABLE(taste_profile, "TASTE_PROFILE\n(취향 프로파일)") {
+    PK(id: BIGSERIAL)
+    UNIQUE(member_id: VARCHAR(36))
+    taste_vector: JSONB
+    feedback_count: INTEGER NOT NULL
+    is_cold_start: BOOLEAN NOT NULL
+    --
+    updated_at: TIMESTAMP NOT NULL
+}
+
+TABLE(dietary_restriction, "DIETARY_RESTRICTION\n(식이 제한)") {
+    PK(id: BIGSERIAL)
+    UNIQUE(member_id: VARCHAR(36))
+    allergens: JSONB
+    custom_allergens: JSONB
+    diet_type: VARCHAR(20) NOT NULL
+    health_info_consent_given: BOOLEAN NOT NULL
+    --
+    updated_at: TIMESTAMP NOT NULL
+}
+
+TABLE(location_consent, "LOCATION_CONSENT\n(위치 동의 이력)") {
+    PK(id: BIGSERIAL)
+    FK(member_id: VARCHAR(36))
+    consented: BOOLEAN NOT NULL
+    consented_at: TIMESTAMP
+    --
+    created_at: TIMESTAMP NOT NULL
+}
+
+member ||--o| taste_profile : "has taste profile\n(member_id)"
+member ||--o| dietary_restriction : "has dietary restriction\n(member_id)"
+member ||--o{ location_consent : "has consent history\n(member_id)"
+
+note top of member
+  <b>Indexes:</b>
+  UNIQUE: member_id
+  UNIQUE: kakao_id
+  INDEX: email
+end note
+
+note top of taste_profile
+  <b>Indexes:</b>
+  UNIQUE: member_id
+  <b>Note:</b>
+  taste_vector: JSONB
+  (카테고리별 가중치)
+end note
+
+note top of dietary_restriction
+  <b>Indexes:</b>
+  UNIQUE: member_id
+  <b>CHECK:</b>
+  diet_type IN ('일반','채식','비건','할랄','기타')
+end note
+
+note top of location_consent
+  <b>Indexes:</b>
+  INDEX: member_id
+  <b>Note:</b>
+  동의 변경 이력 전체 보관
+end note
+
+legend right
+  <b>Database:</b> lunchpick_member (PostgreSQL 15)
+  <b>Schema:</b> lunchpick_member
+  --
+  <b>Legend:</b>
+  PK = Primary Key (BIGSERIAL)
+  UNIQUE = Unique Constraint
+  FK = Logical Foreign Key (no constraint)
+  --
+  <b>Data Independence:</b>
+  No cross-service FK constraints.
+  member_id is UUID string reference only.
+end legend
+
+@enduml
