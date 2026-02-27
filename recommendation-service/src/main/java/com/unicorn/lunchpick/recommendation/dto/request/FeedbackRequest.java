@@ -21,9 +21,9 @@ public record FeedbackRequest(
         String satisfaction,
 
         /**
-         * 피드백 키워드 (TASTE / PORTION / SPEED, nullable)
+         * 피드백 키워드 (TASTE / PRICE / KINDNESS, nullable)
          */
-        @Pattern(regexp = "TASTE|PORTION|SPEED",
-                message = "키워드는 TASTE, PORTION, SPEED 중 하나여야 합니다.")
+        @Pattern(regexp = "TASTE|PRICE|KINDNESS",
+                message = "키워드는 TASTE, PRICE, KINDNESS 중 하나여야 합니다.")
         String keyword
 ) {}

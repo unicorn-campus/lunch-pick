@@ -100,7 +100,7 @@ export interface MealResponse {
 /** 피드백 요청 */
 export interface FeedbackRequest {
   satisfaction: 'GOOD' | 'BAD' | 'NEUTRAL'
-  keyword?: 'TASTE' | 'PORTION' | 'SPEED' | null
+  keyword?: 'TASTE' | 'PRICE' | 'KINDNESS' | null
 }
 
 /** 피드백 응답 */
@@ -119,6 +119,7 @@ export interface MealHistoryItem {
   category: string
   categoryColor: string
   satisfaction: 'GOOD' | 'BAD' | 'NEUTRAL' | null
+  keyword: 'TASTE' | 'PRICE' | 'KINDNESS' | null
   recordedAt: string
 }
 
@@ -158,6 +159,20 @@ export interface MilestoneBadge {
   accuracyImprovement: number
 }
 
+/** 식사 밸런스 진단 (AI 생성) */
+export interface MealBalance {
+  diversityScore: number
+  diagnosis: string
+  coachingComment: string
+}
+
+/** 만족도 패턴 분석 (AI 생성) */
+export interface SatisfactionAnalysis {
+  satisfactionRate: number
+  patterns: string[]
+  patternComment: string
+}
+
 /** 인사이트 응답 */
 export interface InsightsResponse {
   hasEnoughData: boolean
@@ -169,4 +184,7 @@ export interface InsightsResponse {
   satisfactionTrend: SatisfactionTrend[]
   weeklySummary: string | null
   milestone: MilestoneBadge | null
+  mealBalance: MealBalance | null
+  satisfactionAnalysis: SatisfactionAnalysis | null
+  isAiGenerated: boolean | null
 }

@@ -21,7 +21,10 @@ public record InsightsResponse(
         List<WeeklyPatternDto> weeklyPattern,
         List<SatisfactionTrendDto> satisfactionTrend,
         String weeklySummary,
-        MilestoneBadgeDto milestone
+        MilestoneBadgeDto milestone,
+        MealBalanceDto mealBalance,
+        SatisfactionAnalysisDto satisfactionAnalysis,
+        Boolean isAiGenerated
 ) {
 
     /** 카테고리 분포 DTO */
@@ -43,4 +46,14 @@ public record InsightsResponse(
     @Builder
     public record MilestoneBadgeDto(
             boolean achieved, int count, String message, double accuracyImprovement) {}
+
+    /** 식사 밸런스 진단 DTO (AI 생성) */
+    @Builder
+    public record MealBalanceDto(
+            int diversityScore, String diagnosis, String coachingComment) {}
+
+    /** 만족도 패턴 분석 DTO (AI 생성) */
+    @Builder
+    public record SatisfactionAnalysisDto(
+            int satisfactionRate, List<String> patterns, String patternComment) {}
 }

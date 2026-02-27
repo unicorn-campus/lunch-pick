@@ -36,7 +36,7 @@
           <!-- 카카오 OAuth2 (크리덴셜 미발급 시 빈 값) -->
           <entry key="KAKAO_CLIENT_ID" value="d34722dff8545446e14b2616bb62c6b0" />
           <entry key="KAKAO_CLIENT_SECRET" value="W6R3Gn0QyNaLj8ugyS7gQVxhJq7GRwUv" />
-          <entry key="KAKAO_REDIRECT_URI" value="http://localhost:3000/api/auth/callback/kakao" />
+          <entry key="KAKAO_REDIRECT_URI" value="http://localhost:3000/login" />
 
           <!-- CORS -->
           <entry key="CORS_ALLOWED_ORIGINS" value="http://localhost:3000" />

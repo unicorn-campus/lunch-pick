@@ -34,17 +34,20 @@ public class PaymentException extends BusinessException {
 
     /** 이미 활성 구독 존재 */
     public static PaymentException subscriptionAlreadyActive() {
-        return new PaymentException("SUBSCRIPTION_ALREADY_ACTIVE", "이미 프리미엄 구독이 활성화되어 있어요.");
+        return new PaymentException("SUBSCRIPTION_ALREADY_ACTIVE",
+                "이미 프리미엄을 이용 중이에요! 구독 페이지에서 현재 플랜을 확인해보세요.");
     }
 
     /** PG 결제 실패 */
     public static PaymentException paymentFailed() {
-        return new PaymentException("PAYMENT_FAILED", "결제가 실패했어요. 다른 결제 수단을 시도해주세요.");
+        return new PaymentException("PAYMENT_FAILED",
+                "결제에 실패했어요. 카드 정보를 확인하시거나 다른 카드로 시도해주세요.");
     }
 
     /** 결제 정보 유효성 오류 */
     public static PaymentException invalidPaymentInfo() {
-        return new PaymentException("INVALID_PAYMENT_INFO", "카드 정보를 다시 확인해주세요.");
+        return new PaymentException("INVALID_PAYMENT_INFO",
+                "카드 번호, 유효기간, CVC를 다시 확인해주세요.");
     }
 
     /** 무료 연장 이미 사용 */

@@ -8,6 +8,7 @@
 import { paymentApiClient } from './instances'
 import type { ApiResponse } from '@/types/api'
 import type {
+  ActiveSubscriptionResponse,
   SubscriptionPlansResponse,
   CreateSubscriptionRequest,
   CreateSubscriptionResponse,
@@ -17,6 +18,10 @@ import type {
 } from '@/types/payment'
 
 export const paymentService = {
+  /** GET /api/v1/subscriptions/active — 활성 구독 조회 */
+  getActiveSubscription: () =>
+    paymentApiClient.get<ApiResponse<ActiveSubscriptionResponse>>('/subscriptions/active'),
+
   /** GET /api/v1/subscriptions/plans — 구독 플랜 조회 */
   getSubscriptionPlans: () =>
     paymentApiClient.get<ApiResponse<SubscriptionPlansResponse>>('/subscriptions/plans'),

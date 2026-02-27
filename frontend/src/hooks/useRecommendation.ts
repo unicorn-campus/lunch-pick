@@ -85,8 +85,14 @@ export function useRefreshRecommendations() {
   return useMutation({
     mutationFn: (data: RefreshRecommendationsRequest) =>
       recommendationService.refreshRecommendations(data).then((res) => res.data.data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['recommendations', 'today'] })
+    onSuccess: (data, variables) => {
+      // mutation 응답 데이터로 쿼리 캐시를 직접 교체한다.
+      // invalidateQueries → refetch 방식은 recommendation-service DB2 캐시를
+      // 다시 읽어 동일 데이터를 반환하므로, setQueryData로 즉시 반영한다.
+      queryClient.setQueryData(
+        ['recommendations', 'today', variables.latitude, variables.longitude],
+        data,
+      )
     },
   })
 }

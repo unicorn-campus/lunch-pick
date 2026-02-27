@@ -3,6 +3,14 @@
  * payment-service-api.yaml components/schemas 기반
  */
 
+/** 활성 구독 조회 응답 */
+export interface ActiveSubscriptionResponse {
+  subscriptionId: string
+  planId: string
+  status: string
+  currentPeriodEndsAt: string | null
+}
+
 /** 구독 플랜 */
 export interface SubscriptionPlan {
   planId: 'FREE' | 'PREMIUM_MONTHLY' | 'PREMIUM_ANNUAL'

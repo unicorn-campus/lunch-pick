@@ -17,5 +17,6 @@ public record MealResponse(
         String restaurantName,
         String menuName,
         LocalDateTime recordedAt,
-        String message
+        String message,
+        boolean duplicate
 ) {}

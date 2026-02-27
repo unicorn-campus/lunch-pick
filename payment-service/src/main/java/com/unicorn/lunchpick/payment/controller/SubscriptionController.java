@@ -4,6 +4,7 @@ import com.unicorn.lunchpick.common.dto.ApiResponse;
 import com.unicorn.lunchpick.payment.config.jwt.UserPrincipal;
 import com.unicorn.lunchpick.payment.dto.request.CancelSubscriptionRequest;
 import com.unicorn.lunchpick.payment.dto.request.CreateSubscriptionRequest;
+import com.unicorn.lunchpick.payment.dto.response.ActiveSubscriptionResponse;
 import com.unicorn.lunchpick.payment.dto.response.CancelSubscriptionResponse;
 import com.unicorn.lunchpick.payment.dto.response.CreateSubscriptionResponse;
 import com.unicorn.lunchpick.payment.dto.response.ExtendTrialResponse;
@@ -41,6 +42,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+
+    /**
+     * 활성 구독 조회
+     *
+     * @param principal 인증 사용자
+     * @return 활성 구독 정보 (없으면 204 No Content)
+     */
+    @Operation(summary = "활성 구독 조회",
+            description = "현재 사용자의 활성 구독 정보(subscriptionId 포함)를 반환합니다.",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
+    @GetMapping("/active")
+    public ResponseEntity<ApiResponse<ActiveSubscriptionResponse>> getActiveSubscription(
+            @AuthenticationPrincipal UserPrincipal principal) {
+        ActiveSubscriptionResponse response = subscriptionService.getActiveSubscription(principal.getUserId());
+        if (response == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(ApiResponse.ok(response));
+    }
 
     /**
      * 구독 플랜 목록 조회

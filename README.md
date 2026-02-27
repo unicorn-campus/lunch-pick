@@ -72,28 +72,22 @@ python3 tools/run-intellij-service-profile.py --stop
 | 항목 | 결과 |
 |------|------|
 | 전체 TC | 32개 PASS / 32개 |
-| 브라우저 E2E | PASS |
-| PO 제품 검증 | Critical/Major 0건 |
-| SP 제품 검증 | Critical/Major 0건 |
+| 브라우저 E2E (자동화) | PASS (Playwright Test Suite, 2분 42초) |
+| PO 제품 검증 | CONDITIONAL PASS → 실제 버그 수정 후 PASS |
+| SP UI/UX 검증 | CONDITIONAL PASS → 실제 버그 수정 후 PASS |
+| 회귀 테스트 | PASS (32/32, 신규 버그 0건) |
 
 **상세 보고서**: [Final Report](docs/develop/test/final-report.md)
-
-### Known Issues
-
-| # | 심각도 | 설명 |
-|---|--------|------|
-| 1 | Minor | 409 중복 기록 시 "기록 중 오류" 일반 메시지 (구체 안내 권장) |
-| 2 | Minor | 402 결제 실패 시 "결제 중 오류" 일반 메시지 (API 응답 메시지 표시 권장) |
-| 3 | Major | payment-service ↔ member-service 구독 상태 동기화 안정화 필요 |
 
 ### Known Improvements
 
 | # | 관점 | 설명 |
 |---|------|------|
-| 1 | PO | 프로필 프리미엄 전환 유도 강화, 인사이트 블러 처리 업셀 |
-| 2 | SP | 인사이트 빈 상태 프로그레스 바/일러스트 추가 |
-| 3 | SP | "왜?/거절" 터치 영역 확대 (44x44px) |
-| 4 | PO | 메뉴 가격 정보, 외부 평점/리뷰 연동 (Phase 2) |
+| 1 | PO | 퀴즈 완료 시 Top 3 취향 카테고리 즉시 표시 |
+| 2 | PO/SP | 구독 플랜 무료/프리미엄 2열 비교 레이아웃 |
+| 3 | SP | 추천 이유 바텀시트 복수 컨텍스트 태그 표시 |
+| 4 | SP | 바텀시트 명시적 닫기(X) 버튼 추가 |
+| 5 | SP | 이력 달력 카테고리 도트 크기 확대 (8px+) |
 
 > 상세 테스트 레포트: [docs/develop/test/](docs/develop/test/)
 

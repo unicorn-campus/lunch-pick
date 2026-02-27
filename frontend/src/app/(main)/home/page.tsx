@@ -7,7 +7,7 @@
  * UFR-REC-040: 추천 수락
  * UFR-REC-050: 추천 거절 + 대체 추천
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Loading, { CardSkeleton } from '@/components/common/Loading'
 import BottomSheet from '@/components/common/BottomSheet'
@@ -21,6 +21,7 @@ import {
 } from '@/hooks/useRecommendation'
 import { useAuthStore } from '@/store/authStore'
 import { useToast } from '@/hooks/useToast'
+import { useGeolocation } from '@/hooks/useGeolocation'
 import type { RecommendationCard } from '@/types/recommendation'
 
 const DEFAULT_LOCATION = { latitude: 37.5665, longitude: 126.978 }
@@ -238,16 +239,37 @@ function RecommendationCardItem({
   )
 }
 
+function getMealGreeting(): string {
+  const hour = new Date().getHours()
+  if (hour < 10) return '오늘 점심 추천이에요 🍽️'
+  if (hour < 14) return '지금 점심 추천이에요 🍽️'
+  if (hour < 17) return '내일 점심 미리 볼까요? 🍽️'
+  return '내일 점심 미리 볼까요? 🍽️'
+}
+
 export default function HomePage() {
   const router = useRouter()
   const toast = useToast()
   const { nickname } = useAuthStore()
+  const geo = useGeolocation()
 
   const [reasonSheet, setReasonSheet] = useState<RecommendationCard | null>(null)
   const [rejectSheet, setRejectSheet] = useState<RecommendationCard | null>(null)
   const [startTime] = useState(() => Date.now())
+  const mealGreeting = getMealGreeting()
 
-  const { data, isLoading, isError, refetch } = useTodayRecommendations(DEFAULT_LOCATION)
+  // GPS 폴백 시 사용자 안내 토스트 (렌더 외부에서 호출)
+  useEffect(() => {
+    if (!geo.isLoading && geo.isDefault && geo.error) {
+      toast.info(geo.error)
+    }
+    // toast 참조 변화는 무시, geo 상태 변화에만 반응
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [geo.isLoading, geo.isDefault, geo.error])
+
+  const location = { latitude: geo.latitude, longitude: geo.longitude }
+  const { data, isLoading: isRecLoading, isError, refetch } = useTodayRecommendations(location)
+  const isLoading = geo.isLoading || isRecLoading
   const { mutate: acceptRec, isPending: isAccepting } = useAcceptRecommendation()
   const { mutate: rejectRec, isPending: isRejecting } = useRejectRecommendation()
   const { mutate: refreshRecs, isPending: isRefreshing } = useRefreshRecommendations()
@@ -318,9 +340,9 @@ export default function HomePage() {
       return
     }
 
-    const rejectedIds = data?.recommendations.map((r) => r.recommendationId) ?? []
+    const rejectedIds = data?.recommendations.map((r) => r.restaurantId) ?? []
     refreshRecs(
-      { rejectedIds, ...DEFAULT_LOCATION },
+      { rejectedIds, latitude: geo.latitude, longitude: geo.longitude },
       {
         onSuccess: () => toast.success('추천이 새로고침되었어요!'),
         onError: () => toast.error('새로고침 중 오류가 발생했어요.'),
@@ -329,16 +351,25 @@ export default function HomePage() {
   }
 
   return (
-    <div className="px-[var(--margin-mobile)] py-[var(--space-m)]">
+    <div className="px-[var(--margin-mobile)] pt-[var(--space-m)] pb-[var(--bottom-tab-height)]">
       {/* 인사 */}
       <div className="mb-[var(--space-s)]">
         <p className="text-[var(--font-size-h2)] font-bold">
-          안녕하세요, {nickname ?? '런치픽'}님!
+          안녕하세요, {nickname || '런치피커'}님!
         </p>
         <p className="mt-1 text-[var(--font-size-body1)] text-[var(--color-text-secondary)]">
-          오늘 점심 추천이에요 🍽️
+          {mealGreeting}
         </p>
       </div>
+
+      {/* GPS 상태 표시 */}
+      {!geo.isLoading && (
+        <p className="mb-[var(--space-s)] text-[var(--font-size-caption)] text-[var(--color-text-secondary)]">
+          {geo.isDefault
+            ? `📍 기본 위치(광화문) 기준${geo.locationName ? ` · ${geo.locationName}` : ''}`
+            : `📍 현재 위치 기준${geo.locationName ? ` · ${geo.locationName}` : ''}`}
+        </p>
+      )}
 
       {/* 콜드스타트 배너 */}
       {data?.isColdStart && (

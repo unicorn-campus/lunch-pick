@@ -56,7 +56,7 @@ public class FeedbackEntity extends BaseTimeEntity {
     @Column(name = "satisfaction", nullable = false, length = 10)
     private String satisfaction;
 
-    /** 피드백 키워드 (TASTE / PORTION / SPEED, nullable) */
+    /** 피드백 키워드 (TASTE / PRICE / KINDNESS, nullable) */
     @Column(name = "keyword", length = 20)
     private String keyword;
 
@@ -73,6 +73,13 @@ public class FeedbackEntity extends BaseTimeEntity {
         this.feedbackId = feedbackId;
         this.memberId = memberId;
         this.mealId = mealId;
+        this.satisfaction = satisfaction;
+        this.keyword = keyword;
+        this.skipped = skipped;
+    }
+
+    /** 피드백 수정 */
+    public void update(String satisfaction, String keyword, boolean skipped) {
         this.satisfaction = satisfaction;
         this.keyword = keyword;
         this.skipped = skipped;

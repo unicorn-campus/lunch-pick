@@ -9,12 +9,14 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import ToastContainer from '@/components/common/Toast'
 
-const NAV_ITEMS = [
-  { href: '/home', icon: '🏠', label: '홈' },
-  { href: '/insights', icon: '📊', label: '이력' },
-  { href: '/insights', icon: '💡', label: '인사이트' },
-  { href: '/profile', icon: '👤', label: '프로필' },
-]
+const PAGE_TITLES: Record<string, string> = {
+  '/home': '홈',
+  '/insights': '이력',
+  '/meal-record': '식사 기록',
+  '/navigation': '길찾기',
+  '/profile': '프로필',
+  '/subscription': '구독',
+}
 
 export default function MainLayout({
   children,
@@ -22,6 +24,7 @@ export default function MainLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const pageTitle = PAGE_TITLES[pathname] ?? '런치픽'
 
   return (
     <div className="flex min-h-dvh flex-col bg-[var(--color-background)]">
@@ -30,22 +33,23 @@ export default function MainLayout({
         className="sticky top-0 z-40 flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-[var(--margin-mobile)]"
         style={{ height: 'var(--header-height)' }}
       >
-        <div className="flex items-center gap-1">
-          <span className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">📍</span>
-          <span className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">현재 위치</span>
-        </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5 min-w-[72px]">
           <img src="/images/logo.png" alt="런치픽" className="h-7 w-7 rounded-[var(--radius-xs)]" />
-          <span className="text-[var(--font-size-h3)] font-bold text-[var(--color-primary)]">
+          <span className="text-[var(--font-size-body2)] font-bold text-[var(--color-primary)]">
             런치픽
           </span>
         </div>
-        <button
-          aria-label="알림"
-          className="p-1 text-[var(--color-text-secondary)]"
-        >
-          🔔
-        </button>
+        <span className="text-[var(--font-size-body1)] font-semibold text-[var(--color-text-primary)]">
+          {pageTitle}
+        </span>
+        <div className="flex min-w-[72px] justify-end">
+          <button
+            aria-label="알림"
+            className="p-1 text-[var(--color-text-secondary)]"
+          >
+            🔔
+          </button>
+        </div>
       </header>
 
       {/* 메인 콘텐츠 */}

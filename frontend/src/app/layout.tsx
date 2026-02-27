@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import Script from 'next/script'
 import './globals.css'
 import Providers from './providers'
 
@@ -24,6 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <Script src="/runtime-env.js" strategy="beforeInteractive" />
+      </head>
       <body>
         <Providers>
           {/* 모바일 앱 느낌의 최대 폭 레이아웃: 480px 중앙 정렬 */}

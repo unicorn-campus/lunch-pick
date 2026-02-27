@@ -75,7 +75,15 @@ public record AiRecommendationRequest(
 
         /** 직군 클러스터 (콜드스타트 전용) */
         @JsonProperty("jobCluster")
-        String jobCluster
+        String jobCluster,
+
+        /** 주변 이용 가능한 식당 목록 (카카오맵 API 조회 결과, nullable) */
+        @JsonProperty("availableRestaurants")
+        List<AvailableRestaurantData> availableRestaurants,
+
+        /** AI Pipeline 캐시 스킵 여부 (새로고침 시 true) */
+        @JsonProperty("skipCache")
+        boolean skipCache
 ) {
 
     /**
@@ -107,5 +115,19 @@ public record AiRecommendationRequest(
             @JsonProperty("category") String category,
             @JsonProperty("mealDate") String mealDate,
             @JsonProperty("satisfaction") String satisfaction
+    ) {}
+
+    /**
+     * 주변 이용 가능한 식당 데이터 (카카오맵 API 조회 결과)
+     */
+    @Builder
+    public record AvailableRestaurantData(
+            @JsonProperty("restaurantId") String restaurantId,
+            @JsonProperty("restaurantName") String restaurantName,
+            @JsonProperty("representativeMenu") String representativeMenu,
+            @JsonProperty("category") String category,
+            @JsonProperty("distanceMeters") int distanceMeters,
+            @JsonProperty("estimatedWalkMinutes") int estimatedWalkMinutes,
+            @JsonProperty("allergens") List<String> allergens
     ) {}
 }

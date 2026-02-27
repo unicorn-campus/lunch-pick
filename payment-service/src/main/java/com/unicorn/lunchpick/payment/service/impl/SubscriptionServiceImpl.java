@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unicorn.lunchpick.payment.dto.request.CancelSubscriptionRequest;
 import com.unicorn.lunchpick.payment.dto.request.CreateSubscriptionRequest;
+import com.unicorn.lunchpick.payment.dto.response.ActiveSubscriptionResponse;
 import com.unicorn.lunchpick.payment.dto.response.CancelSubscriptionResponse;
 import com.unicorn.lunchpick.payment.dto.response.CreateSubscriptionResponse;
 import com.unicorn.lunchpick.payment.dto.response.ExtendTrialResponse;
@@ -69,6 +70,22 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final ObjectMapper objectMapper;
     private final SubscriptionEventPublisher eventPublisher;
     private final PgGateway pgGateway;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public ActiveSubscriptionResponse getActiveSubscription(String memberId) {
+        return subscriptionRepository.findByMemberIdAndStatus(memberId, "ACTIVE")
+                .map(sub -> ActiveSubscriptionResponse.builder()
+                        .subscriptionId(sub.getSubscriptionId())
+                        .planId(sub.getPlanId())
+                        .status(sub.getStatus())
+                        .currentPeriodEndsAt(sub.getCurrentPeriodEndsAt())
+                        .build())
+                .orElse(null);
+    }
 
     /**
      * {@inheritDoc}
@@ -169,8 +186,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                     .build();
             subscriptionRepository.save(subscription);
 
-            // 활성 구독 캐시 무효화
+            // 캐시 무효화 (활성 구독 + 플랜 목록)
             stringRedisTemplate.delete(ACTIVE_SUBSCRIPTION_CACHE_PREFIX + memberId);
+            stringRedisTemplate.delete(PLAN_LIST_CACHE_KEY);
+
+            // member-service 구독 상태 캐시 동기화 (MVP: 동일 Redis 공유)
+            stringRedisTemplate.opsForValue().set(
+                    "subscription:" + memberId + ":plan", "PREMIUM", Duration.ofHours(24));
+            stringRedisTemplate.opsForValue().set(
+                    "subscription:" + memberId + ":expiresAt",
+                    nextBillingAt.toString(), Duration.ofHours(24));
 
             // 구독 활성화 이벤트 발행
             eventPublisher.publishActivated(memberId, subscriptionId, request.planId(), nextBillingAt);
@@ -197,10 +222,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     /**
      * PG 게이트웨이 장애 시 폴백
+     * <p>비즈니스 예외(PaymentException)는 그대로 전파하고, PG 장애만 제네릭 메시지로 변환합니다.</p>
      */
     public CreateSubscriptionResponse createSubscriptionFallback(String memberId,
                                                                    CreateSubscriptionRequest request,
                                                                    Throwable t) {
+        // 비즈니스 예외는 그대로 전파 (이미 구독 중, 중복 결제 Lock 등)
+        if (t instanceof PaymentException) {
+            throw (PaymentException) t;
+        }
         log.warn("PG 게이트웨이 장애 — 결제 실패 처리 — memberId: {}, cause: {}", memberId, t.getMessage());
         throw PaymentException.paymentFailed();
     }
@@ -220,6 +250,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         // 활성 구독 캐시 무효화
         stringRedisTemplate.delete(ACTIVE_SUBSCRIPTION_CACHE_PREFIX + memberId);
+
+        // member-service 구독 상태 캐시 동기화 (MVP: 동일 Redis 공유)
+        stringRedisTemplate.opsForValue().set(
+                "subscription:" + memberId + ":plan", "FREE", Duration.ofHours(24));
+        stringRedisTemplate.delete("subscription:" + memberId + ":expiresAt");
 
         // 해지 예약 이벤트 발행
         eventPublisher.publishPendingCancel(memberId, subscriptionId,

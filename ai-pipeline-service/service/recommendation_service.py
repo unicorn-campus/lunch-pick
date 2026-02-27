@@ -85,15 +85,18 @@ class RecommendationService:
         weekday_code = self._get_weekday_code(request.requested_at)
         member_id = request.member_id
 
-        # 1. Redis 캐시 조회
-        cached = await self._cache.get_recommendation(
-            member_id, location_grid, weather_code, weekday_code
-        )
-        if cached is not None:
-            logger.info("캐시 히트 (member=%s)", member_id)
-            return self._build_response_from_cache(
-                cached, member_id, location_grid, weather_code, weekday_code
+        # 1. Redis 캐시 조회 (skipCache=true 시 건너뜀)
+        if not request.skip_cache:
+            cached = await self._cache.get_recommendation(
+                member_id, location_grid, weather_code, weekday_code
             )
+            if cached is not None:
+                logger.info("캐시 히트 (member=%s)", member_id)
+                return self._build_response_from_cache(
+                    cached, member_id, location_grid, weather_code, weekday_code
+                )
+        else:
+            logger.info("캐시 스킵 요청 (member=%s)", member_id)
 
         # 2. Circuit Breaker 상태 확인
         cb = self._llm.circuit_breaker
@@ -152,13 +155,14 @@ class RecommendationService:
         """일반 사용자 추천 생성."""
         system_prompt, user_prompt, prompt_hash = self._prompt_builder.build(request)
 
-        # 프롬프트 해시 캐시 확인 (동일 컨텍스트 중복 호출 방지)
-        hash_cached = await self._cache.get_prompt_hash(prompt_hash)
-        if hash_cached is not None:
-            logger.info("프롬프트 해시 캐시 히트 (hash=%s)", prompt_hash)
-            return self._build_response_from_cache(
-                hash_cached, member_id, location_grid, weather_code, weekday_code
-            )
+        # 프롬프트 해시 캐시 확인 (동일 컨텍스트 중복 호출 방지, skipCache 시 건너뜀)
+        if not request.skip_cache:
+            hash_cached = await self._cache.get_prompt_hash(prompt_hash)
+            if hash_cached is not None:
+                logger.info("프롬프트 해시 캐시 히트 (hash=%s)", prompt_hash)
+                return self._build_response_from_cache(
+                    hash_cached, member_id, location_grid, weather_code, weekday_code
+                )
 
         raw_response, token_usage = await self._llm.generate_recommendation(
             system_prompt, user_prompt

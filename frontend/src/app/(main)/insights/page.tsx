@@ -5,11 +5,12 @@
  * UFR-REC-110: 식사 이력 캘린더 (GET /api/v1/history/timeline)
  * UFR-REC-120: 취향 인사이트 리포트 (GET /api/v1/insights)
  */
-import { useState, Suspense } from 'react'
+import { useState, useEffect, Suspense, type ReactNode } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Loading, { CardSkeleton } from '@/components/common/Loading'
 import Button from '@/components/common/Button'
 import { useHistoryTimeline, useInsights } from '@/hooks/useRecommendation'
+import { useSubscriptionStatus } from '@/hooks/useMember'
 import type { MealHistoryItem, InsightsResponse, MealHistoryResponse } from '@/types/recommendation'
 
 type TabType = 'history' | 'insight'
@@ -31,10 +32,23 @@ function getCategoryColor(category: string, fallbackColor?: string): string {
   return CATEGORY_COLORS[category] ?? fallbackColor ?? '#9CA3AF'
 }
 
+const KEYWORD_LABELS: Record<string, string> = {
+  TASTE: '🍴 맛',
+  PRICE: '💰 가격',
+  KINDNESS: '😊 친절',
+}
+
+const SATISFACTION_LABELS: Record<string, string> = {
+  GOOD: '👍 좋았어요',
+  BAD: '👎 별로였어요',
+  NEUTRAL: '😐 보통이었어요',
+}
+
 function CalendarView({ meals }: { meals: MealHistoryItem[] }) {
   const now = new Date()
   const [viewYear, setViewYear] = useState(now.getFullYear())
   const [viewMonth, setViewMonth] = useState(now.getMonth()) // 0-indexed
+  const [selectedDay, setSelectedDay] = useState<number | null>(null)
 
   const firstDay = new Date(viewYear, viewMonth, 1).getDay() // 0=Sun
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
@@ -49,6 +63,7 @@ function CalendarView({ meals }: { meals: MealHistoryItem[] }) {
   })
 
   function prevMonth() {
+    setSelectedDay(null)
     if (viewMonth === 0) {
       setViewMonth(11)
       setViewYear((y) => y - 1)
@@ -60,6 +75,7 @@ function CalendarView({ meals }: { meals: MealHistoryItem[] }) {
   function nextMonth() {
     const today = new Date()
     if (viewYear > today.getFullYear() || (viewYear === today.getFullYear() && viewMonth >= today.getMonth())) return
+    setSelectedDay(null)
     if (viewMonth === 11) {
       setViewMonth(0)
       setViewYear((y) => y + 1)
@@ -117,13 +133,18 @@ function CalendarView({ meals }: { meals: MealHistoryItem[] }) {
           const meal = mealMap[day]
           const isToday =
             isCurrentMonth && day === now.getDate()
+          const isSelected = selectedDay === day
           return (
-            <div
+            <button
               key={day}
-              className={`flex aspect-square flex-col items-center justify-center gap-[2px] rounded-[var(--radius-s)] text-[var(--font-size-body2)] ${
-                isToday
-                  ? 'bg-[var(--color-primary)] text-white'
-                  : 'hover:bg-[var(--color-background)]'
+              type="button"
+              onClick={() => setSelectedDay(isSelected ? null : day)}
+              className={`flex aspect-square flex-col items-center justify-center gap-[2px] rounded-[var(--radius-s)] text-[var(--font-size-body2)] transition-colors ${
+                isSelected
+                  ? 'ring-2 ring-[var(--color-primary)] bg-[#FFF5F0]'
+                  : isToday
+                    ? 'bg-[var(--color-primary)] text-white'
+                    : 'hover:bg-[var(--color-background)]'
               }`}
             >
               <span>{day}</span>
@@ -135,13 +156,13 @@ function CalendarView({ meals }: { meals: MealHistoryItem[] }) {
                   }}
                 />
               )}
-            </div>
+            </button>
           )
         })}
       </div>
 
       {/* 범례 */}
-      <div className="mb-[var(--space-l)] flex flex-wrap justify-center gap-[var(--space-m)]">
+      <div className="mb-[var(--space-m)] flex flex-wrap justify-center gap-[var(--space-m)]">
         {Object.entries(CATEGORY_COLORS)
           .slice(0, 4)
           .map(([cat, color]) => (
@@ -156,6 +177,57 @@ function CalendarView({ meals }: { meals: MealHistoryItem[] }) {
             </div>
           ))}
       </div>
+
+      {/* 선택된 날짜 상세 카드 */}
+      {selectedDay !== null && (() => {
+        const meal = mealMap[selectedDay]
+        return (
+          <div className="mb-[var(--space-l)] rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
+            <div className="mb-[var(--space-s)] text-[var(--font-size-caption)] text-[var(--color-text-secondary)]">
+              {viewYear}년 {viewMonth + 1}월 {selectedDay}일
+            </div>
+            {meal ? (
+              <div>
+                <div className="mb-[var(--space-xs)] flex items-center gap-[var(--space-s)]">
+                  <span
+                    className="h-3 w-3 rounded-full"
+                    style={{ background: getCategoryColor(meal.category, meal.categoryColor) }}
+                  />
+                  <span className="text-[var(--font-size-h3)] font-bold">{meal.restaurantName}</span>
+                  <span className="text-[var(--font-size-caption)] text-[var(--color-text-secondary)]">
+                    ({meal.category})
+                  </span>
+                </div>
+                {meal.menuName && (
+                  <div className="mb-[var(--space-s)] text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
+                    메뉴: {meal.menuName}
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-[var(--space-s)]">
+                  {meal.satisfaction && (
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[var(--font-size-caption)] ${
+                      meal.satisfaction === 'GOOD' ? 'bg-[#ECFDF5] text-[#065F46]'
+                        : meal.satisfaction === 'BAD' ? 'bg-[#FEF2F2] text-[#991B1B]'
+                          : 'bg-[#F3F4F6] text-[#374151]'
+                    }`}>
+                      {SATISFACTION_LABELS[meal.satisfaction] ?? meal.satisfaction}
+                    </span>
+                  )}
+                  {meal.keyword && (
+                    <span className="inline-flex items-center rounded-full bg-[#EFF6FF] px-2 py-0.5 text-[var(--font-size-caption)] text-[#1E40AF]">
+                      {KEYWORD_LABELS[meal.keyword] ?? meal.keyword}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
+                기록된 식사가 없어요
+              </div>
+            )}
+          </div>
+        )
+      })()}
     </div>
   )
 }
@@ -163,9 +235,9 @@ function CalendarView({ meals }: { meals: MealHistoryItem[] }) {
 /** 데모 이력 데이터 */
 const DEMO_HISTORY: MealHistoryResponse = {
   meals: [
-    { mealId: 'dm-1', date: new Date().toISOString(), restaurantName: '광화문 된장마을', menuName: '된장찌개 정식', category: '한식', categoryColor: '#EF4444', satisfaction: 'GOOD', recordedAt: new Date().toISOString() },
-    { mealId: 'dm-2', date: new Date(Date.now() - 86400000).toISOString(), restaurantName: '스시히로', menuName: '런치 스페셜 세트', category: '일식', categoryColor: '#8B5CF6', satisfaction: 'GOOD', recordedAt: new Date(Date.now() - 86400000).toISOString() },
-    { mealId: 'dm-3', date: new Date(Date.now() - 86400000 * 2).toISOString(), restaurantName: '반미 사이공', menuName: '클래식 반미', category: '아시안', categoryColor: '#06B6D4', satisfaction: 'BAD', recordedAt: new Date(Date.now() - 86400000 * 2).toISOString() },
+    { mealId: 'dm-1', date: new Date().toISOString(), restaurantName: '광화문 된장마을', menuName: '된장찌개 정식', category: '한식', categoryColor: '#EF4444', satisfaction: 'GOOD', keyword: 'TASTE', recordedAt: new Date().toISOString() },
+    { mealId: 'dm-2', date: new Date(Date.now() - 86400000).toISOString(), restaurantName: '스시히로', menuName: '런치 스페셜 세트', category: '일식', categoryColor: '#8B5CF6', satisfaction: 'GOOD', keyword: 'KINDNESS', recordedAt: new Date(Date.now() - 86400000).toISOString() },
+    { mealId: 'dm-3', date: new Date(Date.now() - 86400000 * 2).toISOString(), restaurantName: '반미 사이공', menuName: '클래식 반미', category: '아시안', categoryColor: '#06B6D4', satisfaction: 'BAD', keyword: 'PRICE', recordedAt: new Date(Date.now() - 86400000 * 2).toISOString() },
   ],
   totalCount: 3,
   message: null,
@@ -195,6 +267,99 @@ const DEMO_INSIGHTS: InsightsResponse = {
   ],
   weeklySummary: '이번 주는 한식과 일식을 골고루 드셨어요. 만족도가 점점 올라가고 있네요!',
   milestone: { achieved: true, count: 3, message: '3끼 기록 달성!', accuracyImprovement: 12 },
+  mealBalance: { diversityScore: 65, diagnosis: '양호', coachingComment: '다양한 카테고리를 시도하고 계시네요. 샐러드나 건강식도 한번 도전해보세요!' },
+  satisfactionAnalysis: { satisfactionRate: 78, patterns: ['한식 만족도 높음', '금요일 만족도 낮음'], patternComment: '한식을 드실 때 만족도가 높고, 금요일엔 새로운 시도가 오히려 만족도를 낮추는 경향이 있어요.' },
+  isAiGenerated: true,
+}
+
+/** AI 인사이트 블러 오버레이 (무료 사용자) */
+function AiInsightBlurOverlay({ children, onUpgrade }: { children: ReactNode; onUpgrade: () => void }) {
+  return (
+    <div className="relative mb-[var(--space-m)]">
+      <div style={{ filter: 'blur(6px)', pointerEvents: 'none' }}>{children}</div>
+      <div className="absolute inset-0 flex flex-col items-center justify-center rounded-[var(--radius-l)] bg-white/80">
+        <span className="mb-[var(--space-s)] text-[28px]">🔒</span>
+        <p className="mb-[var(--space-m)] text-center text-[var(--font-size-body2)] font-medium text-[var(--color-text-secondary)]">
+          프리미엄에서 AI 인사이트를 확인하세요
+        </p>
+        <button
+          onClick={onUpgrade}
+          className="rounded-full bg-[var(--color-primary)] px-5 py-2 text-[var(--font-size-body2)] font-medium text-white transition-colors hover:opacity-90"
+        >
+          프리미엄 시작하기
+        </button>
+      </div>
+    </div>
+  )
+}
+
+/** 식사 밸런스 진단 카드 */
+function MealBalanceCard({ diversityScore, diagnosis, coachingComment }: { diversityScore: number; diagnosis: string; coachingComment: string }) {
+  const radius = 40
+  const circumference = 2 * Math.PI * radius
+  const offset = circumference - (diversityScore / 100) * circumference
+  const scoreColor = diversityScore >= 80 ? '#10B981' : diversityScore >= 60 ? '#F59E0B' : diversityScore >= 40 ? '#F97316' : '#EF4444'
+
+  return (
+    <div className="rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
+      <div className="mb-[var(--space-s)] flex items-center gap-[var(--space-xs)]">
+        <span className="text-[var(--font-size-label)]">🥗</span>
+        <h3 className="text-[var(--font-size-label)] font-medium">식사 밸런스 진단</h3>
+        <span className="ml-auto rounded-full bg-[#EDE9FE] px-2 py-0.5 text-[10px] font-medium text-[#7C3AED]">AI</span>
+      </div>
+      <div className="flex items-center gap-[var(--space-m)]">
+        <div className="relative flex-shrink-0">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r={radius} fill="none" stroke="#E5E7EB" strokeWidth="8" />
+            <circle
+              cx="50" cy="50" r={radius} fill="none"
+              stroke={scoreColor} strokeWidth="8" strokeLinecap="round"
+              strokeDasharray={circumference} strokeDashoffset={offset}
+              transform="rotate(-90 50 50)"
+              style={{ transition: 'stroke-dashoffset 0.8s ease' }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-[var(--font-size-h2)] font-bold" style={{ color: scoreColor }}>{diversityScore}</span>
+            <span className="text-[10px] text-[var(--color-text-secondary)]">다양성</span>
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="mb-[var(--space-xs)]">
+            <span className="inline-block rounded-full px-2 py-0.5 text-[var(--font-size-caption)] font-medium" style={{ backgroundColor: `${scoreColor}20`, color: scoreColor }}>
+              {diagnosis}
+            </span>
+          </div>
+          <p className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)] leading-relaxed">{coachingComment}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/** 만족도 패턴 분석 카드 */
+function SatisfactionPatternCard({ satisfactionRate, patterns, patternComment }: { satisfactionRate: number; patterns: string[]; patternComment: string }) {
+  return (
+    <div className="rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
+      <div className="mb-[var(--space-s)] flex items-center gap-[var(--space-xs)]">
+        <span className="text-[var(--font-size-label)]">📊</span>
+        <h3 className="text-[var(--font-size-label)] font-medium">만족도 패턴 분석</h3>
+        <span className="ml-auto rounded-full bg-[#EDE9FE] px-2 py-0.5 text-[10px] font-medium text-[#7C3AED]">AI</span>
+      </div>
+      <div className="mb-[var(--space-s)] flex items-center gap-[var(--space-s)]">
+        <span className="text-[var(--font-size-h2)] font-bold text-[var(--color-primary)]">{satisfactionRate}%</span>
+        <span className="text-[var(--font-size-caption)] text-[var(--color-text-secondary)]">전체 만족률</span>
+      </div>
+      <div className="mb-[var(--space-s)] flex flex-wrap gap-[var(--space-xs)]">
+        {patterns.map((pattern) => (
+          <span key={pattern} className="inline-block rounded-full bg-[#F0F9FF] px-3 py-1 text-[var(--font-size-caption)] text-[#0369A1]">
+            {pattern}
+          </span>
+        ))}
+      </div>
+      <p className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)] leading-relaxed">{patternComment}</p>
+    </div>
+  )
 }
 
 function InsightsContent() {
@@ -203,8 +368,15 @@ function InsightsContent() {
   const tabParam = searchParams.get('tab')
   const [activeTab, setActiveTab] = useState<TabType>(tabParam === 'insight' ? 'insight' : 'history')
 
+  // 하단 네비게이션 클릭 시 searchParams 변경을 감지하여 탭 동기화
+  useEffect(() => {
+    setActiveTab(tabParam === 'insight' ? 'insight' : 'history')
+  }, [tabParam])
+
   const { data: historyData, isLoading: isHistoryLoading, isError: isHistoryError } = useHistoryTimeline()
   const { data: insightsData, isLoading: isInsightsLoading, isError: isInsightsError } = useInsights()
+  const { data: subStatus } = useSubscriptionStatus()
+  const isPremium = subStatus?.plan === 'PREMIUM'
 
   // 데모 모드: API 에러 시 데모 데이터 사용
   const effectiveHistory = historyData ?? (isHistoryError ? DEMO_HISTORY : undefined)
@@ -323,17 +495,74 @@ function InsightsContent() {
               </div>
             )}
 
-            {/* 이번 주 패턴 */}
-            {effectiveInsights.weeklySummary && (
-              <div className="mb-[var(--space-m)] rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
-                <h3 className="mb-[var(--space-m)] text-[var(--font-size-label)] font-medium">
-                  이번 주 당신의 점심 패턴
-                </h3>
-                <p className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
-                  &ldquo;{effectiveInsights.weeklySummary}&rdquo;
-                </p>
-              </div>
-            )}
+            {/* AI 인사이트 섹션 */}
+            {(() => {
+              const showAi = isPremium && effectiveInsights.isAiGenerated
+              const ins = effectiveInsights
+
+              const weeklySummaryCard = ins.weeklySummary ? (
+                <div className="mb-[var(--space-m)] rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)]">
+                  <div className="mb-[var(--space-s)] flex items-center gap-[var(--space-xs)]">
+                    <span className="text-[var(--font-size-label)]">📝</span>
+                    <h3 className="text-[var(--font-size-label)] font-medium">이번 주 당신의 점심 패턴</h3>
+                    {ins.isAiGenerated && <span className="ml-auto rounded-full bg-[#EDE9FE] px-2 py-0.5 text-[10px] font-medium text-[#7C3AED]">AI</span>}
+                  </div>
+                  <p className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)] leading-relaxed">
+                    &ldquo;{ins.weeklySummary}&rdquo;
+                  </p>
+                </div>
+              ) : null
+
+              const mealBalanceCard = ins.mealBalance ? (
+                <div className="mb-[var(--space-m)]">
+                  <MealBalanceCard
+                    diversityScore={ins.mealBalance.diversityScore}
+                    diagnosis={ins.mealBalance.diagnosis}
+                    coachingComment={ins.mealBalance.coachingComment}
+                  />
+                </div>
+              ) : null
+
+              const satisfactionCard = ins.satisfactionAnalysis ? (
+                <div className="mb-[var(--space-m)]">
+                  <SatisfactionPatternCard
+                    satisfactionRate={ins.satisfactionAnalysis.satisfactionRate}
+                    patterns={ins.satisfactionAnalysis.patterns}
+                    patternComment={ins.satisfactionAnalysis.patternComment}
+                  />
+                </div>
+              ) : null
+
+              const hasAiCards = weeklySummaryCard || mealBalanceCard || satisfactionCard
+
+              if (showAi && hasAiCards) {
+                return <>{weeklySummaryCard}{mealBalanceCard}{satisfactionCard}</>
+              }
+
+              if (!isPremium) {
+                // 무료 사용자: 항상 블러 처리된 데모 카드 표시
+                const demoBalance = DEMO_INSIGHTS.mealBalance!
+                const demoSatisfaction = DEMO_INSIGHTS.satisfactionAnalysis!
+                return (
+                  <AiInsightBlurOverlay onUpgrade={() => router.push('/subscription')}>
+                    <div className="rounded-[var(--radius-l)] bg-[var(--color-surface)] p-[var(--space-m)] shadow-[var(--shadow-2)] mb-[var(--space-m)]">
+                      <div className="mb-[var(--space-s)] flex items-center gap-[var(--space-xs)]">
+                        <span className="text-[var(--font-size-label)]">📝</span>
+                        <h3 className="text-[var(--font-size-label)] font-medium">이번 주 당신의 점심 패턴</h3>
+                        <span className="ml-auto rounded-full bg-[#EDE9FE] px-2 py-0.5 text-[10px] font-medium text-[#7C3AED]">AI</span>
+                      </div>
+                      <p className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">&ldquo;{DEMO_INSIGHTS.weeklySummary}&rdquo;</p>
+                    </div>
+                    <div className="mb-[var(--space-m)]">
+                      <MealBalanceCard diversityScore={demoBalance.diversityScore} diagnosis={demoBalance.diagnosis} coachingComment={demoBalance.coachingComment} />
+                    </div>
+                    <SatisfactionPatternCard satisfactionRate={demoSatisfaction.satisfactionRate} patterns={demoSatisfaction.patterns} patternComment={demoSatisfaction.patternComment} />
+                  </AiInsightBlurOverlay>
+                )
+              }
+
+              return null
+            })()}
 
             {/* 선호 카테고리 Top 5 */}
             {effectiveInsights.topCategories.length > 0 && (
@@ -416,15 +645,17 @@ function InsightsContent() {
           </div>
         )}
 
-        {/* 구독 업그레이드 유도 */}
-        <div className="mt-[var(--space-l)] rounded-[var(--radius-m)] border border-dashed border-[var(--color-border)] p-[var(--space-m)] text-center">
-          <p className="mb-[var(--space-s)] text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
-            💎 더 자세한 인사이트는 프리미엄에서
-          </p>
-          <Button variant="secondary" size="sm" onClick={() => router.push('/subscription')}>
-            프리미엄 보기
-          </Button>
-        </div>
+        {/* 구독 업그레이드 유도 (무료 플랜만 표시) */}
+        {!isPremium && (
+          <div className="mt-[var(--space-l)] rounded-[var(--radius-m)] border border-dashed border-[var(--color-border)] p-[var(--space-m)] text-center">
+            <p className="mb-[var(--space-s)] text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
+              💎 더 자세한 인사이트는 프리미엄에서
+            </p>
+            <Button variant="secondary" size="sm" onClick={() => router.push('/subscription')}>
+              프리미엄 보기
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

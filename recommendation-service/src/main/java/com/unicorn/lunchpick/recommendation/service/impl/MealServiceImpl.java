@@ -47,6 +47,9 @@ public class MealServiceImpl implements MealService {
     private final FeedbackRepository feedbackRepository;
     private final StringRedisTemplate stringRedisTemplate;
 
+    @org.springframework.beans.factory.annotation.Value("${meal.time-validation.enabled:true}")
+    private boolean mealTimeValidationEnabled;
+
     /**
      * {@inheritDoc}
      *
@@ -55,15 +58,26 @@ public class MealServiceImpl implements MealService {
     @Override
     @Transactional
     public MealResponse createMeal(String memberId, CreateMealRequest request) {
-        LocalTime mealTime = request.recordedAt().toLocalTime();
-        if (mealTime.isBefore(MEAL_START) || mealTime.isAfter(MEAL_END)) {
-            throw RecommendationException.invalidMealTime();
+        if (mealTimeValidationEnabled) {
+            LocalTime mealTime = request.recordedAt().toLocalTime();
+            if (mealTime.isBefore(MEAL_START) || mealTime.isAfter(MEAL_END)) {
+                throw RecommendationException.invalidMealTime();
+            }
         }
 
         LocalDateTime dayStart = LocalDate.from(request.recordedAt()).atStartOfDay();
         LocalDateTime dayEnd = dayStart.plusDays(1);
-        if (mealRecordRepository.existsByMemberIdAndRecordedAtBetween(memberId, dayStart, dayEnd)) {
-            throw RecommendationException.duplicateMealRecord();
+        var existingMeals = mealRecordRepository.findByMemberIdAndRecordedAtBetweenOrderByRecordedAtDesc(memberId, dayStart, dayEnd);
+        if (!existingMeals.isEmpty()) {
+            MealRecordEntity existing = existingMeals.get(0);
+            return MealResponse.builder()
+                    .mealId(existing.getMealId())
+                    .restaurantName(existing.getRestaurantName())
+                    .menuName(existing.getMenuName())
+                    .recordedAt(existing.getRecordedAt())
+                    .message("이미 기록되었어요. 수정하시겠어요?")
+                    .duplicate(true)
+                    .build();
         }
 
         MealRecordEntity meal = MealRecordEntity.builder()
@@ -78,8 +92,13 @@ public class MealServiceImpl implements MealService {
                 .build();
         mealRecordRepository.save(meal);
 
-        // 추천 캐시 무효화
-        stringRedisTemplate.delete("rec:" + memberId + ":*");
+        // 추천 캐시 무효화 (패턴 매칭 삭제)
+        var recKeys = stringRedisTemplate.keys("rec:" + memberId + ":*");
+        if (recKeys != null && !recKeys.isEmpty()) {
+            stringRedisTemplate.delete(recKeys);
+        }
+        // 인사이트 캐시 무효화
+        stringRedisTemplate.delete("insight:" + memberId);
 
         log.info("식사 기록 완료 — memberId: {}, mealId: {}", memberId, meal.getMealId());
 
@@ -102,6 +121,9 @@ public class MealServiceImpl implements MealService {
                 .orElseThrow(RecommendationException::mealNotFound);
 
         meal.update(request.restaurantId(), null, request.menuName(), request.recordedAt());
+
+        // 인사이트 캐시 무효화
+        stringRedisTemplate.delete("insight:" + memberId);
 
         log.info("식사 기록 수정 완료 — memberId: {}, mealId: {}", memberId, mealId);
 
@@ -131,6 +153,10 @@ public class MealServiceImpl implements MealService {
         }
 
         mealRecordRepository.delete(meal);
+
+        // 인사이트 캐시 무효화
+        stringRedisTemplate.delete("insight:" + memberId);
+
         log.info("식사 기록 취소 완료 — memberId: {}, mealId: {}", memberId, mealId);
     }
 
@@ -145,15 +171,24 @@ public class MealServiceImpl implements MealService {
 
         boolean skipped = "NEUTRAL".equals(request.satisfaction()) && request.keyword() == null;
 
-        FeedbackEntity feedback = FeedbackEntity.builder()
-                .feedbackId(UUID.randomUUID().toString())
-                .memberId(memberId)
-                .mealId(mealId)
-                .satisfaction(request.satisfaction())
-                .keyword(request.keyword())
-                .skipped(skipped)
-                .build();
+        // 기존 피드백이 있으면 수정, 없으면 새로 생성
+        FeedbackEntity feedback = feedbackRepository.findByMealId(mealId)
+                .map(existing -> {
+                    existing.update(request.satisfaction(), request.keyword(), skipped);
+                    return existing;
+                })
+                .orElseGet(() -> FeedbackEntity.builder()
+                        .feedbackId(UUID.randomUUID().toString())
+                        .memberId(memberId)
+                        .mealId(mealId)
+                        .satisfaction(request.satisfaction())
+                        .keyword(request.keyword())
+                        .skipped(skipped)
+                        .build());
         feedbackRepository.save(feedback);
+
+        // 인사이트 캐시 무효화
+        stringRedisTemplate.delete("insight:" + memberId);
 
         long totalCount = feedbackRepository.countByMemberId(memberId);
         log.info("피드백 제출 완료 — memberId: {}, satisfaction: {}, totalCount: {}",

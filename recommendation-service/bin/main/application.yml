@@ -63,8 +63,10 @@ external:
     url: ${WEATHER_API_URL:}
     key: ${WEATHER_API_KEY:}
   map:
-    url: ${MAP_API_URL:}
-    key: ${MAP_API_KEY:}
+    url: https://dapi.kakao.com
+    key: ${KAKAO_API_KEY:}
+    search-radius: 500
+    endpoint: /v2/local/search/keyword.json
 
 # Resilience4j Circuit Breaker (ai-pipeline-service 호출 보호)
 resilience4j:
@@ -81,11 +83,30 @@ resilience4j:
           - java.util.concurrent.TimeoutException
           - org.springframework.web.reactive.function.client.WebClientResponseException
           - io.netty.handler.timeout.ReadTimeoutException
+      kakao-map:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        minimum-number-of-calls: 5
+        record-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+          - io.netty.handler.timeout.ReadTimeoutException
   timelimiter:
     instances:
       ai-pipeline:
         timeout-duration: 35s
         cancel-running-future: true
+      kakao-map:
+        timeout-duration: 5s
+        cancel-running-future: true
+
+# 식사 기록 시간 검증 (운영: true, 개발/테스트: false)
+meal:
+  time-validation:
+    enabled: ${MEAL_TIME_VALIDATION_ENABLED:false}
 
 # CORS
 cors:

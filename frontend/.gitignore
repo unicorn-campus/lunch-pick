@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (.env.example은 커밋 허용, 실제 값이 담긴 파일만 제외)
 .env
 .env.local
+
+# runtime-env.js (실제 키 값 포함 — generate-runtime-env.sh로 생성)
+/public/runtime-env.js
 .env.development.local
 .env.test.local
 .env.production.local

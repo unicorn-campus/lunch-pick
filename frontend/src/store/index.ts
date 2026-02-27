@@ -4,5 +4,5 @@
  */
 export { useAuthStore } from './authStore'
 export { useUiStore } from './uiStore'
-export type { Toast, ToastType } from './uiStore'
+export type { Toast, ToastAction, ToastType } from './uiStore'
 export { useOnboardingStore } from './onboardingStore'

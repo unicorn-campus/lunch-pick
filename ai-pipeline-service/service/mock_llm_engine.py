@@ -22,6 +22,8 @@ from datetime import datetime
 
 from model.ai_metadata import AiMetadata, TokenUsage
 from model.common import AiSource, CBStateEnum, ContextTag
+from model.insight_request import AiInsightRequest
+from model.insight_response import AiInsightResponse, MealBalance, SatisfactionAnalysis
 from model.reason_request import AiReasonRequest
 from model.reason_response import AiReasonResponse, ParsedReason
 from model.recommendation_request import AiRecommendationRequest
@@ -239,8 +241,27 @@ class MockLLMEngine:
         exclude_ids = set(request.exclude_restaurant_ids or [])
         recent_ids = {h.restaurant_id for h in (request.recent_meal_history or [])}
 
-        # 1. 반경 내 식당 조회
-        nearby = self._query_nearby(request.latitude, request.longitude)
+        # 1. 반경 내 식당 조회 (전달된 식당 목록이 있으면 사용)
+        if request.available_restaurants:
+            nearby = [
+                {
+                    "restaurant_id": r.restaurant_id,
+                    "restaurant_name": r.restaurant_name,
+                    "representative_menu": r.representative_menu,
+                    "category": r.category,
+                    "latitude": request.latitude,
+                    "longitude": request.longitude,
+                    "allergens": r.allergens,
+                    "taste_affinity": {},
+                    "weather_boost": [],
+                    "weekday_boost": [],
+                    "base_score": 80,
+                    "_dist": r.distance_meters,
+                }
+                for r in request.available_restaurants
+            ]
+        else:
+            nearby = self._query_nearby(request.latitude, request.longitude)
 
         # 2. 알레르기 필터
         filtered = [
@@ -267,8 +288,9 @@ class MockLLMEngine:
 
         # 필터 결과가 부족하면 전체에서 보충
         if len(top) < 3:
+            catalog = _RESTAURANT_CATALOG  # 폴백용 카탈로그
             all_scored = []
-            for r in _RESTAURANT_CATALOG:
+            for r in catalog:
                 if any(a in r.get("allergens", []) for a in allergen_filter):
                     continue
                 score = self._compute_score(r, taste_vector, weather_condition, weekday)
@@ -282,11 +304,14 @@ class MockLLMEngine:
 
         recommendations = []
         for score, r in top:
-            dist = self._haversine(
-                request.latitude, request.longitude,
-                r["latitude"], r["longitude"]
-            )
-            dist_m = int(dist)
+            # Kakao 식당은 이미 거리 정보가 있으므로 _dist 사용
+            if "_dist" in r:
+                dist_m = r["_dist"]
+            else:
+                dist_m = int(self._haversine(
+                    request.latitude, request.longitude,
+                    r["latitude"], r["longitude"]
+                ))
             walk_min = max(1, round(dist_m / 80))
             clamped_score = max(75, min(92, score))
 
@@ -400,6 +425,106 @@ class MockLLMEngine:
             isReasonReady=True,
             fallbackReason=None,
             cachedUntil=None,
+            metadata=metadata,
+        )
+
+    def generate_insights(self, request: AiInsightRequest) -> AiInsightResponse:
+        """카테고리 분포 기반 규칙 엔진으로 인사이트 생성.
+
+        source=LLM, metadata.modelUsed="mock-rule-engine-v1" 로 반환.
+        """
+        # 다양성 점수 계산
+        unique_categories = len(request.category_distribution)
+        total_meals = request.total_meal_count or 1
+        raw_diversity = (unique_categories / max(total_meals, 1)) * 100
+        diversity_score = max(0, min(100, int(raw_diversity * 5)))  # 보정 계수
+
+        # 진단 결정
+        if diversity_score >= 80:
+            diagnosis = "매우 다양"
+        elif diversity_score >= 60:
+            diagnosis = "양호"
+        elif diversity_score >= 40:
+            diagnosis = "약간 편중"
+        else:
+            diagnosis = "편중"
+
+        # 편중 카테고리 찾기
+        top_cat = max(request.category_distribution, key=request.category_distribution.get) if request.category_distribution else "한식"
+        top_ratio = request.category_distribution.get(top_cat, 0)
+
+        if top_ratio > 0.5:
+            coaching = f"{top_cat} 비율이 {int(top_ratio * 100)}%로 다소 편중되어 있어요. 다른 카테고리도 시도해보세요."
+        elif diversity_score >= 60:
+            coaching = "다양한 카테고리를 골고루 드시고 계시네요! 현재 밸런스를 유지해보세요."
+        else:
+            coaching = f"최근 {top_cat} 위주로 드시고 있어요. 새로운 카테고리에 도전해보는 건 어떨까요?"
+
+        # 만족도 분석
+        good_count = sum(1 for m in request.recent_meals if m.satisfaction == "GOOD")
+        bad_count = sum(1 for m in request.recent_meals if m.satisfaction == "BAD")
+        total_feedback = good_count + bad_count + sum(1 for m in request.recent_meals if m.satisfaction == "NEUTRAL")
+        satisfaction_rate = int((good_count / max(total_feedback, 1)) * 100)
+
+        # 패턴 추출
+        patterns = []
+        # 카테고리별 만족도 패턴
+        cat_satisfaction: dict[str, list] = {}
+        for meal in request.recent_meals:
+            if meal.satisfaction:
+                cat_satisfaction.setdefault(meal.category, []).append(meal.satisfaction)
+
+        for cat, sats in cat_satisfaction.items():
+            good_ratio = sats.count("GOOD") / len(sats) if sats else 0
+            if good_ratio >= 0.7 and len(sats) >= 2:
+                patterns.append(f"{cat} 만족도 높음")
+            elif good_ratio <= 0.3 and len(sats) >= 2:
+                patterns.append(f"{cat} 만족도 낮음")
+
+        if not patterns:
+            patterns.append("아직 뚜렷한 패턴이 발견되지 않았어요")
+
+        if satisfaction_rate >= 70:
+            pattern_comment = "전반적으로 식사 만족도가 높은 편이에요. 잘 선택하고 계시네요!"
+        elif satisfaction_rate >= 50:
+            pattern_comment = "만족도가 보통이에요. 만족도가 높았던 카테고리를 더 자주 선택해보세요."
+        else:
+            pattern_comment = "최근 만족스러운 식사가 적었어요. 취향에 맞는 메뉴를 찾아볼까요?"
+
+        # 주간 요약
+        recent_7d = request.recent_meals[:7]
+        cats_7d = [m.category for m in recent_7d]
+        unique_7d = set(cats_7d)
+        if len(recent_7d) == 0:
+            weekly_summary = "이번 주 기록이 아직 없어요. 식사를 기록해보세요!"
+        elif len(unique_7d) == 1:
+            weekly_summary = f"이번 주는 {list(unique_7d)[0]} 위주로 드셨어요. 다음 주에는 다른 카테고리도 시도해보세요."
+        else:
+            cat_list = ", ".join(list(unique_7d)[:3])
+            weekly_summary = f"이번 주는 {cat_list} 등 다양하게 드셨어요. 좋은 밸런스를 유지하고 계시네요!"
+
+        metadata = AiMetadata(
+            source=AiSource.LLM,
+            model_used="mock-rule-engine-v1",
+            latency_ms=8,
+            token_usage=TokenUsage(prompt_tokens=0, completion_tokens=0, total_tokens=0),
+            circuit_breaker_state=CBStateEnum.CLOSED,
+        )
+
+        logger.info("Mock LLM 인사이트 생성 완료 (member=%s)", request.member_id)
+
+        return AiInsightResponse(
+            weeklySummary=weekly_summary,
+            mealBalance=MealBalance(
+                diversityScore=diversity_score,
+                diagnosis=diagnosis,
+                coachingComment=coaching,
+            ),
+            satisfactionAnalysis=SatisfactionAnalysis(
+                satisfactionRate=satisfaction_rate,
+                patterns=patterns,
+                patternComment=pattern_comment,
+            ),
             metadata=metadata,
         )
 

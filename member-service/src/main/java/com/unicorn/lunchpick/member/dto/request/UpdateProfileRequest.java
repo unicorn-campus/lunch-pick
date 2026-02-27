@@ -1,12 +1,13 @@
 package com.unicorn.lunchpick.member.dto.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
  * 프로필 수정 요청 DTO
  *
- * <p>닉네임과 알림 설정을 수정합니다.
+ * <p>닉네임, 이메일, 알림 설정을 수정합니다.
  * 닉네임은 2~20자, 한글/영문/숫자/공백만 허용합니다.</p>
  *
  * @author lunchpick-team
@@ -21,6 +22,13 @@ public record UpdateProfileRequest(
         @Size(min = 2, max = 20, message = "닉네임은 2~20자로 입력해주세요.")
         @Pattern(regexp = "^[가-힣a-zA-Z0-9 ]+$", message = "닉네임은 특수문자 없이 입력해주세요.")
         String nickname,
+
+        /**
+         * 이메일 (선택, 유효한 이메일 형식)
+         */
+        @Size(max = 200, message = "이메일은 200자 이내로 입력해주세요.")
+        @Email(message = "올바른 이메일 형식으로 입력해주세요.")
+        String email,
 
         /**
          * 알림 설정

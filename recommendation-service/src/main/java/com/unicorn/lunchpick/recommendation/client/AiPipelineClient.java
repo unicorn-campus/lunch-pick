@@ -1,5 +1,7 @@
 package com.unicorn.lunchpick.recommendation.client;
 
+import com.unicorn.lunchpick.recommendation.client.dto.AiInsightRequest;
+import com.unicorn.lunchpick.recommendation.client.dto.AiInsightResponse;
 import com.unicorn.lunchpick.recommendation.client.dto.AiReasonRequest;
 import com.unicorn.lunchpick.recommendation.client.dto.AiReasonResponse;
 import com.unicorn.lunchpick.recommendation.client.dto.AiRecommendationRequest;
@@ -47,4 +49,15 @@ public interface AiPipelineClient {
      * @return 추천 이유 응답 (자연어 또는 폴백 이유)
      */
     AiReasonResponse getRecommendationReason(AiReasonRequest request);
+
+    /**
+     * AI 인사이트 분석 요청
+     *
+     * <p>식사 기록 기반 AI 인사이트(주간 리포트, 밸런스 진단, 만족도 패턴)를 생성합니다.
+     * LLM 장애 시에도 AI Pipeline이 200을 반환하며 규칙 기반 폴백 인사이트가 포함됩니다.</p>
+     *
+     * @param request 인사이트 분석 요청 (식사 기록, 카테고리 분포 포함)
+     * @return AI 인사이트 응답 (정상 또는 폴백)
+     */
+    AiInsightResponse getInsightAnalysis(AiInsightRequest request);
 }

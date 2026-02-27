@@ -1,5 +1,7 @@
 package com.unicorn.lunchpick.recommendation.client;
 
+import com.unicorn.lunchpick.recommendation.client.dto.AiInsightRequest;
+import com.unicorn.lunchpick.recommendation.client.dto.AiInsightResponse;
 import com.unicorn.lunchpick.recommendation.client.dto.AiReasonRequest;
 import com.unicorn.lunchpick.recommendation.client.dto.AiReasonResponse;
 import com.unicorn.lunchpick.recommendation.client.dto.AiRecommendationRequest;
@@ -44,6 +46,9 @@ public class AiPipelineClientImpl implements AiPipelineClient {
 
     /** 추천 이유 생성 엔드포인트 경로 */
     private static final String REASON_PATH = "/api/v1/ai/recommendation-reason";
+
+    /** AI 인사이트 분석 엔드포인트 경로 */
+    private static final String INSIGHTS_PATH = "/api/v1/ai/insights";
 
     /** WebClient 블로킹 타임아웃 — readTimeout(30s)보다 5초 여유 */
     private static final Duration BLOCK_TIMEOUT = Duration.ofSeconds(35);
@@ -172,6 +177,50 @@ public class AiPipelineClientImpl implements AiPipelineClient {
      * @param t       발생한 예외
      * @return 폴백 이유 응답 (isReasonReady=false)
      */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>AI Pipeline 인사이트 분석 API 호출. CB 보호 + try-catch 폴백.</p>
+     */
+    @Override
+    @CircuitBreaker(name = "ai-pipeline", fallbackMethod = "getInsightAnalysisFallback")
+    public AiInsightResponse getInsightAnalysis(AiInsightRequest request) {
+        log.debug("[AI Pipeline] 인사이트 분석 요청 — memberId: {}", request.memberId());
+        try {
+            AiInsightResponse response = aiPipelineWebClient.post()
+                    .uri(INSIGHTS_PATH)
+                    .bodyValue(request)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                        log.warn("[AI Pipeline] 인사이트 클라이언트 오류 — status: {}", clientResponse.statusCode());
+                        return clientResponse.createException();
+                    })
+                    .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
+                        log.warn("[AI Pipeline] 인사이트 서버 오류 — status: {}", clientResponse.statusCode());
+                        return clientResponse.createException();
+                    })
+                    .bodyToMono(AiInsightResponse.class)
+                    .block(BLOCK_TIMEOUT);
+
+            log.debug("[AI Pipeline] 인사이트 분석 성공 — memberId: {}", request.memberId());
+            return response;
+
+        } catch (WebClientException | IllegalStateException ex) {
+            return getInsightAnalysisFallback(request, ex);
+        }
+    }
+
+    /**
+     * 인사이트 분석 Fallback — AI Pipeline 장애 시 null 반환
+     *
+     * <p>상위 서비스(HistoryServiceImpl)에서 null 체크 후 AI 필드를 null로 설정합니다.</p>
+     */
+    public AiInsightResponse getInsightAnalysisFallback(AiInsightRequest request, Throwable t) {
+        log.warn("[AI Pipeline Fallback] 인사이트 분석 실패 — memberId: {}, cause: {}",
+                request.memberId(), t.getMessage());
+        return null;
+    }
+
     public AiReasonResponse getRecommendationReasonFallback(AiReasonRequest request, Throwable t) {
         log.warn("[AI Pipeline Fallback] 이유 생성 실패 — recommendationId: {}, cause: {}",
                 request.recommendationId(), t.getMessage());

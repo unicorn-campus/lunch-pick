@@ -19,6 +19,7 @@ from config import settings
 from router.health import router as health_router
 from router.recommendation_router import router as recommendation_router
 from router.reason_router import router as reason_router
+from router.insight_router import router as insight_router
 
 logger = logging.getLogger(__name__)
 
@@ -31,24 +32,46 @@ async def _probe_llm_api_key() -> bool:
     401이면 False 반환.
     """
     if not settings.is_llm_key_present:
-        logger.warning("ANTHROPIC_API_KEY 미설정 → Mock LLM 엔진 모드")
+        logger.warning("LLM API 키 미설정 → Mock LLM 엔진 모드")
         return False
 
+    # OpenAI/Groq 호환 API 키가 있으면 해당 방식으로 probe
+    oai_key = settings.openai_api_key.strip()
+    if oai_key:
+        try:
+            from openai import AsyncOpenAI
+            base_url = settings.openai_api_base.strip() or None
+            client = AsyncOpenAI(api_key=oai_key, base_url=base_url)
+            await client.chat.completions.create(
+                model=settings.primary_model_id,
+                max_tokens=1,
+                messages=[{"role": "user", "content": "hi"}],
+            )
+            logger.info("LLM API 키 검증 성공 (OpenAI/Groq) → 실제 LLM 모드")
+            return True
+        except Exception as exc:
+            exc_str = str(exc).lower()
+            if "401" in exc_str or "authentication" in exc_str or "invalid" in exc_str:
+                logger.warning("LLM API 키 인증 실패 (OpenAI/Groq) → Mock LLM 엔진 모드: %s", exc)
+                return False
+            logger.warning("LLM API 키 probe 중 일시 오류 (키 유효로 간주): %s", exc)
+            return True
+
+    # Anthropic API 키로 probe
     try:
         import anthropic
         client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
         await client.messages.create(
-            model="claude-3-5-haiku-20241022",
+            model=settings.primary_model_id,
             max_tokens=1,
             messages=[{"role": "user", "content": "hi"}],
         )
-        logger.info("LLM API 키 검증 성공 → 실제 LLM 모드")
+        logger.info("LLM API 키 검증 성공 (Anthropic) → 실제 LLM 모드")
         return True
     except anthropic.AuthenticationError:
         logger.warning("LLM API 키 인증 실패(401) → Mock LLM 엔진 모드")
         return False
     except Exception as exc:
-        # 429, 503 등 일시적 오류는 키가 유효한 것으로 간주
         logger.warning("LLM API 키 probe 중 일시 오류 (키 유효로 간주): %s", exc)
         return True
 
@@ -80,3 +103,4 @@ app.include_router(health_router)
 # AI 추천 생성 + 이유 생성
 app.include_router(recommendation_router, prefix="/api/v1")
 app.include_router(reason_router, prefix="/api/v1")
+app.include_router(insight_router, prefix="/api/v1")

@@ -93,6 +93,7 @@ class FallbackEngine:
         allergen_filter: list[str],
         exclude_restaurant_ids: list[str] | None = None,
         max_results: int = 3,
+        available_restaurants=None,
     ) -> list[RecommendedRestaurant]:
         """규칙 기반 추천 생성.
 
@@ -114,8 +115,24 @@ class FallbackEngine:
         """
         exclude_ids = set(exclude_restaurant_ids or [])
 
-        # 1. 위치 반경 500m 내 식당 조회
-        nearby = self._query_nearby_restaurants(latitude, longitude, SEARCH_RADIUS_METERS)
+        # 1. 위치 반경 내 식당 조회 (전달된 목록이 있으면 사용)
+        if available_restaurants:
+            nearby = [
+                {
+                    "restaurant_id": r.restaurant_id,
+                    "restaurant_name": r.restaurant_name,
+                    "representative_menu": r.representative_menu,
+                    "category": r.category,
+                    "latitude": latitude,
+                    "longitude": longitude,
+                    "allergens": r.allergens,
+                    "popularity_rank": idx + 1,
+                    "_distance_meters": r.distance_meters,
+                }
+                for idx, r in enumerate(available_restaurants)
+            ]
+        else:
+            nearby = self._query_nearby_restaurants(latitude, longitude, SEARCH_RADIUS_METERS)
 
         # 2. 알레르기 하드 필터
         filtered = self._apply_allergen_filter(nearby, allergen_filter)

@@ -32,7 +32,7 @@ const DEMO_PROFILE: MemberProfile = {
 export default function ProfilePage() {
   const router = useRouter()
   const toast = useToast()
-  const { clearAuth } = useAuthStore()
+  const { clearAuth, setNickname } = useAuthStore()
 
   const { data: apiProfile, isLoading, isError } = useProfile()
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile()
@@ -40,6 +40,8 @@ export default function ProfilePage() {
   const [demoProfile, setDemoProfile] = useState<MemberProfile>(DEMO_PROFILE)
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [nicknameInput, setNicknameInput] = useState('')
+  const [emailModalOpen, setEmailModalOpen] = useState(false)
+  const [emailInput, setEmailInput] = useState('')
   const [logoutModalOpen, setLogoutModalOpen] = useState(false)
 
   const isDemo = isError && !apiProfile
@@ -48,6 +50,42 @@ export default function ProfilePage() {
   function openEditNickname() {
     setNicknameInput(profile?.nickname ?? '')
     setEditModalOpen(true)
+  }
+
+  function openEditEmail() {
+    setEmailInput(profile?.email ?? '')
+    setEmailModalOpen(true)
+  }
+
+  function handleSaveEmail() {
+    const trimmed = emailInput.trim()
+    if (trimmed.length === 0) {
+      toast.error('이메일을 입력해주세요')
+      return
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(trimmed)) {
+      toast.error('올바른 이메일 형식으로 입력해주세요')
+      return
+    }
+
+    if (isDemo) {
+      setDemoProfile((prev) => ({ ...prev, email: trimmed }))
+      toast.success('이메일이 등록되었어요')
+      setEmailModalOpen(false)
+      return
+    }
+
+    updateProfile(
+      { email: trimmed },
+      {
+        onSuccess: () => {
+          toast.success('이메일이 저장되었어요')
+          setEmailModalOpen(false)
+        },
+        onError: () => toast.error('저장 중 오류가 발생했어요.'),
+      },
+    )
   }
 
   function handleSaveNickname() {
@@ -59,6 +97,7 @@ export default function ProfilePage() {
 
     if (isDemo) {
       setDemoProfile((prev) => ({ ...prev, nickname: trimmed }))
+      setNickname(trimmed)
       toast.success('닉네임이 변경되었어요')
       setEditModalOpen(false)
       return
@@ -68,6 +107,7 @@ export default function ProfilePage() {
       { nickname: trimmed },
       {
         onSuccess: () => {
+          setNickname(trimmed)
           toast.success('설정이 저장되었어요')
           setEditModalOpen(false)
         },
@@ -166,15 +206,21 @@ export default function ProfilePage() {
             </div>
           </button>
           {/* 이메일 */}
-          <div className="flex min-h-[52px] items-center justify-between px-[var(--space-m)]">
+          <button
+            onClick={openEditEmail}
+            className="flex min-h-[52px] w-full items-center justify-between px-[var(--space-m)] transition-colors hover:bg-[var(--color-background)]"
+          >
             <div className="flex items-center gap-[var(--space-m)]">
               <span className="w-6 text-center text-[20px]">📧</span>
               <span className="text-[var(--font-size-body1)]">이메일</span>
             </div>
-            <span className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
-              {profile?.email}
-            </span>
-          </div>
+            <div className="flex items-center gap-[var(--space-s)]">
+              <span className="text-[var(--font-size-body2)] text-[var(--color-text-secondary)]">
+                {profile?.email || '미등록'}
+              </span>
+              <span className="text-[var(--color-text-disabled)]">→</span>
+            </div>
+          </button>
         </div>
       </section>
 
@@ -382,6 +428,35 @@ export default function ProfilePage() {
             placeholder="2~20자"
             value={nicknameInput}
             onChange={(e) => setNicknameInput(e.target.value)}
+            className="w-full rounded-[var(--radius-s)] border border-[var(--color-border)] p-3 text-[var(--font-size-body1)] focus:border-[var(--color-primary)] focus:outline-none"
+          />
+        </div>
+      </Modal>
+
+      {/* 이메일 수정 모달 */}
+      <Modal
+        isOpen={emailModalOpen}
+        onClose={() => setEmailModalOpen(false)}
+        title={profile?.email ? '이메일 수정' : '이메일 등록'}
+        primaryLabel={isUpdating ? '저장 중...' : '저장'}
+        onPrimary={handleSaveEmail}
+        secondaryLabel="취소"
+        onSecondary={() => setEmailModalOpen(false)}
+      >
+        <div className="mb-[var(--space-m)]">
+          <label
+            htmlFor="emailInput"
+            className="mb-[var(--space-s)] block text-[var(--font-size-label)] font-medium"
+          >
+            이메일
+          </label>
+          <input
+            id="emailInput"
+            type="email"
+            maxLength={200}
+            placeholder="example@email.com"
+            value={emailInput}
+            onChange={(e) => setEmailInput(e.target.value)}
             className="w-full rounded-[var(--radius-s)] border border-[var(--color-border)] p-3 text-[var(--font-size-body1)] focus:border-[var(--color-primary)] focus:outline-none"
           />
         </div>

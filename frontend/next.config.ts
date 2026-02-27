@@ -21,30 +21,6 @@ const nextConfig: NextConfig = {
       // 음식 이미지 (실제 CDN 도메인 추가 예정)
     ],
   },
-
-  /**
-   * API 리버스 프록시 설정
-   * 개발 환경에서 CORS 없이 Mock 서버로 요청을 프록시한다.
-   */
-  async rewrites() {
-    return [
-      // member-service (prism-member:4010)
-      {
-        source: '/proxy/member/:path*',
-        destination: `${process.env.NEXT_PUBLIC_MEMBER_HOST ?? 'http://localhost:4010'}/api/v1/:path*`,
-      },
-      // recommendation-service (prism-recommendation:4011)
-      {
-        source: '/proxy/recommendation/:path*',
-        destination: `${process.env.NEXT_PUBLIC_RECOMMENDATION_HOST ?? 'http://localhost:4011'}/api/v1/:path*`,
-      },
-      // payment-service (prism-payment:4012)
-      {
-        source: '/proxy/payment/:path*',
-        destination: `${process.env.NEXT_PUBLIC_PAYMENT_HOST ?? 'http://localhost:4012'}/api/v1/:path*`,
-      },
-    ]
-  },
 }
 
 export default nextConfig

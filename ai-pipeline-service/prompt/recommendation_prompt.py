@@ -141,9 +141,23 @@ class RecommendationPromptBuilder:
         # 제외 식당
         exclude_ids = ", ".join(request.exclude_restaurant_ids) if request.exclude_restaurant_ids else "없음"
 
-        # 이용 가능한 식당 목록 (allergen 필터 적용)
+        # 전달된 실제 식당 목록 사용, 없으면 기존 하드코딩 폴백
+        raw_restaurants = _DEFAULT_AVAILABLE_RESTAURANTS
+        if request.available_restaurants:
+            raw_restaurants = [
+                {
+                    "restaurant_id": r.restaurant_id,
+                    "restaurant_name": r.restaurant_name,
+                    "representative_menu": r.representative_menu,
+                    "category": r.category,
+                    "distance_meters": r.distance_meters,
+                    "estimated_walk_minutes": r.estimated_walk_minutes,
+                    "allergens": r.allergens,
+                }
+                for r in request.available_restaurants
+            ]
         available = self._filter_restaurants(
-            _DEFAULT_AVAILABLE_RESTAURANTS,
+            raw_restaurants,
             request.allergen_filter or [],
             request.exclude_restaurant_ids or [],
         )
@@ -246,13 +260,26 @@ class ColdStartPromptBuilder:
         # 알레르기
         allergen_filter = ", ".join(request.allergen_filter) if request.allergen_filter else "없음"
 
-        # 이용 가능한 식당 목록
-        available = _DEFAULT_AVAILABLE_RESTAURANTS
-        if request.allergen_filter:
-            available = [
-                r for r in available
-                if not any(a in r.get("allergens", []) for a in request.allergen_filter)
+        # 전달된 실제 식당 목록 사용, 없으면 기존 하드코딩 폴백
+        raw_restaurants = _DEFAULT_AVAILABLE_RESTAURANTS
+        if request.available_restaurants:
+            raw_restaurants = [
+                {
+                    "restaurant_id": r.restaurant_id,
+                    "restaurant_name": r.restaurant_name,
+                    "representative_menu": r.representative_menu,
+                    "category": r.category,
+                    "distance_meters": r.distance_meters,
+                    "estimated_walk_minutes": r.estimated_walk_minutes,
+                    "allergens": r.allergens,
+                }
+                for r in request.available_restaurants
             ]
+        available = self._filter_restaurants(
+            raw_restaurants,
+            request.allergen_filter or [],
+            request.exclude_restaurant_ids or [],
+        )
         available_restaurants_json = json.dumps(available, ensure_ascii=False, indent=2)
 
         return (
@@ -271,6 +298,23 @@ class ColdStartPromptBuilder:
             f"확신 스코어는 40~65 범위로 설정하세요 (취향 데이터 부족으로 인한 불확실성 반영).\n"
             f"반드시 JSON 형식으로만 응답하세요."
         )
+
+    def _filter_restaurants(
+        self,
+        restaurants: list[dict],
+        allergen_filter: list[str],
+        exclude_ids: list[str],
+    ) -> list[dict]:
+        """알레르기 하드 필터 + 제외 식당 필터 적용."""
+        result = []
+        for r in restaurants:
+            if r["restaurant_id"] in exclude_ids:
+                continue
+            allergens = r.get("allergens", [])
+            if any(a in allergens for a in allergen_filter):
+                continue
+            result.append(r)
+        return result
 
     def _format_onboarding_swipes(self, swipes: list | None) -> str:
         if not swipes:

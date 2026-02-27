@@ -100,6 +100,7 @@ export interface MemberProfile {
 /** 프로필 수정 요청 */
 export interface UpdateProfileRequest {
   nickname?: string
+  email?: string
   notificationSettings?: NotificationSettings
 }
 

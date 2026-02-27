@@ -58,6 +58,9 @@ public class MealController {
             @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody CreateMealRequest request) {
         MealResponse response = mealService.createMeal(principal.getUserId(), request);
+        if (response.duplicate()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.ok(response));
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
     }
 

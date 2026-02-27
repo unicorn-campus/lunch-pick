@@ -150,12 +150,16 @@ public class MemberEntity extends BaseTimeEntity {
      * 프로필 정보 수정
      *
      * @param nickname            닉네임
+     * @param email               이메일
      * @param recommendationAlert 추천 알림 여부
      * @param feedbackReminder    피드백 리마인더 여부
      */
-    public void updateProfile(String nickname, boolean recommendationAlert, boolean feedbackReminder) {
+    public void updateProfile(String nickname, String email, boolean recommendationAlert, boolean feedbackReminder) {
         if (nickname != null) {
             this.nickname = nickname;
+        }
+        if (email != null) {
+            this.email = email;
         }
         this.recommendationAlert = recommendationAlert;
         this.feedbackReminder = feedbackReminder;

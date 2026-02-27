@@ -7,22 +7,23 @@
  * UFR-REC-090: 피드백 제출 (POST /api/v1/meals/{id}/feedback)
  */
 import { useState, useEffect, useRef, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Button from '@/components/common/Button'
 import { useCreateMeal, useDeleteMeal, useSubmitFeedback } from '@/hooks/useRecommendation'
 import { useToast } from '@/hooks/useToast'
 import type { FeedbackRequest } from '@/types/recommendation'
 
-const FEEDBACK_KEYWORDS: { label: string; value: 'TASTE' | 'PORTION' | 'SPEED' }[] = [
+const FEEDBACK_KEYWORDS: { label: string; value: 'TASTE' | 'PRICE' | 'KINDNESS' }[] = [
   { label: '🍴 맛', value: 'TASTE' },
-  { label: '🍚 양', value: 'PORTION' },
-  { label: '⚡ 속도', value: 'SPEED' },
+  { label: '💰 가격', value: 'PRICE' },
+  { label: '😊 친절', value: 'KINDNESS' },
 ]
 
 const UNDO_SECONDS = 30
 
 function MealRecordContent() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const toast = useToast()
 
   const restaurantName = searchParams.get('name') ?? '광화문 된장마을'
@@ -35,7 +36,7 @@ function MealRecordContent() {
   const [showUndo, setShowUndo] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
   const [satisfaction, setSatisfaction] = useState<'GOOD' | 'BAD' | null>(null)
-  const [keyword, setKeyword] = useState<'TASTE' | 'PORTION' | 'SPEED' | null>(null)
+  const [keyword, setKeyword] = useState<'TASTE' | 'PRICE' | 'KINDNESS' | null>(null)
   const [feedbackDone, setFeedbackDone] = useState(false)
   const [totalFeedbackCount, setTotalFeedbackCount] = useState<number | null>(null)
 
@@ -96,9 +97,22 @@ function MealRecordContent() {
           setTimeout(() => setShowFeedback(true), 800)
         },
         onError: (err: unknown) => {
-          const axiosErr = err as { response?: { data?: { error?: string; message?: string } } }
-          if (axiosErr?.response?.data?.error === 'DUPLICATE_MEAL_RECORD') {
-            toast.info('이미 기록되었어요. 수정하시겠어요?')
+          const axiosErr = err as { response?: { data?: { data?: null; error?: { error?: string; message?: string } } } }
+          const errorData = axiosErr?.response?.data?.error
+          const responseData = (err as { response?: { data?: { data?: { mealId?: string; duplicate?: boolean } } } })?.response?.data?.data
+          if (responseData?.duplicate && responseData?.mealId) {
+            toast.info('이미 기록되었어요. 수정하시겠어요?', {
+              action: {
+                label: '수정하기',
+                onClick: () => {
+                  setMealId(responseData.mealId!)
+                  setIsRecorded(true)
+                  setShowFeedback(true)
+                },
+              },
+            })
+          } else if (errorData?.message) {
+            toast.error(errorData.message)
           } else {
             toast.error('기록 중 오류가 발생했어요.')
           }

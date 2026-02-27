@@ -8,12 +8,7 @@ import { Suspense, useEffect, useRef, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Button from '@/components/common/Button'
 import { useToast } from '@/hooks/useToast'
-
-declare global {
-  interface Window {
-    kakao: any
-  }
-}
+import { ENV } from '@/config/env'
 
 /** 카카오맵 컴포넌트 — SDK 로드 후 식당명으로 검색하여 지도 표시 */
 function KakaoMap({ restaurantName, className }: { restaurantName: string; className?: string }) {
@@ -21,7 +16,7 @@ function KakaoMap({ restaurantName, className }: { restaurantName: string; class
   const [mapError, setMapError] = useState(false)
 
   useEffect(() => {
-    const appKey = process.env.NEXT_PUBLIC_KAKAO_API_KEY
+    const appKey = ENV.KAKAO_JS_KEY || ENV.KAKAO_CLIENT_ID
     if (!appKey) {
       setMapError(true)
       return

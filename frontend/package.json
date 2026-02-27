@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "bash ../tools/generate-runtime-env.sh",
     "dev": "next dev",
+    "prebuild": "bash ../tools/generate-runtime-env.sh",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

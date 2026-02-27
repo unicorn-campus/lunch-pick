@@ -11,7 +11,7 @@ import Loading from '@/components/common/Loading'
 import BottomSheet from '@/components/common/BottomSheet'
 import Modal from '@/components/common/Modal'
 import Button from '@/components/common/Button'
-import { useSubscriptionPlans, useCreateSubscription, useCancelSubscription, useExtendTrial } from '@/hooks/usePayment'
+import { useActiveSubscription, useSubscriptionPlans, useCreateSubscription, useCancelSubscription, useExtendTrial } from '@/hooks/usePayment'
 import { useSubscriptionStatus } from '@/hooks/useMember'
 import { useToast } from '@/hooks/useToast'
 import type { PaymentMethod, SubscriptionPlansResponse } from '@/types/payment'
@@ -62,6 +62,7 @@ export default function SubscriptionPage() {
   const toast = useToast()
   const { data: plansData, isLoading: isLoadingPlans, isError: isPlansError } = useSubscriptionPlans()
   const { data: subStatus } = useSubscriptionStatus()
+  const { data: activeSub } = useActiveSubscription()
   const effectivePlans = plansData ?? (isPlansError ? DEMO_PLANS : undefined)
   const isDemo = !plansData && isPlansError
   const { mutate: createSubscription, isPending: isPaying } = useCreateSubscription()
@@ -78,8 +79,9 @@ export default function SubscriptionPage() {
   const [autoRenewal, setAutoRenewal] = useState(false)
   const [withdrawalAck, setWithdrawalAck] = useState(false)
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null)
+  const [justSubscribed, setJustSubscribed] = useState(false)
 
-  const isPremium = subStatus?.plan === 'PREMIUM' || effectivePlans?.currentPlan?.startsWith('PREMIUM')
+  const isPremium = justSubscribed || subStatus?.plan === 'PREMIUM' || effectivePlans?.currentPlan?.startsWith('PREMIUM')
 
   function handlePayment() {
     const rawCard = cardNumber.replace(/-/g, '')
@@ -121,12 +123,16 @@ export default function SubscriptionPage() {
       {
         onSuccess: (data) => {
           setSubscriptionId(data.subscriptionId)
+          setJustSubscribed(true)
           setShowPaymentSheet(false)
           toast.success(data.message)
         },
         onError: (err: unknown) => {
-          const axiosErr = err as { response?: { data?: { message?: string } } }
-          toast.error(axiosErr?.response?.data?.message ?? '결제 중 오류가 발생했어요.')
+          const axiosErr = err as { response?: { data?: { error?: { message?: string }; message?: string } } }
+          const msg = axiosErr?.response?.data?.error?.message
+            ?? axiosErr?.response?.data?.message
+            ?? '결제 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.'
+          toast.error(msg)
         },
       },
     )
@@ -138,7 +144,11 @@ export default function SubscriptionPage() {
       toast.info('구독이 해지되었어요. (데모)')
       return
     }
-    const subId = subscriptionId ?? 'sub-550e8400-e29b-41d4-a716-446655440050'
+    const subId = subscriptionId ?? activeSub?.subscriptionId
+    if (!subId) {
+      toast.error('활성 구독 정보를 찾을 수 없어요.')
+      return
+    }
     cancelSubscription(
       { subscriptionId: subId, data: { cancelReason: 'COST' } },
       {
@@ -160,8 +170,11 @@ export default function SubscriptionPage() {
         toast.success(data.message)
       },
       onError: (err: unknown) => {
-        const axiosErr = err as { response?: { data?: { message?: string } } }
-        toast.error(axiosErr?.response?.data?.message ?? '연장 처리 중 오류가 발생했어요.')
+        const axiosErr = err as { response?: { data?: { error?: { message?: string }; message?: string } } }
+        const msg = axiosErr?.response?.data?.error?.message
+          ?? axiosErr?.response?.data?.message
+          ?? '연장 처리 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.'
+        toast.error(msg)
       },
     })
   }
@@ -192,13 +205,15 @@ export default function SubscriptionPage() {
           <div>
             <div className="text-[var(--font-size-caption)] text-[var(--color-text-secondary)]">현재 플랜</div>
             <div className="font-semibold">
-              {effectivePlans.currentPlan === 'FREE' ? '무료' : '프리미엄'}
+              {isPremium ? '프리미엄' : '무료'}
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[var(--font-size-h3)] font-bold">₩0</div>
+            <div className="text-[var(--font-size-h3)] font-bold">{isPremium ? '₩4,900' : '₩0'}</div>
             <div className="text-[var(--font-size-caption)] text-[var(--color-text-secondary)]">
-              {effectivePlans.plans.find((p) => p.planId === 'FREE')?.features.join(' · ')}
+              {isPremium
+                ? effectivePlans.plans.find((p) => p.planId === selectedPlan)?.features.join(' · ')
+                : effectivePlans.plans.find((p) => p.planId === 'FREE')?.features.join(' · ')}
             </div>
           </div>
         </div>

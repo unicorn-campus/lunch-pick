@@ -1,0 +1,18 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:3000",
+      "localStorage": [
+        {
+          "name": "lunchpick_token",
+          "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwNGEwYzMyYS04YzM1LTRjZTUtYWVkMC0wOGE5OTA3N2ZiOTQiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzcyMTgxNjEyLCJleHAiOjE3NzIxODM0MTJ9.9erIXRkWZN6Fg4TvKKrQ5cBfPgKVOoGMBLZdhM0OT4YEdVaWUHKxLpwqAKeTwxoSiqMV14mdJSIvUaPIAXPJSA"
+        },
+        {
+          "name": "lunchpick-auth",
+          "value": "{\"isAuthenticated\":true,\"memberId\":\"04a0c32a-8c35-4ce5-aed0-08a99077fb94\"}"
+        }
+      ]
+    }
+  ]
+}

@@ -20,6 +20,7 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 ACTIVE_RECOMMENDATION_TEMPLATE = "recommendation-system-v1.0.txt"
 ACTIVE_COLDSTART_TEMPLATE = "recommendation-coldstart-v1.0.txt"
 ACTIVE_REASON_TEMPLATE = "reason-system-v1.0.txt"
+ACTIVE_INSIGHT_TEMPLATE = "insight-system-v1.0.txt"
 
 
 def load_template(template_name: str) -> str:

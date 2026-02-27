@@ -123,7 +123,7 @@ public class MemberServiceImpl implements MemberService {
             }
         }
 
-        member.updateProfile(request.nickname(), recommendationAlert, feedbackReminder);
+        member.updateProfile(request.nickname(), request.email(), recommendationAlert, feedbackReminder);
 
         log.info("프로필 수정 완료 — memberId: {}", memberId);
         return getProfile(memberId);
@@ -216,7 +216,9 @@ public class MemberServiceImpl implements MemberService {
         String cachedExpiresAt = stringRedisTemplate.opsForValue()
                 .get(SUBSCRIPTION_KEY_PREFIX + memberId + ":expiresAt");
 
-        String plan = cachedPlan != null ? cachedPlan : DEFAULT_PLAN;
+        // PREMIUM_MONTHLY / PREMIUM_ANNUAL → PREMIUM 으로 정규화
+        String plan = cachedPlan != null && cachedPlan.startsWith("PREMIUM") ? "PREMIUM"
+                : cachedPlan != null ? cachedPlan : DEFAULT_PLAN;
         int historyLimitDays = "PREMIUM".equals(plan) ? 90 : FREE_HISTORY_LIMIT_DAYS;
         LocalDateTime expiresAt = parseLocalDateTime(cachedExpiresAt);
 
@@ -302,7 +304,9 @@ public class MemberServiceImpl implements MemberService {
         String cachedExpiresAt = stringRedisTemplate.opsForValue()
                 .get(SUBSCRIPTION_KEY_PREFIX + memberId + ":expiresAt");
 
-        String plan = cachedPlan != null ? cachedPlan : DEFAULT_PLAN;
+        // PREMIUM_MONTHLY / PREMIUM_ANNUAL → PREMIUM 으로 정규화
+        String plan = cachedPlan != null && cachedPlan.startsWith("PREMIUM") ? "PREMIUM"
+                : cachedPlan != null ? cachedPlan : DEFAULT_PLAN;
         int historyLimitDays = "PREMIUM".equals(plan) ? 90 : FREE_HISTORY_LIMIT_DAYS;
         LocalDateTime expiresAt = parseLocalDateTime(cachedExpiresAt);
 

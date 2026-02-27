@@ -33,11 +33,12 @@
           <entry key="MEMBER_SERVICE_URL" value="http://localhost:8081" />
           <entry key="AI_PIPELINE_SERVICE_URL" value="http://localhost:8084" />
 
-          <!-- 외부 API (크리덴셜 미발급 시 빈 값) -->
-          <entry key="WEATHER_API_URL" value="" />
-          <entry key="WEATHER_API_KEY" value="" />
+          <!-- 외부 API -->
+          <entry key="WEATHER_API_URL" value="https://api.openweathermap.org" />
+          <entry key="WEATHER_API_KEY" value="1aa5bfca079a20586915b56f29235cc0" />
           <entry key="MAP_API_URL" value="" />
           <entry key="MAP_API_KEY" value="" />
+          <entry key="KAKAO_API_KEY" value="b588f91e780efc914b282ad7e3688e01" />
 
           <!-- CORS -->
           <entry key="CORS_ALLOWED_ORIGINS" value="http://localhost:3000" />

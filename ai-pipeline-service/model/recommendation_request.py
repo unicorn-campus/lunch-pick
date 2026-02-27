@@ -25,6 +25,18 @@ class RecentMealHistory(BaseModel):
     model_config = {"populate_by_name": True}
 
 
+class AvailableRestaurant(BaseModel):
+    restaurant_id: str = Field(alias="restaurantId")
+    restaurant_name: str = Field(alias="restaurantName")
+    representative_menu: str = Field(alias="representativeMenu")
+    category: str
+    distance_meters: int = Field(alias="distanceMeters")
+    estimated_walk_minutes: int = Field(alias="estimatedWalkMinutes")
+    allergens: list[str] = Field(default_factory=list)
+
+    model_config = {"populate_by_name": True}
+
+
 class AiRecommendationRequest(BaseModel):
     member_id: str = Field(alias="memberId")
     latitude: float
@@ -46,5 +58,9 @@ class AiRecommendationRequest(BaseModel):
         default_factory=list, alias="excludeRestaurantIds"
     )
     job_cluster: str | None = Field(default=None, alias="jobCluster")
+    available_restaurants: list[AvailableRestaurant] | None = Field(
+        default=None, alias="availableRestaurants"
+    )
+    skip_cache: bool = Field(default=False, alias="skipCache")
 
     model_config = {"populate_by_name": True}

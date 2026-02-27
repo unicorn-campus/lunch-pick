@@ -2,6 +2,7 @@ package com.unicorn.lunchpick.payment.service;
 
 import com.unicorn.lunchpick.payment.dto.request.CancelSubscriptionRequest;
 import com.unicorn.lunchpick.payment.dto.request.CreateSubscriptionRequest;
+import com.unicorn.lunchpick.payment.dto.response.ActiveSubscriptionResponse;
 import com.unicorn.lunchpick.payment.dto.response.CancelSubscriptionResponse;
 import com.unicorn.lunchpick.payment.dto.response.CreateSubscriptionResponse;
 import com.unicorn.lunchpick.payment.dto.response.ExtendTrialResponse;
@@ -17,6 +18,14 @@ import com.unicorn.lunchpick.payment.dto.response.SubscriptionPlansResponse;
  * @since 2026-02-26
  */
 public interface SubscriptionService {
+
+    /**
+     * 활성 구독 조회
+     *
+     * @param memberId 회원 식별자
+     * @return 활성 구독 정보 (없으면 null)
+     */
+    ActiveSubscriptionResponse getActiveSubscription(String memberId);
 
     /**
      * 구독 플랜 목록 조회

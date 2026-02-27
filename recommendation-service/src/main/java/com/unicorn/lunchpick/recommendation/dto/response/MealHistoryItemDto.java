@@ -21,5 +21,6 @@ public record MealHistoryItemDto(
         String category,
         String categoryColor,
         String satisfaction,
+        String keyword,
         LocalDateTime recordedAt
 ) {}

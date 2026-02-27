@@ -34,18 +34,20 @@ class Settings(BaseSettings):
     # LLM API 키
     anthropic_api_key: str = ""
     openai_api_key: str = ""
+    openai_api_base: str = ""
 
     @property
     def is_llm_key_present(self) -> bool:
         """API 키 문자열이 존재하고 형식이 올바른지 확인 (실제 유효성은 미검증)."""
-        key = self.anthropic_api_key.strip()
-        if not key:
-            return False
-        if len(key) < 90:
-            return False
-        if not (key.startswith("sk-ant-api03-") or key.startswith("sk-ant-")):
-            return False
-        return True
+        # Anthropic 키 확인
+        ant_key = self.anthropic_api_key.strip()
+        if ant_key and len(ant_key) >= 90 and (ant_key.startswith("sk-ant-api03-") or ant_key.startswith("sk-ant-")):
+            return True
+        # OpenAI/Groq 키 확인
+        oai_key = self.openai_api_key.strip()
+        if oai_key and len(oai_key) >= 20:
+            return True
+        return False
 
     @property
     def is_llm_available(self) -> bool:

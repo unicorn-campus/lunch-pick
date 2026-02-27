@@ -5,12 +5,13 @@
  * UFR-MBR-010: 카카오 소셜 로그인
  * POST /api/v1/auth/kakao
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import Button from '@/components/common/Button'
 import { useKakaoLogin } from '@/hooks/useMember'
 import { useToast } from '@/hooks/useToast'
+import { ENV } from '@/config/env'
 
 function LoginContent() {
   const router = useRouter()
@@ -18,11 +19,40 @@ function LoginContent() {
   const searchParams = useSearchParams()
   const { mutate: kakaoLogin, isPending } = useKakaoLogin()
   const [isLoading, setIsLoading] = useState(false)
+  const errorToastShown = useRef(false)
 
   const error = searchParams.get('error')
+  const code = searchParams.get('code')
+
   useEffect(() => {
-    if (error) toast.error('로그인에 실패했어요. 다시 시도해주세요.')
-  }, [error, toast])
+    if (error && !errorToastShown.current) {
+      errorToastShown.current = true
+      toast.error('로그인에 실패했어요. 다시 시도해주세요.')
+    }
+  }, [error]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 카카오 리다이렉트로 인가 코드가 URL에 있으면 자동 로그인 처리
+  useEffect(() => {
+    if (!code) return
+    setIsLoading(true)
+    kakaoLogin(
+      { authorizationCode: code },
+      {
+        onSuccess: (data) => {
+          toast.success('카카오 로그인 완료!')
+          if (data.isNewUser || !data.onboardingCompleted) {
+            router.push('/onboarding/quiz')
+          } else {
+            router.push('/home')
+          }
+        },
+        onError: () => {
+          toast.error('인증에 실패했어요. 다시 시도해주세요.')
+          setIsLoading(false)
+        },
+      },
+    )
+  }, [code])
 
   function handleKakaoLogin() {
     setIsLoading(true)
@@ -30,7 +60,7 @@ function LoginContent() {
     const authorizationCode = urlParams.get('code')
 
     if (!authorizationCode) {
-      const KAKAO_CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID ?? ''
+      const KAKAO_CLIENT_ID = ENV.KAKAO_CLIENT_ID
       if (!KAKAO_CLIENT_ID) {
         // 카카오 Client ID 미설정 시 데모 모드로 안내
         toast.info('카카오 앱 키가 설정되지 않았어요. 데모 모드를 이용해주세요.')

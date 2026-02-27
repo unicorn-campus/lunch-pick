@@ -11,6 +11,15 @@ import type {
   CancelSubscriptionRequest,
 } from '@/types/payment'
 
+/** 활성 구독 조회 쿼리 */
+export function useActiveSubscription() {
+  return useQuery({
+    queryKey: ['subscription', 'active'],
+    queryFn: () => paymentService.getActiveSubscription().then((res) => res.data?.data ?? null),
+    retry: false,
+  })
+}
+
 /** 구독 플랜 조회 쿼리 */
 export function useSubscriptionPlans() {
   return useQuery({

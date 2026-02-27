@@ -52,36 +52,48 @@ class LLMClient:
             recovery_timeout=settings.cb_recovery_timeout,
         )
 
-        # 기본 모델: Claude 3.5 Haiku (일반 추천·이유 생성)
+        # OpenAI/Groq 호환 시 base_url 전달
+        openai_kwargs = {}
+        if settings.openai_api_base.strip():
+            openai_kwargs["base_url"] = settings.openai_api_base.strip()
+
+        def _extra_kwargs(provider: str) -> dict:
+            return openai_kwargs if provider == "openai" else {}
+
+        # 기본 모델 (일반 추천)
         self._primary_model = init_chat_model(
             model=settings.primary_model_id,
             model_provider=settings.primary_model_provider,
             temperature=settings.primary_model_temperature,
             max_tokens=settings.primary_model_max_tokens,
+            **_extra_kwargs(settings.primary_model_provider),
         )
 
-        # 콜드스타트 모델: Claude 3.5 Sonnet
+        # 콜드스타트 모델
         self._coldstart_model = init_chat_model(
             model=settings.coldstart_model_id,
             model_provider=settings.coldstart_model_provider,
             temperature=settings.coldstart_model_temperature,
             max_tokens=settings.coldstart_model_max_tokens,
+            **_extra_kwargs(settings.coldstart_model_provider),
         )
 
-        # 이유 생성 모델: Claude 3.5 Haiku (max_tokens 절감)
+        # 이유 생성 모델
         self._reason_model = init_chat_model(
             model=settings.reason_model_id,
             model_provider=settings.reason_model_provider,
             temperature=settings.reason_model_temperature,
             max_tokens=settings.reason_model_max_tokens,
+            **_extra_kwargs(settings.reason_model_provider),
         )
 
-        # Fallback 모델: Claude 3.5 Sonnet (Haiku 장애 시 자동 전환)
+        # Fallback 모델 (장애 시 자동 전환)
         self._fallback_model = init_chat_model(
             model=settings.coldstart_model_id,
             model_provider=settings.coldstart_model_provider,
             temperature=settings.primary_model_temperature,
             max_tokens=settings.primary_model_max_tokens,
+            **_extra_kwargs(settings.coldstart_model_provider),
         )
 
     @property

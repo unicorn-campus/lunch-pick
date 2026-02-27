@@ -131,12 +131,19 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 
 ### 교훈 목록
 - [HIGH] `<!--ASK_USER-->` 발견 시 AskUserQuestion 도구를 호출할 것 - 공통
+- [HIGH] 백엔드 서비스 시작은 `python3 tools/run-intellij-service-profile.py --config-dir .` 사용 (gradlew bootRun 직접 호출 금지) — develop/Step4
+- [HIGH] 프론트엔드 시작은 `python3 tools/run-frontend-devserver.py start` 사용 (npm run dev 직접 호출 금지) — develop/Step4
+- [MED] 테스트 JWT 토큰 발급: `POST /api/test/login` (body: `{"nickname":"tester"}`), dev 프로파일에서만 활성. 한글 닉네임은 curl UTF-8 깨짐 주의 — develop/Step4
 
 ## NPD 워크플로우 상태
 ### develop
 - 진행 모드: 자동 진행
 - 개발 범위: Phase 1 (MVP)
-- 마지막 완료 Step: Step 6 (개발 완료 — 서비스 중지, 실행 도구 복사, README.md 생성)
+- 테스트 모드: 수동
+- 마지막 완료 Step: Step 5-M1 (서비스 기동 완료)
+- 카카오맵 연동: Step1~3 구현완료, Step4 통합테스트 진행중 (Docker 리부트 대기)
+- 카카오 API 키: b588f91e780efc914b282ad7e3688e01 (lunch-picker REST API 키, .env 설정됨)
+- ai-pipeline 포트: 8084 (recommendation-service가 호출하는 포트)
 
 ### plan
 - 진행 모드: 자동 진행
