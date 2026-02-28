@@ -29,7 +29,7 @@ EXPOSE ${EXPORT_PORT}
 
 # HEALTHCHECK: Docker 단독 실행 시 헬스 확인용. K8s 환경에서는 Probe가 우선함.
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8000/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${APP_PORT:-8000}/health || exit 1
 
 ENTRYPOINT [ "sh", "-c" ]
 CMD ["uvicorn main:app --host 0.0.0.0 --port ${APP_PORT:-8000}"]
