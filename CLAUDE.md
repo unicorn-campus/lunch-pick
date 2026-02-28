@@ -166,17 +166,15 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 
 ### deploy
 - 진행 모드: 단계별 승인
-- CLOUD: GCP
-- 마지막 완료 Step: Step 2 (컨테이너 이미지 빌드 & 푸시)
-- 레지스트리유형: GCR
-- GCR_PROJECT: travel-planner-b7120
-- GCR_REGION: asia-northeast3
-- GCR_REPO: lunchpick
-- REGISTRY_URL: asia-northeast3-docker.pkg.dev/travel-planner-b7120/lunchpick
-- VM.HOST: gcp
-- VM.IP: 34.64.192.123
-- VM.USERID: hiondal
-- VM.KEY파일: ~/.ssh/gcp_key
+- CLOUD: Azure
+- 마지막 완료 Step: Step 2 (Azure 전환 후 Step 3부터 재시작)
+- 레지스트리유형: ACR
+- ACR명: acrlunchpick
+- REGISTRY_URL: acrlunchpick.azurecr.io/lunchpick
+- VM.HOST: azure
+- VM.IP: 20.249.211.13
+- VM.USERID: azureuser
+- VM.KEY파일: ~/.ssh/my-vm.pem
 
 ## 프로젝트 네이밍
 - ORG (회사/조직명): unicorn
