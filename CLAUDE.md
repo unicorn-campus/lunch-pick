@@ -166,7 +166,7 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 
 ### deploy
 - 진행 모드: 단계별 승인
-- 마지막 완료 Step: Step 2 (컨테이너 이미지 빌드 & 푸시)
+- 마지막 완료 Step: Step 1
 - 레지스트리유형: ECR
 - ECR_ACCOUNT: 851725211153
 - ECR_REGION: ap-northeast-2
