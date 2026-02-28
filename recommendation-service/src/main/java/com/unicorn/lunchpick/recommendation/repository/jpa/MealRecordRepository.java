@@ -39,7 +39,7 @@ public interface MealRecordRepository extends JpaRepository<MealRecordEntity, Lo
             SELECT EXTRACT(DOW FROM m.recorded_at) AS day_of_week,
                    m.category AS category,
                    COUNT(*) AS cnt
-            FROM meal_record m
+            FROM lunchpick_recommendation.meal_record m
             WHERE m.member_id = :memberId
               AND m.recorded_at >= :fromDate
             GROUP BY EXTRACT(DOW FROM m.recorded_at), m.category

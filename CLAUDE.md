@@ -144,6 +144,14 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 - 카카오맵 연동: Step1~3 구현완료, Step4 통합테스트 진행중 (Docker 리부트 대기)
 - 카카오 API 키: b588f91e780efc914b282ad7e3688e01 (lunch-picker REST API 키, .env 설정됨)
 - ai-pipeline 포트: 8084 (recommendation-service가 호출하는 포트)
+- 기술스택:
+  - Java: 21
+  - Spring Boot: 3.4.x
+  - 빌드 도구: Gradle
+  - Node.js: 20
+  - 프론트엔드: React 19 (Next.js 15)
+  - Python: 3.12
+  - AI 프레임워크: FastAPI 0.115.x
 
 ### plan
 - 진행 모드: 자동 진행
@@ -155,6 +163,21 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 - 설계 아키텍처 패턴: 회원서비스→Layered, 추천·이력서비스→Layered, 결제서비스→Layered
 - CLOUD: AWS
 - 마지막 완료 Step: Step 9 (설계 완료)
+
+### deploy
+- 진행 모드: 단계별 승인
+- 마지막 완료 Step: Step 2 (컨테이너 이미지 빌드 & 푸시)
+- 레지스트리유형: ECR
+- ECR_ACCOUNT: 851725211153
+- ECR_REGION: ap-northeast-2
+- REGISTRY_URL: 851725211153.dkr.ecr.ap-northeast-2.amazonaws.com/lunchpick
+- K8s클러스터: EKS
+- CI/CD: Jenkins
+- VM.HOST: aws
+- VM.IP: 54.116.63.51
+- VM.USERID: ubuntu
+- VM.KEY파일: ~/.ssh/my-ec2.pem
+- VM 인스턴스타입: t3a.xlarge
 
 ## 프로젝트 네이밍
 - ORG (회사/조직명): unicorn

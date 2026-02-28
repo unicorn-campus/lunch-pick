@@ -1,0 +1,44 @@
+# Build stage
+FROM node:20-alpine AS builder
+ARG PROJECT_FOLDER
+ARG BUILD_FOLDER
+WORKDIR /app
+
+# 의존성 설치
+COPY ${PROJECT_FOLDER}/package.json ${PROJECT_FOLDER}/package-lock.json* ./
+RUN npm ci
+
+# 소스 복사 (prebuild 스크립트 우회: next build 직접 호출)
+COPY ${PROJECT_FOLDER} .
+
+# tools/ 디렉토리 복사 (generate-runtime-env.sh prebuild 스크립트 참조)
+# prebuild를 건너뛰고 next build 직접 호출하여 Docker 빌드 컨텍스트 문제 회피
+RUN npx next build
+
+# Run stage
+FROM node:20-alpine AS runner
+ENV NODE_ENV=production
+
+# 비루트 사용자 생성
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+WORKDIR /app
+
+# standalone 출력물 복사
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# HEALTHCHECK: Docker 단독 실행 시 헬스 확인용. K8s 환경에서는 Probe가 우선함.
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+
+CMD ["node", "server.js"]

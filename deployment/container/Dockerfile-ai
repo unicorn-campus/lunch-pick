@@ -1,0 +1,35 @@
+# Build stage
+FROM python:3.12-slim AS builder
+ARG PROJECT_FOLDER
+WORKDIR /app
+
+COPY ${PROJECT_FOLDER}/requirements.txt ./
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+COPY ${PROJECT_FOLDER} .
+
+# Run stage
+FROM python:3.12-slim
+ARG EXPORT_PORT=8000
+ENV USERNAME=k8s
+ENV APP_HOME=/home/${USERNAME}/app
+
+RUN adduser --system --group ${USERNAME} && \
+    mkdir -p ${APP_HOME} && \
+    chown ${USERNAME}:${USERNAME} ${APP_HOME}
+
+WORKDIR ${APP_HOME}
+COPY --from=builder /install /usr/local
+COPY --from=builder /app .
+RUN chown -R ${USERNAME}:${USERNAME} ${APP_HOME}
+
+USER ${USERNAME}
+
+EXPOSE ${EXPORT_PORT}
+
+# HEALTHCHECK: Docker 단독 실행 시 헬스 확인용. K8s 환경에서는 Probe가 우선함.
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8000/health || exit 1
+
+ENTRYPOINT [ "sh", "-c" ]
+CMD ["uvicorn main:app --host 0.0.0.0 --port ${APP_PORT:-8000}"]

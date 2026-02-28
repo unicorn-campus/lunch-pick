@@ -1,0 +1,31 @@
+# Build stage - 호스트에서 빌드된 JAR를 복사
+FROM amazoncorretto:21-alpine3.21-jdk AS builder
+ARG BUILD_LIB_DIR
+ARG ARTIFACTORY_FILE
+COPY ${BUILD_LIB_DIR}/${ARTIFACTORY_FILE} app.jar
+
+# Run stage
+FROM amazoncorretto:21-alpine3.21-jdk
+ENV USERNAME=appuser
+ENV ARTIFACTORY_HOME=/home/${USERNAME}
+ENV JAVA_OPTS=""
+
+# 비루트 사용자 생성
+RUN adduser -S -G root ${USERNAME} && \
+    mkdir -p ${ARTIFACTORY_HOME} && \
+    chown ${USERNAME}:root ${ARTIFACTORY_HOME}
+
+WORKDIR ${ARTIFACTORY_HOME}
+COPY --from=builder app.jar app.jar
+RUN chown ${USERNAME}:root app.jar
+
+USER ${USERNAME}
+
+EXPOSE 8080
+
+# HEALTHCHECK: Docker 단독 실행 시 헬스 확인용. K8s 환경에서는 Probe가 우선함.
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+
+ENTRYPOINT [ "sh", "-c" ]
+CMD ["java ${JAVA_OPTS} -jar app.jar"]

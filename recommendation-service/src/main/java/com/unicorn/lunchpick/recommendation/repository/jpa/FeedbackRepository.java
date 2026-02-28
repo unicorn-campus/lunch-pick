@@ -38,7 +38,7 @@ public interface FeedbackRepository extends JpaRepository<FeedbackEntity, Long> 
             SELECT to_char(f.created_at, 'IYYY-IW') AS year_week,
                    COUNT(*) AS total,
                    SUM(CASE WHEN f.satisfaction = 'GOOD' THEN 1 ELSE 0 END) AS good_count
-            FROM feedback f
+            FROM lunchpick_recommendation.feedback f
             WHERE f.member_id = :memberId
               AND f.created_at >= :fromDate
             GROUP BY to_char(f.created_at, 'IYYY-IW')
