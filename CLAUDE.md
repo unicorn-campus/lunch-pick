@@ -167,7 +167,7 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 ### deploy
 - 진행 모드: 단계별 승인
 - CLOUD: GCP
-- 마지막 완료 Step: Step 1
+- 마지막 완료 Step: Step 2 (컨테이너 이미지 빌드 & 푸시)
 - 레지스트리유형: GCR
 - GCR_PROJECT: travel-planner-b7120
 - GCR_REGION: asia-northeast3
