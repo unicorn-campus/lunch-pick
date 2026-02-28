@@ -1,0 +1,6 @@
+[    8644ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95441547938124&y=37.557300194320476:0
+[    8672ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95441547938124&y=37.557300194320476:0
+[   49036ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ http://localhost:8081/api/v1/members/me:0
+[  229117ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ http://localhost:8083/api/v1/subscriptions/sub-550e8400-e29b-41d4-a716-446655440050:0
+[  460409ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ http://localhost:8083/api/v1/subscriptions/active:0
+[  469419ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ http://localhost:8083/api/v1/subscriptions/active:0

@@ -1,0 +1,1 @@
+[   10379ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ http://localhost:8081/api/v1/auth/kakao:0

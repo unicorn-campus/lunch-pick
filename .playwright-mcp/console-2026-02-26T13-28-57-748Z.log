@@ -1,0 +1,150 @@
+[     196ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     206ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/profile:0
+[     277ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[     277ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[     291ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     296ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/profile:0
+[    1283ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[    1283ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  181851ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  181851ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  182859ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  182859ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  207165ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  207171ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/onboarding/dietary:0
+[  211155ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/dietary-restrictions:0
+[  211156ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  252772ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/dietary-restrictions:0
+[  252772ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  252822ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  252822ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  252839ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  252841ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[  253834ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  253834ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  276077ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  276077ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  276121ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  276132ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/profile:0
+[  277082ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  277082ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  280024ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  280029ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/onboarding/dietary:0
+[  281836ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/dietary-restrictions:0
+[  281836ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  281871ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  281871ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  281907ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  281911ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[  282877ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  282877ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  284484ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  284484ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  284510ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  284513ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/profile:0
+[  285489ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  285489ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  293623ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  293623ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  293627ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  293627ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  293639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  293644ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/subscription:0
+[  294637ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  294638ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  294638ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  294638ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  302909ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  302909ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  302942ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  302947ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/profile:0
+[  303916ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  303916ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  308666ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  308666ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  308670ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  308670ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  308698ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  308701ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/subscription:0
+[  309674ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  309675ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  309678ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  309679ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  353382ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  353382ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  353385ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  353386ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  354389ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  354389ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  354393ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  354393ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  359107ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  359108ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  359112ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  359112ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  360122ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  360122ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  360126ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  360126ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  364714ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  364715ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  364717ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  364717ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  365722ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  365722ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  365723ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  365723ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  370422ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  370422ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  370428ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  370429ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  371432ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  371432ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  371438ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  371438ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  374385ms] [ERROR] ./src/app/(main)/subscription/page.tsx:65:9
+Ecmascript file had an error
+  63 |   const { data: effectivePlans, isLoading: isLoadingPlans, isError: isPlansError } = useSubscriptionPlans()
+  64 |   const { data: subStatus } = useSubscriptionStatus()
+> 65 |   const effectivePlans = effectivePlans ?? (isPlansError ? DEMO_PLANS : undefined)
+     |         ^^^^^^^^^^^^^^
+  66 |   const isDemo = !effectivePlans && isPlansError
+  67 |   const { mutate: createSubscription, isPending: isPaying } = useCreateSubscription()
+  68 |   const { mutate: cancelSubscription, isPending: isCancelling } = useCancelSubscription()
+
+the name `effectivePlans` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(main)/subscription/page.tsx [Client Component Browser]
+    ./src/app/(main)/subscription/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(main)/subscription/page.tsx [Client Component SSR]
+    ./src/app/(main)/subscription/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  384929ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  384929ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  384933ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  384934ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  385016ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  385020ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/subscription:0
+[  385935ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  385936ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  385939ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  385939ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  394141ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  394141ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  394145ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  394145ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  395148ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  395148ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  395151ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  395151ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  404157ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  404157ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  404161ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  404162ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  405166ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  405167ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  405172ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  405172ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297

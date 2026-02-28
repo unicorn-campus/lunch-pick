@@ -1,0 +1,5 @@
+[     128ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     129ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/meal-record?restaurantId=rest-004&name=%EC%A2%85%EB%A1%9C%20%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98:0
+[     252ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     253ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/meal-record?restaurantId=rest-004&name=%EC%A2%85%EB%A1%9C%20%ED%95%9C%EC%8B%9D%EB%B7%94%ED%8E%98:0
+[    5250ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ http://localhost:8082/api/v1/meals:0

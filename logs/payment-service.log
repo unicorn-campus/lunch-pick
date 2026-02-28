@@ -1,0 +1,1777 @@
+> Task :common:generateEffectiveLombokConfig UP-TO-DATE
+> Task :common:compileJava UP-TO-DATE
+> Task :common:processResources NO-SOURCE
+> Task :common:classes UP-TO-DATE
+> Task :common:jar UP-TO-DATE
+> Task :payment-service:generateEffectiveLombokConfig UP-TO-DATE
+> Task :payment-service:compileJava
+> Task :payment-service:processResources UP-TO-DATE
+> Task :payment-service:classes
+> Task :payment-service:resolveMainClassName
+
+> Task :payment-service:bootRun
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.1)
+
+2026-02-27 23:51:08 - Starting PaymentApplication using Java 21 with PID 50528 (C:\Users\hiond\workspace\lunch-menu-recommender\payment-service\build\classes\java\main started by hiond in C:\Users\hiond\workspace\lunch-menu-recommender\payment-service)
+2026-02-27 23:51:08 - Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-02-27 23:51:08 - The following 1 profile is active: "dev"
+2026-02-27 23:51:08 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-27 23:51:08 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-27 23:51:09 - Finished Spring Data repository scanning in 63 ms. Found 2 JPA repository interfaces.
+2026-02-27 23:51:09 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-27 23:51:09 - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-27 23:51:09 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.payment.repository.jpa.PaymentHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 23:51:09 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.payment.repository.jpa.SubscriptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 23:51:09 - Finished Spring Data repository scanning in 11 ms. Found 0 Redis repository interfaces.
+2026-02-27 23:51:09 - BeanFactory id=02b1a61c-8ef2-383a-a384-7e602a4ce4c2
+2026-02-27 23:51:09 - Tomcat initialized with port 8083 (http)
+2026-02-27 23:51:09 - Starting service [Tomcat]
+2026-02-27 23:51:09 - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-02-27 23:51:09 - Initializing Spring embedded WebApplicationContext
+2026-02-27 23:51:09 - Root WebApplicationContext: initialization completed in 1396 ms
+2026-02-27 23:51:10 - Filter 'jwtAuthenticationFilter' configured for use
+2026-02-27 23:51:10 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-27 23:51:10 - HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-02-27 23:51:10 - HHH000026: Second-level cache disabled
+2026-02-27 23:51:10 - Adding type registration boolean -> org.hibernate.type.BasicTypeReference@69abeb14
+2026-02-27 23:51:10 - Adding type registration boolean -> org.hibernate.type.BasicTypeReference@69abeb14
+2026-02-27 23:51:10 - Adding type registration java.lang.Boolean -> org.hibernate.type.BasicTypeReference@69abeb14
+2026-02-27 23:51:10 - Adding type registration numeric_boolean -> org.hibernate.type.BasicTypeReference@7db2b614
+2026-02-27 23:51:10 - Adding type registration org.hibernate.type.NumericBooleanConverter -> org.hibernate.type.BasicTypeReference@7db2b614
+2026-02-27 23:51:10 - Adding type registration true_false -> org.hibernate.type.BasicTypeReference@34d5eac
+2026-02-27 23:51:10 - Adding type registration org.hibernate.type.TrueFalseConverter -> org.hibernate.type.BasicTypeReference@34d5eac
+2026-02-27 23:51:10 - Adding type registration yes_no -> org.hibernate.type.BasicTypeReference@2c1a95a2
+2026-02-27 23:51:10 - Adding type registration org.hibernate.type.YesNoConverter -> org.hibernate.type.BasicTypeReference@2c1a95a2
+2026-02-27 23:51:10 - Adding type registration byte -> org.hibernate.type.BasicTypeReference@1adf387e
+2026-02-27 23:51:10 - Adding type registration byte -> org.hibernate.type.BasicTypeReference@1adf387e
+2026-02-27 23:51:10 - Adding type registration java.lang.Byte -> org.hibernate.type.BasicTypeReference@1adf387e
+2026-02-27 23:51:10 - Adding type registration binary -> org.hibernate.type.BasicTypeReference@72b53f27
+2026-02-27 23:51:10 - Adding type registration byte[] -> org.hibernate.type.BasicTypeReference@72b53f27
+2026-02-27 23:51:10 - Adding type registration [B -> org.hibernate.type.BasicTypeReference@72b53f27
+2026-02-27 23:51:10 - Adding type registration binary_wrapper -> org.hibernate.type.BasicTypeReference@1be4a7e3
+2026-02-27 23:51:10 - Adding type registration wrapper-binary -> org.hibernate.type.BasicTypeReference@1be4a7e3
+2026-02-27 23:51:10 - Adding type registration image -> org.hibernate.type.BasicTypeReference@632b96b8
+2026-02-27 23:51:10 - Adding type registration blob -> org.hibernate.type.BasicTypeReference@544e6b
+2026-02-27 23:51:10 - Adding type registration java.sql.Blob -> org.hibernate.type.BasicTypeReference@544e6b
+2026-02-27 23:51:10 - Adding type registration materialized_blob -> org.hibernate.type.BasicTypeReference@5b430541
+2026-02-27 23:51:10 - Adding type registration materialized_blob_wrapper -> org.hibernate.type.BasicTypeReference@65a66a75
+2026-02-27 23:51:10 - Adding type registration short -> org.hibernate.type.BasicTypeReference@5a07ae2f
+2026-02-27 23:51:10 - Adding type registration short -> org.hibernate.type.BasicTypeReference@5a07ae2f
+2026-02-27 23:51:10 - Adding type registration java.lang.Short -> org.hibernate.type.BasicTypeReference@5a07ae2f
+2026-02-27 23:51:10 - Adding type registration integer -> org.hibernate.type.BasicTypeReference@78829412
+2026-02-27 23:51:10 - Adding type registration int -> org.hibernate.type.BasicTypeReference@78829412
+2026-02-27 23:51:10 - Adding type registration java.lang.Integer -> org.hibernate.type.BasicTypeReference@78829412
+2026-02-27 23:51:10 - Adding type registration long -> org.hibernate.type.BasicTypeReference@3ba8ef4e
+2026-02-27 23:51:10 - Adding type registration long -> org.hibernate.type.BasicTypeReference@3ba8ef4e
+2026-02-27 23:51:10 - Adding type registration java.lang.Long -> org.hibernate.type.BasicTypeReference@3ba8ef4e
+2026-02-27 23:51:10 - Adding type registration float -> org.hibernate.type.BasicTypeReference@6d0bcf8c
+2026-02-27 23:51:10 - Adding type registration float -> org.hibernate.type.BasicTypeReference@6d0bcf8c
+2026-02-27 23:51:10 - Adding type registration java.lang.Float -> org.hibernate.type.BasicTypeReference@6d0bcf8c
+2026-02-27 23:51:10 - Adding type registration double -> org.hibernate.type.BasicTypeReference@a1a72d4
+2026-02-27 23:51:10 - Adding type registration double -> org.hibernate.type.BasicTypeReference@a1a72d4
+2026-02-27 23:51:10 - Adding type registration java.lang.Double -> org.hibernate.type.BasicTypeReference@a1a72d4
+2026-02-27 23:51:10 - Adding type registration big_integer -> org.hibernate.type.BasicTypeReference@66d44581
+2026-02-27 23:51:10 - Adding type registration java.math.BigInteger -> org.hibernate.type.BasicTypeReference@66d44581
+2026-02-27 23:51:10 - Adding type registration big_decimal -> org.hibernate.type.BasicTypeReference@1afa048a
+2026-02-27 23:51:10 - Adding type registration java.math.BigDecimal -> org.hibernate.type.BasicTypeReference@1afa048a
+2026-02-27 23:51:10 - Adding type registration character -> org.hibernate.type.BasicTypeReference@293ecff6
+2026-02-27 23:51:10 - Adding type registration char -> org.hibernate.type.BasicTypeReference@293ecff6
+2026-02-27 23:51:10 - Adding type registration java.lang.Character -> org.hibernate.type.BasicTypeReference@293ecff6
+2026-02-27 23:51:10 - Adding type registration character_nchar -> org.hibernate.type.BasicTypeReference@70eb94d7
+2026-02-27 23:51:10 - Adding type registration string -> org.hibernate.type.BasicTypeReference@34d72f06
+2026-02-27 23:51:10 - Adding type registration java.lang.String -> org.hibernate.type.BasicTypeReference@34d72f06
+2026-02-27 23:51:10 - Adding type registration nstring -> org.hibernate.type.BasicTypeReference@7e43b342
+2026-02-27 23:51:10 - Adding type registration characters -> org.hibernate.type.BasicTypeReference@21dd9203
+2026-02-27 23:51:10 - Adding type registration char[] -> org.hibernate.type.BasicTypeReference@21dd9203
+2026-02-27 23:51:10 - Adding type registration [C -> org.hibernate.type.BasicTypeReference@21dd9203
+2026-02-27 23:51:10 - Adding type registration wrapper-characters -> org.hibernate.type.BasicTypeReference@dbcf7c3
+2026-02-27 23:51:10 - Adding type registration text -> org.hibernate.type.BasicTypeReference@1e466d
+2026-02-27 23:51:10 - Adding type registration ntext -> org.hibernate.type.BasicTypeReference@63243c8f
+2026-02-27 23:51:10 - Adding type registration clob -> org.hibernate.type.BasicTypeReference@2ea4e762
+2026-02-27 23:51:10 - Adding type registration java.sql.Clob -> org.hibernate.type.BasicTypeReference@2ea4e762
+2026-02-27 23:51:10 - Adding type registration nclob -> org.hibernate.type.BasicTypeReference@444c0f9a
+2026-02-27 23:51:10 - Adding type registration java.sql.NClob -> org.hibernate.type.BasicTypeReference@444c0f9a
+2026-02-27 23:51:10 - Adding type registration materialized_clob -> org.hibernate.type.BasicTypeReference@36931450
+2026-02-27 23:51:10 - Adding type registration materialized_clob_char_array -> org.hibernate.type.BasicTypeReference@74919649
+2026-02-27 23:51:10 - Adding type registration materialized_clob_character_array -> org.hibernate.type.BasicTypeReference@7d07e04e
+2026-02-27 23:51:10 - Adding type registration materialized_nclob -> org.hibernate.type.BasicTypeReference@599310ab
+2026-02-27 23:51:10 - Adding type registration materialized_nclob_character_array -> org.hibernate.type.BasicTypeReference@770cbe5d
+2026-02-27 23:51:10 - Adding type registration materialized_nclob_char_array -> org.hibernate.type.BasicTypeReference@f575d2b
+2026-02-27 23:51:10 - Adding type registration Duration -> org.hibernate.type.BasicTypeReference@4d90d91f
+2026-02-27 23:51:10 - Adding type registration java.time.Duration -> org.hibernate.type.BasicTypeReference@4d90d91f
+2026-02-27 23:51:10 - Adding type registration LocalDateTime -> org.hibernate.type.BasicTypeReference@c478e4e
+2026-02-27 23:51:10 - Adding type registration java.time.LocalDateTime -> org.hibernate.type.BasicTypeReference@c478e4e
+2026-02-27 23:51:10 - Adding type registration LocalDate -> org.hibernate.type.BasicTypeReference@1e2b37cd
+2026-02-27 23:51:10 - Adding type registration java.time.LocalDate -> org.hibernate.type.BasicTypeReference@1e2b37cd
+2026-02-27 23:51:10 - Adding type registration LocalTime -> org.hibernate.type.BasicTypeReference@2ba08f26
+2026-02-27 23:51:10 - Adding type registration java.time.LocalTime -> org.hibernate.type.BasicTypeReference@2ba08f26
+2026-02-27 23:51:10 - Adding type registration OffsetDateTime -> org.hibernate.type.BasicTypeReference@6033f36c
+2026-02-27 23:51:10 - Adding type registration java.time.OffsetDateTime -> org.hibernate.type.BasicTypeReference@6033f36c
+2026-02-27 23:51:10 - Adding type registration OffsetDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@50b624da
+2026-02-27 23:51:10 - Adding type registration OffsetDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@1764e45e
+2026-02-27 23:51:10 - Adding type registration OffsetTime -> org.hibernate.type.BasicTypeReference@3892802b
+2026-02-27 23:51:10 - Adding type registration java.time.OffsetTime -> org.hibernate.type.BasicTypeReference@3892802b
+2026-02-27 23:51:10 - Adding type registration OffsetTimeUtc -> org.hibernate.type.BasicTypeReference@4745bcc6
+2026-02-27 23:51:10 - Adding type registration OffsetTimeWithTimezone -> org.hibernate.type.BasicTypeReference@2634d000
+2026-02-27 23:51:10 - Adding type registration OffsetTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@1642968c
+2026-02-27 23:51:10 - Adding type registration ZonedDateTime -> org.hibernate.type.BasicTypeReference@3a7dcfb7
+2026-02-27 23:51:10 - Adding type registration java.time.ZonedDateTime -> org.hibernate.type.BasicTypeReference@3a7dcfb7
+2026-02-27 23:51:10 - Adding type registration ZonedDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@50b4e7b2
+2026-02-27 23:51:10 - Adding type registration ZonedDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@50008974
+2026-02-27 23:51:10 - Adding type registration date -> org.hibernate.type.BasicTypeReference@5274830e
+2026-02-27 23:51:10 - Adding type registration java.sql.Date -> org.hibernate.type.BasicTypeReference@5274830e
+2026-02-27 23:51:10 - Adding type registration time -> org.hibernate.type.BasicTypeReference@6a0ee80
+2026-02-27 23:51:10 - Adding type registration java.sql.Time -> org.hibernate.type.BasicTypeReference@6a0ee80
+2026-02-27 23:51:10 - Adding type registration timestamp -> org.hibernate.type.BasicTypeReference@71de1091
+2026-02-27 23:51:10 - Adding type registration java.sql.Timestamp -> org.hibernate.type.BasicTypeReference@71de1091
+2026-02-27 23:51:10 - Adding type registration java.util.Date -> org.hibernate.type.BasicTypeReference@71de1091
+2026-02-27 23:51:10 - Adding type registration calendar -> org.hibernate.type.BasicTypeReference@25c16cf7
+2026-02-27 23:51:10 - Adding type registration java.util.Calendar -> org.hibernate.type.BasicTypeReference@25c16cf7
+2026-02-27 23:51:10 - Adding type registration java.util.GregorianCalendar -> org.hibernate.type.BasicTypeReference@25c16cf7
+2026-02-27 23:51:10 - Adding type registration calendar_date -> org.hibernate.type.BasicTypeReference@53dbe7b2
+2026-02-27 23:51:10 - Adding type registration calendar_time -> org.hibernate.type.BasicTypeReference@520ec7a7
+2026-02-27 23:51:10 - Adding type registration instant -> org.hibernate.type.BasicTypeReference@53551fef
+2026-02-27 23:51:10 - Adding type registration java.time.Instant -> org.hibernate.type.BasicTypeReference@53551fef
+2026-02-27 23:51:10 - Adding type registration uuid -> org.hibernate.type.BasicTypeReference@7d5d77a6
+2026-02-27 23:51:10 - Adding type registration java.util.UUID -> org.hibernate.type.BasicTypeReference@7d5d77a6
+2026-02-27 23:51:10 - Adding type registration pg-uuid -> org.hibernate.type.BasicTypeReference@7d5d77a6
+2026-02-27 23:51:10 - Adding type registration uuid-binary -> org.hibernate.type.BasicTypeReference@71b7e9c8
+2026-02-27 23:51:10 - Adding type registration uuid-char -> org.hibernate.type.BasicTypeReference@55202ba6
+2026-02-27 23:51:10 - Adding type registration class -> org.hibernate.type.BasicTypeReference@2ef1fc8a
+2026-02-27 23:51:10 - Adding type registration java.lang.Class -> org.hibernate.type.BasicTypeReference@2ef1fc8a
+2026-02-27 23:51:10 - Adding type registration currency -> org.hibernate.type.BasicTypeReference@38874eb5
+2026-02-27 23:51:10 - Adding type registration Currency -> org.hibernate.type.BasicTypeReference@38874eb5
+2026-02-27 23:51:10 - Adding type registration java.util.Currency -> org.hibernate.type.BasicTypeReference@38874eb5
+2026-02-27 23:51:10 - Adding type registration locale -> org.hibernate.type.BasicTypeReference@76b019c4
+2026-02-27 23:51:10 - Adding type registration java.util.Locale -> org.hibernate.type.BasicTypeReference@76b019c4
+2026-02-27 23:51:10 - Adding type registration serializable -> org.hibernate.type.BasicTypeReference@221961af
+2026-02-27 23:51:10 - Adding type registration java.io.Serializable -> org.hibernate.type.BasicTypeReference@221961af
+2026-02-27 23:51:10 - Adding type registration timezone -> org.hibernate.type.BasicTypeReference@32ddcca
+2026-02-27 23:51:10 - Adding type registration java.util.TimeZone -> org.hibernate.type.BasicTypeReference@32ddcca
+2026-02-27 23:51:10 - Adding type registration ZoneOffset -> org.hibernate.type.BasicTypeReference@1ddc8fc
+2026-02-27 23:51:10 - Adding type registration java.time.ZoneOffset -> org.hibernate.type.BasicTypeReference@1ddc8fc
+2026-02-27 23:51:10 - Adding type registration url -> org.hibernate.type.BasicTypeReference@77d58f3a
+2026-02-27 23:51:10 - Adding type registration java.net.URL -> org.hibernate.type.BasicTypeReference@77d58f3a
+2026-02-27 23:51:10 - Adding type registration vector -> org.hibernate.type.BasicTypeReference@1e288c76
+2026-02-27 23:51:10 - Adding type registration float_vector -> org.hibernate.type.BasicTypeReference@738ed8f5
+2026-02-27 23:51:10 - Adding type registration double_vector -> org.hibernate.type.BasicTypeReference@1cfb7450
+2026-02-27 23:51:10 - Adding type registration byte_vector -> org.hibernate.type.BasicTypeReference@478c84aa
+2026-02-27 23:51:10 - Adding type registration row_version -> org.hibernate.type.BasicTypeReference@1d1deb11
+2026-02-27 23:51:10 - Adding type registration object -> org.hibernate.type.JavaObjectType@4c24c40a
+2026-02-27 23:51:10 - Adding type registration java.lang.Object -> org.hibernate.type.JavaObjectType@4c24c40a
+2026-02-27 23:51:10 - Adding type registration null -> org.hibernate.type.NullType@107ebdad
+2026-02-27 23:51:10 - Adding type registration imm_date -> org.hibernate.type.BasicTypeReference@e3275d3
+2026-02-27 23:51:10 - Adding type registration imm_time -> org.hibernate.type.BasicTypeReference@1bfafce1
+2026-02-27 23:51:10 - Adding type registration imm_timestamp -> org.hibernate.type.BasicTypeReference@138a952f
+2026-02-27 23:51:10 - Adding type registration imm_calendar -> org.hibernate.type.BasicTypeReference@767cc126
+2026-02-27 23:51:10 - Adding type registration imm_calendar_date -> org.hibernate.type.BasicTypeReference@6bfdaed7
+2026-02-27 23:51:10 - Adding type registration imm_calendar_time -> org.hibernate.type.BasicTypeReference@272c5abd
+2026-02-27 23:51:10 - Adding type registration imm_binary -> org.hibernate.type.BasicTypeReference@60c8909a
+2026-02-27 23:51:10 - Adding type registration imm_serializable -> org.hibernate.type.BasicTypeReference@70ad0854
+2026-02-27 23:51:10 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-27 23:51:10 - HikariPool-1 - Starting...
+2026-02-27 23:51:10 - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@35d53cd8
+2026-02-27 23:51:10 - HikariPool-1 - Start completed.
+2026-02-27 23:51:10 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.12
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-27 23:51:10 - addDescriptor(2003, org.hibernate.type.descriptor.sql.internal.ArrayDdlTypeImpl@49e92724) replaced previous registration(org.hibernate.type.descriptor.sql.internal.ArrayDdlTypeImpl@2ba4b32b)
+2026-02-27 23:51:10 - addDescriptor(6, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@532e00bd) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@47ab3688)
+2026-02-27 23:51:10 - addDescriptor(2004, BlobTypeDescriptor(BLOB_BINDING)) replaced previous registration(BlobTypeDescriptor(DEFAULT))
+2026-02-27 23:51:10 - addDescriptor(2005, ClobTypeDescriptor(CLOB_BINDING)) replaced previous registration(ClobTypeDescriptor(DEFAULT))
+2026-02-27 23:51:10 - Adding type registration JAVA_OBJECT -> org.hibernate.type.JavaObjectType@50d6af87
+2026-02-27 23:51:10 - Adding type registration java.lang.Object -> org.hibernate.type.JavaObjectType@50d6af87
+2026-02-27 23:51:10 - Type registration key [java.lang.Object] overrode previous entry : `org.hibernate.type.JavaObjectType@4c24c40a`
+2026-02-27 23:51:10 - Adding type registration org.hibernate.type.DurationType -> basicType@1(java.time.Duration,3015)
+2026-02-27 23:51:10 - Adding type registration Duration -> basicType@1(java.time.Duration,3015)
+2026-02-27 23:51:10 - Adding type registration java.time.Duration -> basicType@1(java.time.Duration,3015)
+2026-02-27 23:51:10 - Adding type registration org.hibernate.type.OffsetDateTimeType -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-27 23:51:10 - Adding type registration OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-27 23:51:10 - Adding type registration java.time.OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-27 23:51:10 - Adding type registration org.hibernate.type.ZonedDateTimeType -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-27 23:51:10 - Adding type registration ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-27 23:51:10 - Adding type registration java.time.ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-27 23:51:10 - Adding type registration org.hibernate.type.OffsetTimeType -> basicType@4(java.time.OffsetTime,3007)
+2026-02-27 23:51:10 - Adding type registration OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2026-02-27 23:51:10 - Adding type registration java.time.OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2026-02-27 23:51:10 - Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@2926f7bd] to MetadataBuildingContext [org.hibernate.boot.internal.MetadataBuildingContextRootImpl@5a20f793]
+2026-02-27 23:51:11 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-27 23:51:11 - Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@2926f7bd] to SessionFactoryImplementor [org.hibernate.internal.SessionFactoryImpl@7cc5bdbd]
+2026-02-27 23:51:11 - Handling #sessionFactoryCreated from [org.hibernate.internal.SessionFactoryImpl@7cc5bdbd] for TypeConfiguration
+2026-02-27 23:51:11 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-27 23:51:11 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-27 23:51:11 - 
+
+Using generated security password: 08ddbf74-e970-460b-bc10-098c7eaee8dd
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-27 23:51:11 - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-02-27 23:51:12 - Exposing 4 endpoints beneath base path '/actuator'
+2026-02-27 23:51:14 - Cannot determine local hostname
+2026-02-27 23:51:14 - Tomcat started on port 8083 (http) with context path '/'
+2026-02-27 23:51:15 - Cannot determine local hostname
+2026-02-27 23:51:15 - Started PaymentApplication in 8.194 seconds (process running for 8.612)
+2026-02-27 23:51:17 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-27 23:51:17 - Initializing Servlet 'dispatcherServlet'
+2026-02-27 23:51:17 - Completed initialization in 1 ms
+2026-02-27 23:51:47 - JWT 인증 완료 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-27 23:51:47 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:51:54 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:51:54 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:51:54 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:51:54 - 구독 플랜 캐시 히트
+2026-02-27 23:52:15 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:52:15 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.subscription_id=? 
+        and se1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.subscription_id=? 
+        and se1_0.member_id=?
+2026-02-27 23:52:15 - 구독 이벤트 발행 완료 ? eventType: SUBSCRIPTION_PENDING_CANCEL, memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:52:15 - 구독 해지 예약 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, subscriptionId: 840c1e6c-4a94-49cb-bdba-22eb4cd5b401, reason: COST
+2026-02-27 23:52:15 - 
+    /* update
+        for com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */update lunchpick_payment.subscription 
+    set
+        cancel_reason=?,
+        cancel_reason_detail=?,
+        cancelled_at=?,
+        current_period_ends_at=?,
+        member_id=?,
+        next_billing_at=?,
+        plan_id=?,
+        started_at=?,
+        status=?,
+        subscription_id=?,
+        trial_extension_used=?,
+        updated_at=? 
+    where
+        id=?
+Hibernate: 
+    /* update
+        for com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */update lunchpick_payment.subscription 
+    set
+        cancel_reason=?,
+        cancel_reason_detail=?,
+        cancelled_at=?,
+        current_period_ends_at=?,
+        member_id=?,
+        next_billing_at=?,
+        plan_id=?,
+        started_at=?,
+        status=?,
+        subscription_id=?,
+        trial_extension_used=?,
+        updated_at=? 
+    where
+        id=?
+2026-02-27 23:52:15 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:52:15 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:52:15 - 구독 플랜 캐시 히트
+2026-02-27 23:52:15 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:52:33 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:52:33 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:52:45 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:52:45 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:52:45 - 구독 플랜 캐시 히트
+2026-02-27 23:52:45 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:53:21 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:21 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:21 - 구독 플랜 캐시 히트
+2026-02-27 23:53:21 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:53:22 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:22 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:22 - 구독 플랜 캐시 히트
+2026-02-27 23:53:22 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:53:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:23 - 구독 플랜 캐시 히트
+2026-02-27 23:53:23 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:53:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:23 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:53:23 - 구독 플랜 캐시 히트
+2026-02-27 23:53:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:23 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:53:23 - 구독 플랜 캐시 히트
+2026-02-27 23:53:24 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:24 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:24 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:53:24 - 구독 플랜 캐시 히트
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 23:54:19 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:54:19 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:54:19 - 구독 플랜 캐시 히트
+2026-02-27 23:54:19 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:01:05 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:01:05 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:01:05 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:01:05 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:01:05 - 구독 플랜 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, currentPlan: FREE
+2026-02-28 00:01:15 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:01:15 - 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-28 00:01:15 - PG 결제 요청 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, planId: PREMIUM_MONTHLY, amount: 4900, orderId: be7cd268-1665-40c7-a315-73d09d14d1bd
+2026-02-28 00:01:15 - Mock PG: 만료된 카드 ? orderId: be7cd268-1665-40c7-a315-73d09d14d1bd, expiryYear: 2011, expiryMonth: 11
+2026-02-28 00:01:15 - 비즈니스 예외 발생 ? errorCode: INVALID_PAYMENT_INFO, message: 카드 번호, 유효기간, CVC를 다시 확인해주세요.
+2026-02-28 00:01:21 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:01:21 - 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-28 00:01:21 - PG 결제 요청 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, planId: PREMIUM_MONTHLY, amount: 4900, orderId: acdc6970-dea5-45ce-88e7-b6e9997557b7
+2026-02-28 00:01:21 - Mock PG: 결제 승인 완료 ? orderId: acdc6970-dea5-45ce-88e7-b6e9997557b7, amount: 4900, pgTransactionId: pg-txn-dd62bf81
+2026-02-28 00:01:21 - 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.PaymentHistoryEntity */insert 
+    into
+        lunchpick_payment.payment_history (amount, approved_at, auto_renewal_agreed, created_at, error_code, member_id, payment_id, pg_transaction_id, plan_id, requested_at, status, subscription_id, withdrawal_deadline, withdrawal_right_acknowledged) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.PaymentHistoryEntity */insert 
+    into
+        lunchpick_payment.payment_history (amount, approved_at, auto_renewal_agreed, created_at, error_code, member_id, payment_id, pg_transaction_id, plan_id, requested_at, status, subscription_id, withdrawal_deadline, withdrawal_right_acknowledged) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:01:21 - 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */insert 
+    into
+        lunchpick_payment.subscription (cancel_reason, cancel_reason_detail, cancelled_at, created_at, current_period_ends_at, member_id, next_billing_at, plan_id, started_at, status, subscription_id, trial_extension_used, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */insert 
+    into
+        lunchpick_payment.subscription (cancel_reason, cancel_reason_detail, cancelled_at, created_at, current_period_ends_at, member_id, next_billing_at, plan_id, started_at, status, subscription_id, trial_extension_used, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:01:21 - 구독 이벤트 발행 완료 ? eventType: SUBSCRIPTION_ACTIVATED, memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:01:21 - 구독 결제 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, subscriptionId: 7429a576-bc94-4e24-8146-a1df2f6e94db, planId: PREMIUM_MONTHLY
+2026-02-28 00:01:21 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:01:21 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:01:21 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:01:21 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:01:21 - 구독 플랜 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, currentPlan: PREMIUM_MONTHLY
+2026-02-28 00:19:44 - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:401)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:434)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:356)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-02-28 00:19:44 - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:401)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:434)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:356)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-02-28 00:19:44 - Reconnecting, last destination was localhost/127.0.0.1:16379
+2026-02-28 00:19:44 - Reconnecting, last destination was localhost/127.0.0.1:16379
+2026-02-28 00:19:44 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:19:44 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:19:53 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:19:53 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:19:53 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:19:53 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:02 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:02 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:02 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:02 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:49 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:49 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:24:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:24:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:24:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:49 - Reconnected to localhost/<unresolved>:16379
+2026-02-28 00:24:49 - Reconnected to localhost/<unresolved>:16379
+2026-02-28 00:40:51 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:51 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:51 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:40:51 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:40:51 - 구독 플랜 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, currentPlan: PREMIUM_MONTHLY
+2026-02-28 00:40:54 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:54 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.subscription_id=? 
+        and se1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.subscription_id=? 
+        and se1_0.member_id=?
+2026-02-28 00:40:54 - 구독 이벤트 발행 완료 ? eventType: SUBSCRIPTION_PENDING_CANCEL, memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:54 - 구독 해지 예약 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, subscriptionId: 7429a576-bc94-4e24-8146-a1df2f6e94db, reason: COST
+2026-02-28 00:40:54 - 
+    /* update
+        for com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */update lunchpick_payment.subscription 
+    set
+        cancel_reason=?,
+        cancel_reason_detail=?,
+        cancelled_at=?,
+        current_period_ends_at=?,
+        member_id=?,
+        next_billing_at=?,
+        plan_id=?,
+        started_at=?,
+        status=?,
+        subscription_id=?,
+        trial_extension_used=?,
+        updated_at=? 
+    where
+        id=?
+Hibernate: 
+    /* update
+        for com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */update lunchpick_payment.subscription 
+    set
+        cancel_reason=?,
+        cancel_reason_detail=?,
+        cancelled_at=?,
+        current_period_ends_at=?,
+        member_id=?,
+        next_billing_at=?,
+        plan_id=?,
+        started_at=?,
+        status=?,
+        subscription_id=?,
+        trial_extension_used=?,
+        updated_at=? 
+    where
+        id=?
+2026-02-28 00:40:54 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:54 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:54 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:40:54 - 구독 플랜 캐시 히트
+2026-02-28 00:40:59 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:59 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:59 - 구독 플랜 캐시 히트
+2026-02-28 00:40:59 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:41:12 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:12 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:41:12 - 비즈니스 예외 발생 ? errorCode: SUBSCRIPTION_NOT_FOUND, message: 활성 구독 정보를 찾을 수 없습니다.
+2026-02-28 00:41:18 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:18 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:18 - 구독 플랜 캐시 히트
+2026-02-28 00:41:18 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:41:20 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:20 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:20 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:41:20 - 구독 플랜 캐시 히트
+2026-02-28 00:44:27 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:44:27 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:44:27 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:44:27 - 구독 플랜 캐시 히트
+2026-02-28 00:46:44 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:44 - 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-28 00:46:44 - PG 결제 요청 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, planId: PREMIUM_MONTHLY, amount: 4900, orderId: 1fc9bf11-b1f2-4b4e-979a-c78a98cd039d
+2026-02-28 00:46:44 - Mock PG: 결제 승인 완료 ? orderId: 1fc9bf11-b1f2-4b4e-979a-c78a98cd039d, amount: 4900, pgTransactionId: pg-txn-d0fe84f9
+2026-02-28 00:46:44 - 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.PaymentHistoryEntity */insert 
+    into
+        lunchpick_payment.payment_history (amount, approved_at, auto_renewal_agreed, created_at, error_code, member_id, payment_id, pg_transaction_id, plan_id, requested_at, status, subscription_id, withdrawal_deadline, withdrawal_right_acknowledged) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.PaymentHistoryEntity */insert 
+    into
+        lunchpick_payment.payment_history (amount, approved_at, auto_renewal_agreed, created_at, error_code, member_id, payment_id, pg_transaction_id, plan_id, requested_at, status, subscription_id, withdrawal_deadline, withdrawal_right_acknowledged) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:46:44 - 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */insert 
+    into
+        lunchpick_payment.subscription (cancel_reason, cancel_reason_detail, cancelled_at, created_at, current_period_ends_at, member_id, next_billing_at, plan_id, started_at, status, subscription_id, trial_extension_used, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */insert 
+    into
+        lunchpick_payment.subscription (cancel_reason, cancel_reason_detail, cancelled_at, created_at, current_period_ends_at, member_id, next_billing_at, plan_id, started_at, status, subscription_id, trial_extension_used, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:46:44 - 구독 이벤트 발행 완료 ? eventType: SUBSCRIPTION_ACTIVATED, memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:44 - 구독 결제 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, subscriptionId: 2f0bc045-ce93-47da-bcc3-49de4b9b2d55, planId: PREMIUM_MONTHLY
+2026-02-28 00:46:44 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:44 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:44 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:46:44 - 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-28 00:46:44 - 구독 플랜 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, currentPlan: PREMIUM_MONTHLY
+2026-02-28 04:14:02 - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h20m49s15ms946?s800ns).
+
+> Task :payment-service:bootRun FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':payment-service:bootRun'.
+> Process 'command 'C:\jdk\jdk-21\bin\java.exe'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 9h 53s
+8 actionable tasks: 3 executed, 5 up-to-date

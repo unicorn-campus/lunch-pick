@@ -1,0 +1,3027 @@
+> Task :common:generateEffectiveLombokConfig UP-TO-DATE
+> Task :common:compileJava UP-TO-DATE
+> Task :common:processResources NO-SOURCE
+> Task :common:classes UP-TO-DATE
+> Task :common:jar UP-TO-DATE
+> Task :member-service:generateEffectiveLombokConfig UP-TO-DATE
+> Task :member-service:compileJava
+> Task :member-service:processResources UP-TO-DATE
+> Task :member-service:classes
+> Task :member-service:resolveMainClassName
+
+> Task :member-service:bootRun
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.1)
+
+2026-02-27 23:45:08 - Starting MemberApplication using Java 21 with PID 37196 (C:\Users\hiond\workspace\lunch-menu-recommender\member-service\build\classes\java\main started by hiond in C:\Users\hiond\workspace\lunch-menu-recommender\member-service)
+2026-02-27 23:45:08 - Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-02-27 23:45:08 - The following 1 profile is active: "dev"
+2026-02-27 23:45:09 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-27 23:45:09 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-27 23:45:09 - Finished Spring Data repository scanning in 69 ms. Found 4 JPA repository interfaces.
+2026-02-27 23:45:09 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-27 23:45:09 - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-27 23:45:09 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.member.repository.jpa.DietaryRestrictionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 23:45:09 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.member.repository.jpa.LocationConsentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 23:45:09 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.member.repository.jpa.MemberRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 23:45:09 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.member.repository.jpa.TasteProfileRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 23:45:09 - Finished Spring Data repository scanning in 15 ms. Found 0 Redis repository interfaces.
+2026-02-27 23:45:09 - BeanFactory id=1a3b27fb-12f5-300a-b35b-fe7cd5e0b075
+2026-02-27 23:45:10 - Tomcat initialized with port 8081 (http)
+2026-02-27 23:45:10 - Starting service [Tomcat]
+2026-02-27 23:45:10 - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-02-27 23:45:10 - Initializing Spring embedded WebApplicationContext
+2026-02-27 23:45:10 - Root WebApplicationContext: initialization completed in 1636 ms
+2026-02-27 23:45:10 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-27 23:45:10 - HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-02-27 23:45:10 - HHH000026: Second-level cache disabled
+2026-02-27 23:45:10 - Adding type registration boolean -> org.hibernate.type.BasicTypeReference@3340ff7c
+2026-02-27 23:45:10 - Adding type registration boolean -> org.hibernate.type.BasicTypeReference@3340ff7c
+2026-02-27 23:45:10 - Adding type registration java.lang.Boolean -> org.hibernate.type.BasicTypeReference@3340ff7c
+2026-02-27 23:45:10 - Adding type registration numeric_boolean -> org.hibernate.type.BasicTypeReference@42e4431
+2026-02-27 23:45:10 - Adding type registration org.hibernate.type.NumericBooleanConverter -> org.hibernate.type.BasicTypeReference@42e4431
+2026-02-27 23:45:10 - Adding type registration true_false -> org.hibernate.type.BasicTypeReference@5e198c40
+2026-02-27 23:45:10 - Adding type registration org.hibernate.type.TrueFalseConverter -> org.hibernate.type.BasicTypeReference@5e198c40
+2026-02-27 23:45:10 - Adding type registration yes_no -> org.hibernate.type.BasicTypeReference@dcdb883
+2026-02-27 23:45:10 - Adding type registration org.hibernate.type.YesNoConverter -> org.hibernate.type.BasicTypeReference@dcdb883
+2026-02-27 23:45:10 - Adding type registration byte -> org.hibernate.type.BasicTypeReference@39420d59
+2026-02-27 23:45:10 - Adding type registration byte -> org.hibernate.type.BasicTypeReference@39420d59
+2026-02-27 23:45:10 - Adding type registration java.lang.Byte -> org.hibernate.type.BasicTypeReference@39420d59
+2026-02-27 23:45:10 - Adding type registration binary -> org.hibernate.type.BasicTypeReference@4fbbd98c
+2026-02-27 23:45:10 - Adding type registration byte[] -> org.hibernate.type.BasicTypeReference@4fbbd98c
+2026-02-27 23:45:10 - Adding type registration [B -> org.hibernate.type.BasicTypeReference@4fbbd98c
+2026-02-27 23:45:10 - Adding type registration binary_wrapper -> org.hibernate.type.BasicTypeReference@5dd227b7
+2026-02-27 23:45:10 - Adding type registration wrapper-binary -> org.hibernate.type.BasicTypeReference@5dd227b7
+2026-02-27 23:45:10 - Adding type registration image -> org.hibernate.type.BasicTypeReference@3d3b852e
+2026-02-27 23:45:10 - Adding type registration blob -> org.hibernate.type.BasicTypeReference@14ba7f15
+2026-02-27 23:45:10 - Adding type registration java.sql.Blob -> org.hibernate.type.BasicTypeReference@14ba7f15
+2026-02-27 23:45:10 - Adding type registration materialized_blob -> org.hibernate.type.BasicTypeReference@55cb3b7
+2026-02-27 23:45:10 - Adding type registration materialized_blob_wrapper -> org.hibernate.type.BasicTypeReference@497fd334
+2026-02-27 23:45:10 - Adding type registration short -> org.hibernate.type.BasicTypeReference@280c3dc0
+2026-02-27 23:45:10 - Adding type registration short -> org.hibernate.type.BasicTypeReference@280c3dc0
+2026-02-27 23:45:10 - Adding type registration java.lang.Short -> org.hibernate.type.BasicTypeReference@280c3dc0
+2026-02-27 23:45:10 - Adding type registration integer -> org.hibernate.type.BasicTypeReference@6f89ad03
+2026-02-27 23:45:10 - Adding type registration int -> org.hibernate.type.BasicTypeReference@6f89ad03
+2026-02-27 23:45:10 - Adding type registration java.lang.Integer -> org.hibernate.type.BasicTypeReference@6f89ad03
+2026-02-27 23:45:10 - Adding type registration long -> org.hibernate.type.BasicTypeReference@f287a4e
+2026-02-27 23:45:10 - Adding type registration long -> org.hibernate.type.BasicTypeReference@f287a4e
+2026-02-27 23:45:10 - Adding type registration java.lang.Long -> org.hibernate.type.BasicTypeReference@f287a4e
+2026-02-27 23:45:10 - Adding type registration float -> org.hibernate.type.BasicTypeReference@3879feec
+2026-02-27 23:45:10 - Adding type registration float -> org.hibernate.type.BasicTypeReference@3879feec
+2026-02-27 23:45:10 - Adding type registration java.lang.Float -> org.hibernate.type.BasicTypeReference@3879feec
+2026-02-27 23:45:10 - Adding type registration double -> org.hibernate.type.BasicTypeReference@71d2261e
+2026-02-27 23:45:10 - Adding type registration double -> org.hibernate.type.BasicTypeReference@71d2261e
+2026-02-27 23:45:10 - Adding type registration java.lang.Double -> org.hibernate.type.BasicTypeReference@71d2261e
+2026-02-27 23:45:10 - Adding type registration big_integer -> org.hibernate.type.BasicTypeReference@53917c92
+2026-02-27 23:45:10 - Adding type registration java.math.BigInteger -> org.hibernate.type.BasicTypeReference@53917c92
+2026-02-27 23:45:10 - Adding type registration big_decimal -> org.hibernate.type.BasicTypeReference@1fa796a4
+2026-02-27 23:45:10 - Adding type registration java.math.BigDecimal -> org.hibernate.type.BasicTypeReference@1fa796a4
+2026-02-27 23:45:10 - Adding type registration character -> org.hibernate.type.BasicTypeReference@68de8522
+2026-02-27 23:45:10 - Adding type registration char -> org.hibernate.type.BasicTypeReference@68de8522
+2026-02-27 23:45:10 - Adding type registration java.lang.Character -> org.hibernate.type.BasicTypeReference@68de8522
+2026-02-27 23:45:10 - Adding type registration character_nchar -> org.hibernate.type.BasicTypeReference@8dcacf1
+2026-02-27 23:45:10 - Adding type registration string -> org.hibernate.type.BasicTypeReference@50f13494
+2026-02-27 23:45:10 - Adding type registration java.lang.String -> org.hibernate.type.BasicTypeReference@50f13494
+2026-02-27 23:45:10 - Adding type registration nstring -> org.hibernate.type.BasicTypeReference@73c09a98
+2026-02-27 23:45:10 - Adding type registration characters -> org.hibernate.type.BasicTypeReference@6f2bf657
+2026-02-27 23:45:10 - Adding type registration char[] -> org.hibernate.type.BasicTypeReference@6f2bf657
+2026-02-27 23:45:10 - Adding type registration [C -> org.hibernate.type.BasicTypeReference@6f2bf657
+2026-02-27 23:45:10 - Adding type registration wrapper-characters -> org.hibernate.type.BasicTypeReference@27d6467
+2026-02-27 23:45:10 - Adding type registration text -> org.hibernate.type.BasicTypeReference@5bf1b528
+2026-02-27 23:45:10 - Adding type registration ntext -> org.hibernate.type.BasicTypeReference@2c92f094
+2026-02-27 23:45:10 - Adding type registration clob -> org.hibernate.type.BasicTypeReference@1c3b221f
+2026-02-27 23:45:10 - Adding type registration java.sql.Clob -> org.hibernate.type.BasicTypeReference@1c3b221f
+2026-02-27 23:45:10 - Adding type registration nclob -> org.hibernate.type.BasicTypeReference@750c23a3
+2026-02-27 23:45:10 - Adding type registration java.sql.NClob -> org.hibernate.type.BasicTypeReference@750c23a3
+2026-02-27 23:45:10 - Adding type registration materialized_clob -> org.hibernate.type.BasicTypeReference@238280df
+2026-02-27 23:45:10 - Adding type registration materialized_clob_char_array -> org.hibernate.type.BasicTypeReference@182fd26b
+2026-02-27 23:45:10 - Adding type registration materialized_clob_character_array -> org.hibernate.type.BasicTypeReference@5dc120ab
+2026-02-27 23:45:10 - Adding type registration materialized_nclob -> org.hibernate.type.BasicTypeReference@49c4118b
+2026-02-27 23:45:10 - Adding type registration materialized_nclob_character_array -> org.hibernate.type.BasicTypeReference@7ef7f414
+2026-02-27 23:45:10 - Adding type registration materialized_nclob_char_array -> org.hibernate.type.BasicTypeReference@182dcd2b
+2026-02-27 23:45:10 - Adding type registration Duration -> org.hibernate.type.BasicTypeReference@4c3d72fd
+2026-02-27 23:45:10 - Adding type registration java.time.Duration -> org.hibernate.type.BasicTypeReference@4c3d72fd
+2026-02-27 23:45:10 - Adding type registration LocalDateTime -> org.hibernate.type.BasicTypeReference@259c6ab8
+2026-02-27 23:45:10 - Adding type registration java.time.LocalDateTime -> org.hibernate.type.BasicTypeReference@259c6ab8
+2026-02-27 23:45:10 - Adding type registration LocalDate -> org.hibernate.type.BasicTypeReference@640a6d4b
+2026-02-27 23:45:10 - Adding type registration java.time.LocalDate -> org.hibernate.type.BasicTypeReference@640a6d4b
+2026-02-27 23:45:10 - Adding type registration LocalTime -> org.hibernate.type.BasicTypeReference@1238a074
+2026-02-27 23:45:10 - Adding type registration java.time.LocalTime -> org.hibernate.type.BasicTypeReference@1238a074
+2026-02-27 23:45:10 - Adding type registration OffsetDateTime -> org.hibernate.type.BasicTypeReference@35b58254
+2026-02-27 23:45:10 - Adding type registration java.time.OffsetDateTime -> org.hibernate.type.BasicTypeReference@35b58254
+2026-02-27 23:45:10 - Adding type registration OffsetDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@73baf7f0
+2026-02-27 23:45:10 - Adding type registration OffsetDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@446dacf9
+2026-02-27 23:45:10 - Adding type registration OffsetTime -> org.hibernate.type.BasicTypeReference@13018f00
+2026-02-27 23:45:10 - Adding type registration java.time.OffsetTime -> org.hibernate.type.BasicTypeReference@13018f00
+2026-02-27 23:45:10 - Adding type registration OffsetTimeUtc -> org.hibernate.type.BasicTypeReference@abf1816
+2026-02-27 23:45:10 - Adding type registration OffsetTimeWithTimezone -> org.hibernate.type.BasicTypeReference@2e1e7bc6
+2026-02-27 23:45:10 - Adding type registration OffsetTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@7bd1098
+2026-02-27 23:45:10 - Adding type registration ZonedDateTime -> org.hibernate.type.BasicTypeReference@185bf6e0
+2026-02-27 23:45:10 - Adding type registration java.time.ZonedDateTime -> org.hibernate.type.BasicTypeReference@185bf6e0
+2026-02-27 23:45:10 - Adding type registration ZonedDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@6a562255
+2026-02-27 23:45:10 - Adding type registration ZonedDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@374ba492
+2026-02-27 23:45:10 - Adding type registration date -> org.hibernate.type.BasicTypeReference@581d5b33
+2026-02-27 23:45:10 - Adding type registration java.sql.Date -> org.hibernate.type.BasicTypeReference@581d5b33
+2026-02-27 23:45:10 - Adding type registration time -> org.hibernate.type.BasicTypeReference@1f365a26
+2026-02-27 23:45:10 - Adding type registration java.sql.Time -> org.hibernate.type.BasicTypeReference@1f365a26
+2026-02-27 23:45:10 - Adding type registration timestamp -> org.hibernate.type.BasicTypeReference@44a9971f
+2026-02-27 23:45:10 - Adding type registration java.sql.Timestamp -> org.hibernate.type.BasicTypeReference@44a9971f
+2026-02-27 23:45:10 - Adding type registration java.util.Date -> org.hibernate.type.BasicTypeReference@44a9971f
+2026-02-27 23:45:10 - Adding type registration calendar -> org.hibernate.type.BasicTypeReference@2e2cd42c
+2026-02-27 23:45:10 - Adding type registration java.util.Calendar -> org.hibernate.type.BasicTypeReference@2e2cd42c
+2026-02-27 23:45:10 - Adding type registration java.util.GregorianCalendar -> org.hibernate.type.BasicTypeReference@2e2cd42c
+2026-02-27 23:45:10 - Adding type registration calendar_date -> org.hibernate.type.BasicTypeReference@1cdad619
+2026-02-27 23:45:10 - Adding type registration calendar_time -> org.hibernate.type.BasicTypeReference@319058ce
+2026-02-27 23:45:10 - Adding type registration instant -> org.hibernate.type.BasicTypeReference@3909308c
+2026-02-27 23:45:10 - Adding type registration java.time.Instant -> org.hibernate.type.BasicTypeReference@3909308c
+2026-02-27 23:45:10 - Adding type registration uuid -> org.hibernate.type.BasicTypeReference@71cc0e35
+2026-02-27 23:45:10 - Adding type registration java.util.UUID -> org.hibernate.type.BasicTypeReference@71cc0e35
+2026-02-27 23:45:10 - Adding type registration pg-uuid -> org.hibernate.type.BasicTypeReference@71cc0e35
+2026-02-27 23:45:10 - Adding type registration uuid-binary -> org.hibernate.type.BasicTypeReference@3b6c740b
+2026-02-27 23:45:10 - Adding type registration uuid-char -> org.hibernate.type.BasicTypeReference@8091d80
+2026-02-27 23:45:10 - Adding type registration class -> org.hibernate.type.BasicTypeReference@78f4d15d
+2026-02-27 23:45:10 - Adding type registration java.lang.Class -> org.hibernate.type.BasicTypeReference@78f4d15d
+2026-02-27 23:45:10 - Adding type registration currency -> org.hibernate.type.BasicTypeReference@6958d5d0
+2026-02-27 23:45:10 - Adding type registration Currency -> org.hibernate.type.BasicTypeReference@6958d5d0
+2026-02-27 23:45:10 - Adding type registration java.util.Currency -> org.hibernate.type.BasicTypeReference@6958d5d0
+2026-02-27 23:45:10 - Adding type registration locale -> org.hibernate.type.BasicTypeReference@314c28dc
+2026-02-27 23:45:10 - Adding type registration java.util.Locale -> org.hibernate.type.BasicTypeReference@314c28dc
+2026-02-27 23:45:10 - Adding type registration serializable -> org.hibernate.type.BasicTypeReference@7169d668
+2026-02-27 23:45:10 - Adding type registration java.io.Serializable -> org.hibernate.type.BasicTypeReference@7169d668
+2026-02-27 23:45:10 - Adding type registration timezone -> org.hibernate.type.BasicTypeReference@2f498f21
+2026-02-27 23:45:10 - Adding type registration java.util.TimeZone -> org.hibernate.type.BasicTypeReference@2f498f21
+2026-02-27 23:45:10 - Adding type registration ZoneOffset -> org.hibernate.type.BasicTypeReference@90394d
+2026-02-27 23:45:10 - Adding type registration java.time.ZoneOffset -> org.hibernate.type.BasicTypeReference@90394d
+2026-02-27 23:45:10 - Adding type registration url -> org.hibernate.type.BasicTypeReference@50caeb4b
+2026-02-27 23:45:10 - Adding type registration java.net.URL -> org.hibernate.type.BasicTypeReference@50caeb4b
+2026-02-27 23:45:10 - Adding type registration vector -> org.hibernate.type.BasicTypeReference@6fafbdac
+2026-02-27 23:45:10 - Adding type registration float_vector -> org.hibernate.type.BasicTypeReference@c7c07ff
+2026-02-27 23:45:10 - Adding type registration double_vector -> org.hibernate.type.BasicTypeReference@d271d6c
+2026-02-27 23:45:10 - Adding type registration byte_vector -> org.hibernate.type.BasicTypeReference@a302f30
+2026-02-27 23:45:10 - Adding type registration row_version -> org.hibernate.type.BasicTypeReference@1860b107
+2026-02-27 23:45:10 - Adding type registration object -> org.hibernate.type.JavaObjectType@50008974
+2026-02-27 23:45:10 - Adding type registration java.lang.Object -> org.hibernate.type.JavaObjectType@50008974
+2026-02-27 23:45:10 - Adding type registration null -> org.hibernate.type.NullType@38874eb5
+2026-02-27 23:45:10 - Adding type registration imm_date -> org.hibernate.type.BasicTypeReference@76b019c4
+2026-02-27 23:45:10 - Adding type registration imm_time -> org.hibernate.type.BasicTypeReference@221961af
+2026-02-27 23:45:10 - Adding type registration imm_timestamp -> org.hibernate.type.BasicTypeReference@32ddcca
+2026-02-27 23:45:10 - Adding type registration imm_calendar -> org.hibernate.type.BasicTypeReference@1ddc8fc
+2026-02-27 23:45:10 - Adding type registration imm_calendar_date -> org.hibernate.type.BasicTypeReference@77d58f3a
+2026-02-27 23:45:10 - Adding type registration imm_calendar_time -> org.hibernate.type.BasicTypeReference@1e288c76
+2026-02-27 23:45:10 - Adding type registration imm_binary -> org.hibernate.type.BasicTypeReference@738ed8f5
+2026-02-27 23:45:10 - Adding type registration imm_serializable -> org.hibernate.type.BasicTypeReference@1cfb7450
+2026-02-27 23:45:10 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-27 23:45:10 - HikariPool-1 - Starting...
+2026-02-27 23:45:10 - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@51a5a8ba
+2026-02-27 23:45:10 - HikariPool-1 - Start completed.
+2026-02-27 23:45:10 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.12
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-27 23:45:10 - addDescriptor(2003, org.hibernate.type.descriptor.sql.internal.ArrayDdlTypeImpl@8eeb4c5) replaced previous registration(org.hibernate.type.descriptor.sql.internal.ArrayDdlTypeImpl@2dc77962)
+2026-02-27 23:45:10 - addDescriptor(6, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@32bae609) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@106b476a)
+2026-02-27 23:45:10 - addDescriptor(2004, BlobTypeDescriptor(BLOB_BINDING)) replaced previous registration(BlobTypeDescriptor(DEFAULT))
+2026-02-27 23:45:10 - addDescriptor(2005, ClobTypeDescriptor(CLOB_BINDING)) replaced previous registration(ClobTypeDescriptor(DEFAULT))
+2026-02-27 23:45:11 - Adding type registration JAVA_OBJECT -> org.hibernate.type.JavaObjectType@6ce8bf64
+2026-02-27 23:45:11 - Adding type registration java.lang.Object -> org.hibernate.type.JavaObjectType@6ce8bf64
+2026-02-27 23:45:11 - Type registration key [java.lang.Object] overrode previous entry : `org.hibernate.type.JavaObjectType@50008974`
+2026-02-27 23:45:11 - Adding type registration org.hibernate.type.DurationType -> basicType@1(java.time.Duration,3015)
+2026-02-27 23:45:11 - Adding type registration Duration -> basicType@1(java.time.Duration,3015)
+2026-02-27 23:45:11 - Adding type registration java.time.Duration -> basicType@1(java.time.Duration,3015)
+2026-02-27 23:45:11 - Adding type registration org.hibernate.type.OffsetDateTimeType -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-27 23:45:11 - Adding type registration OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-27 23:45:11 - Adding type registration java.time.OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-27 23:45:11 - Adding type registration org.hibernate.type.ZonedDateTimeType -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-27 23:45:11 - Adding type registration ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-27 23:45:11 - Adding type registration java.time.ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-27 23:45:11 - Adding type registration org.hibernate.type.OffsetTimeType -> basicType@4(java.time.OffsetTime,3007)
+2026-02-27 23:45:11 - Adding type registration OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2026-02-27 23:45:11 - Adding type registration java.time.OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2026-02-27 23:45:11 - Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@1690929] to MetadataBuildingContext [org.hibernate.boot.internal.MetadataBuildingContextRootImpl@34d26a68]
+2026-02-27 23:45:11 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-27 23:45:11 - Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@1690929] to SessionFactoryImplementor [org.hibernate.internal.SessionFactoryImpl@2f341732]
+2026-02-27 23:45:11 - Handling #sessionFactoryCreated from [org.hibernate.internal.SessionFactoryImpl@2f341732] for TypeConfiguration
+2026-02-27 23:45:11 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-27 23:45:12 - Redis Streams 리스너 컨테이너 시작 (DB 0) ? stream: subscription-events
+2026-02-27 23:45:12 - Consumer Group 이미 존재 (정상) ? stream: subscription-events, group: member-service-group
+2026-02-27 23:45:12 - Redis Streams 구독 등록 완료 ? stream: subscription-events, group: member-service-group, consumer: member-service-1
+2026-02-27 23:45:12 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-27 23:45:12 - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-02-27 23:45:12 - Exposing 3 endpoints beneath base path '/actuator'
+2026-02-27 23:45:14 - Cannot determine local hostname
+2026-02-27 23:45:14 - Tomcat started on port 8081 (http) with context path '/'
+2026-02-27 23:45:15 - Cannot determine local hostname
+2026-02-27 23:45:15 - Started MemberApplication in 8.659 seconds (process running for 9.025)
+2026-02-27 23:45:16 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-27 23:45:16 - Initializing Servlet 'dispatcherServlet'
+2026-02-27 23:45:16 - Completed initialization in 1 ms
+2026-02-27 23:45:29 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+2026-02-27 23:45:29 - JWT 인증 완료 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-27 23:45:29 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:45:29 - 프로필 수정 완료 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-27 23:45:29 - 
+    /* update
+        for com.unicorn.lunchpick.member.repository.entity.MemberEntity */update lunchpick_member.member 
+    set
+        email=?,
+        feedback_reminder=?,
+        kakao_id=?,
+        location_enabled=?,
+        member_id=?,
+        nickname=?,
+        onboarding_completed=?,
+        recommendation_alert=?,
+        updated_at=? 
+    where
+        id=?
+Hibernate: 
+    /* update
+        for com.unicorn.lunchpick.member.repository.entity.MemberEntity */update lunchpick_member.member 
+    set
+        email=?,
+        feedback_reminder=?,
+        kakao_id=?,
+        location_enabled=?,
+        member_id=?,
+        nickname=?,
+        onboarding_completed=?,
+        recommendation_alert=?,
+        updated_at=? 
+    where
+        id=?
+2026-02-27 23:45:29 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:45:29 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-27 23:45:39 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:45:39 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:45:39 - 프로필 수정 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:45:39 - 
+    /* update
+        for com.unicorn.lunchpick.member.repository.entity.MemberEntity */update lunchpick_member.member 
+    set
+        email=?,
+        feedback_reminder=?,
+        kakao_id=?,
+        location_enabled=?,
+        member_id=?,
+        nickname=?,
+        onboarding_completed=?,
+        recommendation_alert=?,
+        updated_at=? 
+    where
+        id=?
+Hibernate: 
+    /* update
+        for com.unicorn.lunchpick.member.repository.entity.MemberEntity */update lunchpick_member.member 
+    set
+        email=?,
+        feedback_reminder=?,
+        kakao_id=?,
+        location_enabled=?,
+        member_id=?,
+        nickname=?,
+        onboarding_completed=?,
+        recommendation_alert=?,
+        updated_at=? 
+    where
+        id=?
+2026-02-27 23:45:39 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:45:39 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-27 23:45:39 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:45:39 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:45:39 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-27 23:45:56 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:45:56 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:51:47 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+2026-02-27 23:51:54 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:51:54 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:52:15 - 구독 캐시 갱신 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, plan: PREMIUM_MONTHLY
+2026-02-27 23:52:15 - 구독 이벤트 처리 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, plan: PREMIUM_MONTHLY
+2026-02-27 23:52:15 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:52:15 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:52:45 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:52:45 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:53:21 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:21 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:53:22 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:22 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:53:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:23 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:53:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:23 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:53:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:23 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:53:24 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:53:24 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:54:19 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:54:19 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:56:53 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:56:53 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:57:07 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:57:07 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:57:07 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-27 23:57:11 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.kakao_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.kakao_id=?
+2026-02-27 23:57:11 - 기존 회원 로그인 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:57:13 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:57:13 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:57:13 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-27 23:57:22 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:57:22 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-27 23:57:22 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-27 23:57:25 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-27 23:57:25 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:00:40 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:00:40 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:01:21 - 구독 캐시 갱신 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, plan: PREMIUM_MONTHLY
+2026-02-28 00:01:21 - 구독 이벤트 처리 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, plan: PREMIUM_MONTHLY
+2026-02-28 00:01:21 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:01:21 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:02:04 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:02:04 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:02:04 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-28 00:03:08 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+2026-02-28 00:03:28 - JWT 인증 완료 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-28 00:03:28 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:05:23 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:05:23 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:07:27 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:07:27 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:13:38 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+2026-02-28 00:13:53 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+2026-02-28 00:14:06 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+2026-02-28 00:17:16 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:17:16 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:17:17 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+2026-02-28 00:18:24 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+2026-02-28 00:19:44 - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:401)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:434)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:356)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-02-28 00:19:44 - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:401)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:434)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:356)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-02-28 00:19:44 - Unexpected error occurred in scheduled task
+org.springframework.data.redis.RedisSystemException: Redis exception
+	at org.springframework.data.redis.connection.lettuce.LettuceExceptionConverter.convert(LettuceExceptionConverter.java:72)
+	at org.springframework.data.redis.connection.lettuce.LettuceExceptionConverter.convert(LettuceExceptionConverter.java:41)
+	at org.springframework.data.redis.PassThroughExceptionTranslationStrategy.translate(PassThroughExceptionTranslationStrategy.java:40)
+	at org.springframework.data.redis.FallbackExceptionTranslationStrategy.translate(FallbackExceptionTranslationStrategy.java:38)
+	at org.springframework.data.redis.connection.lettuce.LettuceConnection.convertLettuceAccessException(LettuceConnection.java:310)
+	at org.springframework.data.redis.connection.lettuce.LettuceConnection.await(LettuceConnection.java:1012)
+	at org.springframework.data.redis.connection.lettuce.LettuceConnection.lambda$doInvoke$3(LettuceConnection.java:447)
+	at org.springframework.data.redis.connection.lettuce.LettuceInvoker$Synchronizer.invoke(LettuceInvoker.java:673)
+	at org.springframework.data.redis.connection.lettuce.LettuceInvoker$DefaultManyInvocationSpec.toList(LettuceInvoker.java:618)
+	at org.springframework.data.redis.connection.lettuce.LettuceStreamCommands.xReadGroup(LettuceStreamCommands.java:282)
+	at org.springframework.data.redis.stream.DefaultStreamMessageListenerContainer.lambda$getReadFunction$3(DefaultStreamMessageListenerContainer.java:234)
+	at org.springframework.data.redis.core.RedisTemplate.execute(RedisTemplate.java:411)
+	at org.springframework.data.redis.core.RedisTemplate.execute(RedisTemplate.java:378)
+	at org.springframework.data.redis.core.RedisTemplate.execute(RedisTemplate.java:365)
+	at org.springframework.data.redis.stream.DefaultStreamMessageListenerContainer.lambda$getReadFunction$4(DefaultStreamMessageListenerContainer.java:233)
+	at org.springframework.data.redis.stream.StreamPollTask.readRecords(StreamPollTask.java:146)
+	at org.springframework.data.redis.stream.StreamPollTask.doLoop(StreamPollTask.java:127)
+	at org.springframework.data.redis.stream.StreamPollTask.run(StreamPollTask.java:112)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: io.lettuce.core.RedisException: java.net.SocketException: Connection reset
+	at io.lettuce.core.internal.Exceptions.bubble(Exceptions.java:68)
+	at io.lettuce.core.internal.Futures.awaitOrCancel(Futures.java:237)
+	at io.lettuce.core.LettuceFutures.awaitOrCancel(LettuceFutures.java:59)
+	at org.springframework.data.redis.connection.lettuce.LettuceConnection.await(LettuceConnection.java:1010)
+	... 13 common frames omitted
+Caused by: java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:401)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:434)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:356)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	... 1 common frames omitted
+2026-02-28 00:19:44 - Reconnecting, last destination was localhost/127.0.0.1:16379
+2026-02-28 00:19:44 - Reconnecting, last destination was localhost/127.0.0.1:16379
+2026-02-28 00:19:44 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:19:44 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:19:53 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:19:53 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:19:53 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:19:53 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:01 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:01 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:01 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:01 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:49 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:49 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:24:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:24:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:24:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:49 - Reconnected to localhost/<unresolved>:16379
+2026-02-28 00:24:49 - Reconnected to localhost/<unresolved>:16379
+2026-02-28 00:26:14 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@743f6700 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@399aadcb (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@3248ebae (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@41106538 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@3b18c8d (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:26:55 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:26:55 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:27:07 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.nickname=?
+2026-02-28 00:28:04 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.kakao_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.kakao_id=?
+2026-02-28 00:28:04 - 기존 회원 로그인 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:09 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:09 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:28:09 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-28 00:28:13 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:13 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:34:05 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:34:05 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:34:05 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:34:05 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:39:48 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:39:48 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:40:34 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:34 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:40:46 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:46 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:40:46 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-28 00:40:54 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:54 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:40:59 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:59 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:41:18 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:18 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:41:20 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:20 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:41:29 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:29 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:41:29 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-28 00:44:24 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:44:24 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:44:24 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-28 00:44:27 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:44:27 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:46:44 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:44 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:46:57 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:57 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:46:57 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-28 00:50:57 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:50:57 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:50:57 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-28 00:51:45 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.kakao_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.kakao_id=?
+2026-02-28 00:51:45 - 기존 회원 로그인 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:45 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:45 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:51:45 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-28 00:51:55 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.kakao_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.kakao_id=?
+2026-02-28 00:51:55 - 기존 회원 로그인 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:55 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:55 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 00:51:55 - 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        dre1_0.id,
+        dre1_0.allergens,
+        dre1_0.custom_allergens,
+        dre1_0.diet_type,
+        dre1_0.health_info_consent_given,
+        dre1_0.member_id,
+        dre1_0.updated_at 
+    from
+        lunchpick_member.dietary_restriction dre1_0 
+    where
+        dre1_0.member_id=?
+2026-02-28 00:52:00 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:52:00 - 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        me1_0.id,
+        me1_0.created_at,
+        me1_0.email,
+        me1_0.feedback_reminder,
+        me1_0.kakao_id,
+        me1_0.location_enabled,
+        me1_0.member_id,
+        me1_0.nickname,
+        me1_0.onboarding_completed,
+        me1_0.recommendation_alert,
+        me1_0.updated_at 
+    from
+        lunchpick_member.member me1_0 
+    where
+        me1_0.member_id=?
+2026-02-28 04:14:02 - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h20m49s6ms143?s600ns).
+
+> Task :member-service:bootRun FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':member-service:bootRun'.
+> Process 'command 'C:\jdk\jdk-21\bin\java.exe'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 9h 6m 33s
+8 actionable tasks: 3 executed, 5 up-to-date

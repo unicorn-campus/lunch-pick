@@ -1,0 +1,8 @@
+[     294ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     294ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[     378ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     381ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[     563ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[     564ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1580ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[    1581ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297

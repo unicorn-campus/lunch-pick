@@ -1,0 +1,27 @@
+[     192ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     197ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/subscription:0
+[     263ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[     263ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[     264ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[     264ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[     272ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     275ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/subscription:0
+[    1274ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[    1275ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    1275ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[    1275ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  140251ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  140251ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  140273ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  140277ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[  141256ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  141256ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  165991ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  165992ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  166024ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  166030ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/profile:0
+[  167010ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  167010ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  169999ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  170001ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/login:0
+[  192707ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://kauth.kakao.com/oauth/authorize?client_id=&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin&response_type=code&through_account=true&auth_tran_id=4PEL13mWgZ6n0q_EP05sVg4MInrbIyqDXSYUEjwOChcSlgAAAZyaLgVD:0

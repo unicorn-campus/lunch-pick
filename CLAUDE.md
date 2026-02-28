@@ -166,18 +166,17 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 
 ### deploy
 - 진행 모드: 단계별 승인
+- CLOUD: GCP
 - 마지막 완료 Step: Step 1
-- 레지스트리유형: ECR
-- ECR_ACCOUNT: 851725211153
-- ECR_REGION: ap-northeast-2
-- REGISTRY_URL: 851725211153.dkr.ecr.ap-northeast-2.amazonaws.com/lunchpick
-- K8s클러스터: EKS
-- CI/CD: Jenkins
-- VM.HOST: aws
-- VM.IP: 54.116.63.51
-- VM.USERID: ubuntu
-- VM.KEY파일: ~/.ssh/my-ec2.pem
-- VM 인스턴스타입: t3a.xlarge
+- 레지스트리유형: GCR
+- GCR_PROJECT: travel-planner-b7120
+- GCR_REGION: asia-northeast3
+- GCR_REPO: lunchpick
+- REGISTRY_URL: asia-northeast3-docker.pkg.dev/travel-planner-b7120/lunchpick
+- VM.HOST: gcp
+- VM.IP: 34.64.192.123
+- VM.USERID: hiondal
+- VM.KEY파일: ~/.ssh/gcp_key
 
 ## 프로젝트 네이밍
 - ORG (회사/조직명): unicorn

@@ -1,0 +1,3 @@
+[   47357ms] [ERROR] Failed to load resource: the server responded with a status of 409 () @ http://localhost:8083/api/v1/subscriptions:0
+[   75581ms] [ERROR] Failed to load resource: the server responded with a status of 409 () @ http://localhost:8083/api/v1/subscriptions:0
+[   81503ms] [ERROR] Failed to load resource: the server responded with a status of 409 () @ http://localhost:8083/api/v1/subscriptions:0

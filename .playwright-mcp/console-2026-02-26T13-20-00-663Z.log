@@ -1,0 +1,111 @@
+[     138ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     151ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/meal-record?name=%EA%B4%91%ED%99%94%EB%AC%B8%20%EB%90%9C%EC%9E%A5%EB%A7%88%EC%9D%84&restaurantId=rest-demo-001&recId=demo-001:0
+[     243ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     248ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/meal-record?name=%EA%B4%91%ED%99%94%EB%AC%B8%20%EB%90%9C%EC%9E%A5%EB%A7%88%EC%9D%84&restaurantId=rest-demo-001&recId=demo-001:0
+[   66398ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[   66398ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   66416ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[   66419ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[   67407ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[   67407ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   71561ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/history/timeline:0
+[   71562ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   71562ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/insights:0
+[   71562ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   71585ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[   71589ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/insights:0
+[   72576ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/insights:0
+[   72577ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   72579ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/history/timeline:0
+[   72580ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   82378ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[   82378ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   82404ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[   82410ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[   82984ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/history/timeline:0
+[   82984ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   82984ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/insights:0
+[   82984ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   83003ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[   83008ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/insights:0
+[   83990ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/history/timeline:0
+[   83991ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   83991ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/insights:0
+[   83991ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  121967ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  121968ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  121976ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  121976ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  122003ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  122009ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/subscription:0
+[  122974ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me/subscription:0
+[  122974ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  122985ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8083/api/v1/subscriptions/plans:0
+[  122985ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  128372ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  128372ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  128391ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  128394ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/profile:0
+[  129378ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[  129378ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  132280ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/insights:0
+[  132280ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  132281ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/history/timeline:0
+[  132281ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  132314ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  132321ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/insights:0
+[  133286ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/insights:0
+[  133286ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  133286ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/history/timeline:0
+[  133286ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  177964ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  179200ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/insights?_rsc=nxtnp:0
+[  179202ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/insights:0
+[  179297ms] Error: The default export is not a React Component in "/insights/page"
+    at errorMissingDefaultExport (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:37:23548)
+    at createComponentTreeInternal (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:37:31544)
+    at async (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:37:33609)
+    at async createComponentTreeInternal (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:37:32826)
+    at async (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:37:33609)
+    at async createComponentTreeInternal (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:37:32826)
+    at async (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:37:33609)
+    at async createComponentTreeInternal (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:37:32826)
+    at async getRSCPayload (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:41:30021)
+    at async (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:41:58234)
+    at async renderToHTMLOrFlightImpl (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:41:43404)
+    at async doRender (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\.next\dev\server\chunks\ssr\node_modules_next_dist_054c3bab._.js:2994:28)
+    at async AppPageRouteModule.handleResponse (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:43:64241)
+    at async handleResponse (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\.next\dev\server\chunks\ssr\node_modules_next_dist_054c3bab._.js:3200:32)
+    at async Module.handler (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\.next\dev\server\chunks\ssr\node_modules_next_dist_054c3bab._.js:3571:20)
+    at async DevServer.renderToResponseWithComponentsImpl (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\base-server.js:1442:9)
+    at async DevServer.renderPageComponent (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\base-server.js:1494:24)
+    at async DevServer.renderToResponseImpl (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\base-server.js:1544:32)
+    at async DevServer.pipeImpl (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\base-server.js:1038:25)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\next-server.js:395:17)
+    at async DevServer.handleRequestImpl (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\base-server.js:929:17)
+    at async (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\dev\next-dev-server.js:387:20)
+    at async Span.traceAsyncFn (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\dev\next-dev-server.js:383:24)
+    at async invokeRender (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\lib\router-server.js:248:21)
+    at async handleRequest (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\lib\router-server.js:447:24)
+    at async requestHandlerImpl (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\lib\router-server.js:496:13)
+    at async Server.requestListener (file://C:\Users\hiond\workspace\lunch-menu-recommender\frontend\node_modules\next\dist\server\lib\start-server.js:226:13)
+[  230170ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  230181ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/insights:0
+[  230329ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  230339ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/insights:0
+[  230394ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/history/timeline:0
+[  230395ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  230395ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/insights:0
+[  230395ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  231404ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/insights:0
+[  231405ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  231405ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/history/timeline:0
+[  231405ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297

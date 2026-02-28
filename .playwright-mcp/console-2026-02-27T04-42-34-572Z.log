@@ -1,0 +1,2 @@
+[      45ms] [ERROR] A bad HTTP response code (404) was received when fetching the script. @ :0
+[      47ms] [WARNING] Exception while loading service worker: TypeError: Failed to register a ServiceWorker for scope ('http://localhost:5173/') with script ('http://localhost:5173/flutter_service_worker.js?v=3346880908'): A bad HTTP response code (404) was received when fetching the script. @ http://localhost:5173/flutter_bootstrap.js:2

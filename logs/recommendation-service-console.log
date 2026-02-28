@@ -1,0 +1,481 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.1)
+
+2026-02-27 07:02:32 - Starting RecommendationApplication using Java 21 with PID 49672 (C:\Users\hiond\workspace\lunch-menu-recommender\recommendation-service\build\libs\recommendation-service.jar started by hiond in C:\Users\hiond\workspace\lunch-menu-recommender)
+2026-02-27 07:02:32 - Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-02-27 07:02:32 - The following 1 profile is active: "dev"
+2026-02-27 07:02:34 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-27 07:02:34 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-27 07:02:34 - Finished Spring Data repository scanning in 125 ms. Found 5 JPA repository interfaces.
+2026-02-27 07:02:35 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-27 07:02:35 - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-27 07:02:35 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 07:02:35 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.LearningMessageRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 07:02:35 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.MealRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 07:02:35 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.PreferenceVectorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 07:02:35 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.RecommendationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 07:02:35 - Finished Spring Data repository scanning in 69 ms. Found 0 Redis repository interfaces.
+2026-02-27 07:02:36 - BeanFactory id=9dcaa624-c3bb-329f-9839-2bed8592f2cb
+2026-02-27 07:02:38 - Tomcat initialized with port 8082 (http)
+2026-02-27 07:02:38 - Starting service [Tomcat]
+2026-02-27 07:02:38 - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-02-27 07:02:39 - Initializing Spring embedded WebApplicationContext
+2026-02-27 07:02:39 - Root WebApplicationContext: initialization completed in 6552 ms
+2026-02-27 07:02:40 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-27 07:02:40 - HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-02-27 07:02:40 - HHH000026: Second-level cache disabled
+2026-02-27 07:02:41 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-27 07:02:41 - HikariPool-1 - Starting...
+2026-02-27 07:02:41 - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4c5c0306
+2026-02-27 07:02:41 - HikariPool-1 - Start completed.
+2026-02-27 07:02:41 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.12
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-27 07:02:42 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-27 07:02:42 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-27 07:02:47 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-27 07:02:47 - 
+
+Using generated security password: 6601bbba-bb3d-4084-84c8-2a80297bd221
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-27 07:02:47 - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-02-27 07:02:49 - Cannot determine local hostname
+2026-02-27 07:02:49 - Exposing 3 endpoints beneath base path '/actuator'
+2026-02-27 07:02:52 - Cannot determine local hostname
+2026-02-27 07:02:52 - Tomcat started on port 8082 (http) with context path '/'
+2026-02-27 07:02:53 - Cannot determine local hostname
+2026-02-27 07:02:54 - Cannot determine local hostname
+2026-02-27 07:02:54 - Started RecommendationApplication in 23.757 seconds (process running for 24.601)
+2026-02-27 07:03:17 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-27 07:03:17 - Initializing Servlet 'dispatcherServlet'
+2026-02-27 07:03:17 - Completed initialization in 1 ms
+2026-02-27 12:59:46 - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5h50m5s339ms785µs700ns).
+2026-02-27 13:51:05 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:51:06 - 추천 캐시 미스 — AI Pipeline 호출 시작 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:51:06 - [AI Pipeline] 추천 생성 요청 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, isColdStart: false
+2026-02-27 13:51:06 - [AI Pipeline] 추천 생성 성공 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, isFallback: false
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-27 13:51:06 - 추천 캐시 저장 완료 — key: rec:dbdd71a7-cde8-478a-b786-8b90b7a5f667:3756:12697
+2026-02-27 13:51:32 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        re1_0.id,
+        re1_0.category,
+        re1_0.confidence_score,
+        re1_0.created_at,
+        re1_0.distance_meters,
+        re1_0.estimated_walk_minutes,
+        re1_0.is_fallback,
+        re1_0.member_id,
+        re1_0.reaction_time_ms,
+        re1_0.reason_summary,
+        re1_0.recommendation_id,
+        re1_0.reject_reason,
+        re1_0.representative_menu,
+        re1_0.restaurant_id,
+        re1_0.restaurant_name,
+        re1_0.status,
+        re1_0.updated_at 
+    from
+        lunchpick_recommendation.recommendation re1_0 
+    where
+        re1_0.recommendation_id=?
+2026-02-27 13:51:32 - 추천 이유 캐시 미스 — AI Pipeline 호출 — recommendationId: a5800553-679b-49e2-a7a8-6f9bc2a6ef8f
+2026-02-27 13:51:32 - [AI Pipeline] 이유 생성 요청 — recommendationId: a5800553-679b-49e2-a7a8-6f9bc2a6ef8f
+2026-02-27 13:51:32 - [AI Pipeline] 이유 생성 성공 — recommendationId: a5800553-679b-49e2-a7a8-6f9bc2a6ef8f, isReasonReady: true
+2026-02-27 13:52:03 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:52:03 - 추천 캐시 히트 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:52:14 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        re1_0.id,
+        re1_0.category,
+        re1_0.confidence_score,
+        re1_0.created_at,
+        re1_0.distance_meters,
+        re1_0.estimated_walk_minutes,
+        re1_0.is_fallback,
+        re1_0.member_id,
+        re1_0.reaction_time_ms,
+        re1_0.reason_summary,
+        re1_0.recommendation_id,
+        re1_0.reject_reason,
+        re1_0.representative_menu,
+        re1_0.restaurant_id,
+        re1_0.restaurant_name,
+        re1_0.status,
+        re1_0.updated_at 
+    from
+        lunchpick_recommendation.recommendation re1_0 
+    where
+        re1_0.recommendation_id=?
+2026-02-27 13:52:14 - 추천 수락 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, recommendationId: a5800553-679b-49e2-a7a8-6f9bc2a6ef8f, reactionTimeMs: 11271
+Hibernate: 
+    /* update
+        for com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */update lunchpick_recommendation.recommendation 
+    set
+        category=?,
+        confidence_score=?,
+        distance_meters=?,
+        estimated_walk_minutes=?,
+        is_fallback=?,
+        member_id=?,
+        reaction_time_ms=?,
+        reason_summary=?,
+        recommendation_id=?,
+        reject_reason=?,
+        representative_menu=?,
+        restaurant_id=?,
+        restaurant_name=?,
+        status=?,
+        updated_at=? 
+    where
+        id=?
+2026-02-27 13:52:14 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:52:14 - 추천 캐시 히트 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:52:34 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:52:34 - 추천 캐시 히트 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:52:58 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        re1_0.id,
+        re1_0.category,
+        re1_0.confidence_score,
+        re1_0.created_at,
+        re1_0.distance_meters,
+        re1_0.estimated_walk_minutes,
+        re1_0.is_fallback,
+        re1_0.member_id,
+        re1_0.reaction_time_ms,
+        re1_0.reason_summary,
+        re1_0.recommendation_id,
+        re1_0.reject_reason,
+        re1_0.representative_menu,
+        re1_0.restaurant_id,
+        re1_0.restaurant_name,
+        re1_0.status,
+        re1_0.updated_at 
+    from
+        lunchpick_recommendation.recommendation re1_0 
+    where
+        re1_0.recommendation_id=?
+2026-02-27 13:52:58 - 추천 거절 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, reason: MOOD_NOT_MATCH
+Hibernate: 
+    /* update
+        for com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */update lunchpick_recommendation.recommendation 
+    set
+        category=?,
+        confidence_score=?,
+        distance_meters=?,
+        estimated_walk_minutes=?,
+        is_fallback=?,
+        member_id=?,
+        reaction_time_ms=?,
+        reason_summary=?,
+        recommendation_id=?,
+        reject_reason=?,
+        representative_menu=?,
+        restaurant_id=?,
+        restaurant_name=?,
+        status=?,
+        updated_at=? 
+    where
+        id=?
+2026-02-27 13:52:58 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:52:58 - 추천 캐시 히트 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:53:20 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    fetch
+        first ? rows only
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.MealRecordEntity */insert 
+    into
+        lunchpick_recommendation.meal_record (category, created_at, meal_id, member_id, menu_name, recommendation_id, recorded_at, restaurant_id, restaurant_name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-27 13:53:20 - 식사 기록 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, mealId: 17332c6a-60d2-490d-af38-4886ccac1e08
+2026-02-27 13:53:35 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.meal_id=? 
+        and mre1_0.member_id=?
+2026-02-27 13:53:35 - 식사 기록 취소 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, mealId: 17332c6a-60d2-490d-af38-4886ccac1e08
+Hibernate: 
+    /* delete for com.unicorn.lunchpick.recommendation.repository.entity.MealRecordEntity */delete 
+    from
+        lunchpick_recommendation.meal_record 
+    where
+        id=?
+2026-02-27 13:53:49 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    fetch
+        first ? rows only
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.MealRecordEntity */insert 
+    into
+        lunchpick_recommendation.meal_record (category, created_at, meal_id, member_id, menu_name, recommendation_id, recorded_at, restaurant_id, restaurant_name, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-27 13:53:49 - 식사 기록 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, mealId: afac5cd5-f07e-4ce5-83e9-5338568819c6
+2026-02-27 13:54:12 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.meal_id=? 
+        and mre1_0.member_id=?
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.FeedbackEntity */insert 
+    into
+        lunchpick_recommendation.feedback (created_at, feedback_id, keyword, meal_id, member_id, satisfaction, skipped, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* <criteria> */ select
+        count(fe1_0.id) 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=?
+2026-02-27 13:54:12 - 피드백 제출 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, satisfaction: GOOD, totalCount: 1
+2026-02-27 13:55:37 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:55:37 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-27 13:55:37 - 인사이트 데이터 부족 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, count: 1
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-27 13:55:37 - 식사 이력 조회 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, count: 1
+2026-02-27 13:58:02 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:58:02 - 추천 캐시 히트 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:58:16 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        re1_0.id,
+        re1_0.category,
+        re1_0.confidence_score,
+        re1_0.created_at,
+        re1_0.distance_meters,
+        re1_0.estimated_walk_minutes,
+        re1_0.is_fallback,
+        re1_0.member_id,
+        re1_0.reaction_time_ms,
+        re1_0.reason_summary,
+        re1_0.recommendation_id,
+        re1_0.reject_reason,
+        re1_0.representative_menu,
+        re1_0.restaurant_id,
+        re1_0.restaurant_name,
+        re1_0.status,
+        re1_0.updated_at 
+    from
+        lunchpick_recommendation.recommendation re1_0 
+    where
+        re1_0.recommendation_id=?
+2026-02-27 13:58:16 - 추천 수락 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, recommendationId: a5800553-679b-49e2-a7a8-6f9bc2a6ef8f, reactionTimeMs: 14331
+Hibernate: 
+    /* update
+        for com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */update lunchpick_recommendation.recommendation 
+    set
+        category=?,
+        confidence_score=?,
+        distance_meters=?,
+        estimated_walk_minutes=?,
+        is_fallback=?,
+        member_id=?,
+        reaction_time_ms=?,
+        reason_summary=?,
+        recommendation_id=?,
+        reject_reason=?,
+        representative_menu=?,
+        restaurant_id=?,
+        restaurant_name=?,
+        status=?,
+        updated_at=? 
+    where
+        id=?
+2026-02-27 13:58:16 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:58:16 - 추천 캐시 히트 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:58:33 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    fetch
+        first ? rows only
+2026-02-27 13:58:33 - 비즈니스 예외 발생 — errorCode: DUPLICATE_MEAL_RECORD, message: 이미 기록되었어요. 수정하시겠어요?
+2026-02-27 13:59:29 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:59:29 - 추천 캐시 히트 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:09:01 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:09:01 - 추천 캐시 히트 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:15:14 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:15:14 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-27 14:15:14 - 인사이트 데이터 부족 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, count: 1
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-27 14:15:14 - 식사 이력 조회 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, count: 1
+2026-02-27 14:15:16 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:15:16 - 추천 캐시 히트 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667

@@ -1,0 +1,26 @@
+[     161ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     167ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[     237ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[     237ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[     252ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[     256ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[    1249ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[    1250ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   31679ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[   31682ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/navigation?name=%EA%B4%91%ED%99%94%EB%AC%B8%20%EB%90%9C%EC%9E%A5%EB%A7%88%EC%9D%84&address=%EC%84%9C%EC%9A%B8%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20(%EB%8D%B0%EB%AA%A8)&restaurantId=rest-demo-001&recId=demo-001&walkMinutes=5&distanceMeters=350:0
+[  161752ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  161753ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  161783ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  161790ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/home:0
+[  162760ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  162760ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  167456ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  167462ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/navigation?name=%EC%8A%A4%EC%8B%9C%ED%9E%88%EB%A1%9C&address=%EC%84%9C%EC%9A%B8%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20(%EB%8D%B0%EB%AA%A8)&restaurantId=rest-demo-002&recId=demo-002&walkMinutes=7&distanceMeters=520:0
+[  169884ms] [ERROR] Failed to launch 'nmap://search?query=%EC%8A%A4%EC%8B%9C%ED%9E%88%EB%A1%9C&appname=com.unicorn.lunchpick' because the scheme does not have a registered handler. @ http://localhost:3000/navigation?name=%EC%8A%A4%EC%8B%9C%ED%9E%88%EB%A1%9C&address=%EC%84%9C%EC%9A%B8%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20(%EB%8D%B0%EB%AA%A8)&restaurantId=rest-demo-002&recId=demo-002&walkMinutes=7&distanceMeters=520:0
+[  176199ms] [ERROR] Failed to launch 'kakaomap://search?q=%EC%8A%A4%EC%8B%9C%ED%9E%88%EB%A1%9C' because the scheme does not have a registered handler. @ http://localhost:3000/navigation?name=%EC%8A%A4%EC%8B%9C%ED%9E%88%EB%A1%9C&address=%EC%84%9C%EC%9A%B8%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20(%EB%8D%B0%EB%AA%A8)&restaurantId=rest-demo-002&recId=demo-002&walkMinutes=7&distanceMeters=520:0
+[  183671ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/manifest.json:0
+[  183678ms] [ERROR] Manifest fetch from http://localhost:3000/manifest.json failed, code 404 @ http://localhost:3000/meal-record?name=%EC%8A%A4%EC%8B%9C%ED%9E%88%EB%A1%9C&restaurantId=rest-demo-002&recId=demo-002:0
+[  184787ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/meals:0
+[  184788ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  186625ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/meals:0
+[  186625ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297

@@ -1,0 +1,2 @@
+[   21090ms] [ERROR] Query data cannot be undefined. Please make sure to return a value other than undefined from your query function. Affected query key: ["subscription","active"] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[   39520ms] [ERROR] Query data cannot be undefined. Please make sure to return a value other than undefined from your query function. Affected query key: ["subscription","active"] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127

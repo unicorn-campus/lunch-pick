@@ -1,0 +1,2074 @@
+> Task :common:generateEffectiveLombokConfig UP-TO-DATE
+> Task :common:compileJava UP-TO-DATE
+> Task :common:processResources NO-SOURCE
+> Task :common:classes UP-TO-DATE
+> Task :common:jar UP-TO-DATE
+> Task :recommendation-service:generateEffectiveLombokConfig UP-TO-DATE
+> Task :recommendation-service:compileJava UP-TO-DATE
+> Task :recommendation-service:processResources UP-TO-DATE
+> Task :recommendation-service:classes UP-TO-DATE
+> Task :recommendation-service:resolveMainClassName
+
+> Task :recommendation-service:bootRun
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.1)
+
+2026-02-28 00:16:22 - Starting RecommendationApplication using Java 21 with PID 53644 (C:\Users\hiond\workspace\lunch-menu-recommender\recommendation-service\build\classes\java\main started by hiond in C:\Users\hiond\workspace\lunch-menu-recommender\recommendation-service)
+2026-02-28 00:16:22 - Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-02-28 00:16:22 - The following 1 profile is active: "dev"
+2026-02-28 00:16:23 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-28 00:16:23 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-28 00:16:23 - Finished Spring Data repository scanning in 70 ms. Found 5 JPA repository interfaces.
+2026-02-28 00:16:23 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-28 00:16:23 - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-28 00:16:23 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 00:16:23 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.LearningMessageRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 00:16:23 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.MealRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 00:16:23 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.PreferenceVectorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 00:16:23 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.RecommendationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 00:16:23 - Finished Spring Data repository scanning in 14 ms. Found 0 Redis repository interfaces.
+2026-02-28 00:16:23 - BeanFactory id=ddf316c5-636e-3bfd-84ca-8eb21605f23e
+2026-02-28 00:16:24 - Tomcat initialized with port 8082 (http)
+2026-02-28 00:16:24 - Starting service [Tomcat]
+2026-02-28 00:16:24 - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-02-28 00:16:24 - Initializing Spring embedded WebApplicationContext
+2026-02-28 00:16:24 - Root WebApplicationContext: initialization completed in 1489 ms
+2026-02-28 00:16:24 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-28 00:16:24 - HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-02-28 00:16:24 - HHH000026: Second-level cache disabled
+2026-02-28 00:16:24 - Adding type registration boolean -> org.hibernate.type.BasicTypeReference@6afced93
+2026-02-28 00:16:24 - Adding type registration boolean -> org.hibernate.type.BasicTypeReference@6afced93
+2026-02-28 00:16:24 - Adding type registration java.lang.Boolean -> org.hibernate.type.BasicTypeReference@6afced93
+2026-02-28 00:16:24 - Adding type registration numeric_boolean -> org.hibernate.type.BasicTypeReference@3f142e87
+2026-02-28 00:16:24 - Adding type registration org.hibernate.type.NumericBooleanConverter -> org.hibernate.type.BasicTypeReference@3f142e87
+2026-02-28 00:16:24 - Adding type registration true_false -> org.hibernate.type.BasicTypeReference@22dc9d46
+2026-02-28 00:16:24 - Adding type registration org.hibernate.type.TrueFalseConverter -> org.hibernate.type.BasicTypeReference@22dc9d46
+2026-02-28 00:16:24 - Adding type registration yes_no -> org.hibernate.type.BasicTypeReference@63c6c5e5
+2026-02-28 00:16:24 - Adding type registration org.hibernate.type.YesNoConverter -> org.hibernate.type.BasicTypeReference@63c6c5e5
+2026-02-28 00:16:24 - Adding type registration byte -> org.hibernate.type.BasicTypeReference@6edb2c7b
+2026-02-28 00:16:24 - Adding type registration byte -> org.hibernate.type.BasicTypeReference@6edb2c7b
+2026-02-28 00:16:24 - Adding type registration java.lang.Byte -> org.hibernate.type.BasicTypeReference@6edb2c7b
+2026-02-28 00:16:24 - Adding type registration binary -> org.hibernate.type.BasicTypeReference@70a54731
+2026-02-28 00:16:24 - Adding type registration byte[] -> org.hibernate.type.BasicTypeReference@70a54731
+2026-02-28 00:16:24 - Adding type registration [B -> org.hibernate.type.BasicTypeReference@70a54731
+2026-02-28 00:16:24 - Adding type registration binary_wrapper -> org.hibernate.type.BasicTypeReference@36d5c2ce
+2026-02-28 00:16:24 - Adding type registration wrapper-binary -> org.hibernate.type.BasicTypeReference@36d5c2ce
+2026-02-28 00:16:24 - Adding type registration image -> org.hibernate.type.BasicTypeReference@6369d01c
+2026-02-28 00:16:24 - Adding type registration blob -> org.hibernate.type.BasicTypeReference@54e680fe
+2026-02-28 00:16:24 - Adding type registration java.sql.Blob -> org.hibernate.type.BasicTypeReference@54e680fe
+2026-02-28 00:16:24 - Adding type registration materialized_blob -> org.hibernate.type.BasicTypeReference@ea0c99c
+2026-02-28 00:16:24 - Adding type registration materialized_blob_wrapper -> org.hibernate.type.BasicTypeReference@167bb934
+2026-02-28 00:16:24 - Adding type registration short -> org.hibernate.type.BasicTypeReference@3b3f62d7
+2026-02-28 00:16:24 - Adding type registration short -> org.hibernate.type.BasicTypeReference@3b3f62d7
+2026-02-28 00:16:24 - Adding type registration java.lang.Short -> org.hibernate.type.BasicTypeReference@3b3f62d7
+2026-02-28 00:16:24 - Adding type registration integer -> org.hibernate.type.BasicTypeReference@5b3ee43e
+2026-02-28 00:16:24 - Adding type registration int -> org.hibernate.type.BasicTypeReference@5b3ee43e
+2026-02-28 00:16:24 - Adding type registration java.lang.Integer -> org.hibernate.type.BasicTypeReference@5b3ee43e
+2026-02-28 00:16:24 - Adding type registration long -> org.hibernate.type.BasicTypeReference@53da2aec
+2026-02-28 00:16:24 - Adding type registration long -> org.hibernate.type.BasicTypeReference@53da2aec
+2026-02-28 00:16:24 - Adding type registration java.lang.Long -> org.hibernate.type.BasicTypeReference@53da2aec
+2026-02-28 00:16:24 - Adding type registration float -> org.hibernate.type.BasicTypeReference@18a38bba
+2026-02-28 00:16:24 - Adding type registration float -> org.hibernate.type.BasicTypeReference@18a38bba
+2026-02-28 00:16:24 - Adding type registration java.lang.Float -> org.hibernate.type.BasicTypeReference@18a38bba
+2026-02-28 00:16:24 - Adding type registration double -> org.hibernate.type.BasicTypeReference@58ca6ba3
+2026-02-28 00:16:24 - Adding type registration double -> org.hibernate.type.BasicTypeReference@58ca6ba3
+2026-02-28 00:16:24 - Adding type registration java.lang.Double -> org.hibernate.type.BasicTypeReference@58ca6ba3
+2026-02-28 00:16:24 - Adding type registration big_integer -> org.hibernate.type.BasicTypeReference@74797b90
+2026-02-28 00:16:24 - Adding type registration java.math.BigInteger -> org.hibernate.type.BasicTypeReference@74797b90
+2026-02-28 00:16:24 - Adding type registration big_decimal -> org.hibernate.type.BasicTypeReference@7676b2b9
+2026-02-28 00:16:24 - Adding type registration java.math.BigDecimal -> org.hibernate.type.BasicTypeReference@7676b2b9
+2026-02-28 00:16:24 - Adding type registration character -> org.hibernate.type.BasicTypeReference@720c0996
+2026-02-28 00:16:24 - Adding type registration char -> org.hibernate.type.BasicTypeReference@720c0996
+2026-02-28 00:16:24 - Adding type registration java.lang.Character -> org.hibernate.type.BasicTypeReference@720c0996
+2026-02-28 00:16:24 - Adding type registration character_nchar -> org.hibernate.type.BasicTypeReference@7910e307
+2026-02-28 00:16:24 - Adding type registration string -> org.hibernate.type.BasicTypeReference@460aa24e
+2026-02-28 00:16:24 - Adding type registration java.lang.String -> org.hibernate.type.BasicTypeReference@460aa24e
+2026-02-28 00:16:24 - Adding type registration nstring -> org.hibernate.type.BasicTypeReference@5aa334c
+2026-02-28 00:16:24 - Adding type registration characters -> org.hibernate.type.BasicTypeReference@17f8cad6
+2026-02-28 00:16:24 - Adding type registration char[] -> org.hibernate.type.BasicTypeReference@17f8cad6
+2026-02-28 00:16:24 - Adding type registration [C -> org.hibernate.type.BasicTypeReference@17f8cad6
+2026-02-28 00:16:24 - Adding type registration wrapper-characters -> org.hibernate.type.BasicTypeReference@698e1bf5
+2026-02-28 00:16:24 - Adding type registration text -> org.hibernate.type.BasicTypeReference@7a85dc58
+2026-02-28 00:16:24 - Adding type registration ntext -> org.hibernate.type.BasicTypeReference@2ee1b017
+2026-02-28 00:16:24 - Adding type registration clob -> org.hibernate.type.BasicTypeReference@7f9e6167
+2026-02-28 00:16:24 - Adding type registration java.sql.Clob -> org.hibernate.type.BasicTypeReference@7f9e6167
+2026-02-28 00:16:24 - Adding type registration nclob -> org.hibernate.type.BasicTypeReference@66d69cd2
+2026-02-28 00:16:24 - Adding type registration java.sql.NClob -> org.hibernate.type.BasicTypeReference@66d69cd2
+2026-02-28 00:16:24 - Adding type registration materialized_clob -> org.hibernate.type.BasicTypeReference@32e5fb4c
+2026-02-28 00:16:24 - Adding type registration materialized_clob_char_array -> org.hibernate.type.BasicTypeReference@11a7840f
+2026-02-28 00:16:24 - Adding type registration materialized_clob_character_array -> org.hibernate.type.BasicTypeReference@1d3e5a05
+2026-02-28 00:16:24 - Adding type registration materialized_nclob -> org.hibernate.type.BasicTypeReference@4f5c757c
+2026-02-28 00:16:24 - Adding type registration materialized_nclob_character_array -> org.hibernate.type.BasicTypeReference@52fec840
+2026-02-28 00:16:24 - Adding type registration materialized_nclob_char_array -> org.hibernate.type.BasicTypeReference@7fd4b9ec
+2026-02-28 00:16:24 - Adding type registration Duration -> org.hibernate.type.BasicTypeReference@10553a61
+2026-02-28 00:16:24 - Adding type registration java.time.Duration -> org.hibernate.type.BasicTypeReference@10553a61
+2026-02-28 00:16:24 - Adding type registration LocalDateTime -> org.hibernate.type.BasicTypeReference@3c8e4a82
+2026-02-28 00:16:24 - Adding type registration java.time.LocalDateTime -> org.hibernate.type.BasicTypeReference@3c8e4a82
+2026-02-28 00:16:24 - Adding type registration LocalDate -> org.hibernate.type.BasicTypeReference@1896299b
+2026-02-28 00:16:24 - Adding type registration java.time.LocalDate -> org.hibernate.type.BasicTypeReference@1896299b
+2026-02-28 00:16:24 - Adding type registration LocalTime -> org.hibernate.type.BasicTypeReference@42d7e8bc
+2026-02-28 00:16:24 - Adding type registration java.time.LocalTime -> org.hibernate.type.BasicTypeReference@42d7e8bc
+2026-02-28 00:16:24 - Adding type registration OffsetDateTime -> org.hibernate.type.BasicTypeReference@7b6854b5
+2026-02-28 00:16:24 - Adding type registration java.time.OffsetDateTime -> org.hibernate.type.BasicTypeReference@7b6854b5
+2026-02-28 00:16:24 - Adding type registration OffsetDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@357cdb00
+2026-02-28 00:16:24 - Adding type registration OffsetDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@1c0fe6c5
+2026-02-28 00:16:24 - Adding type registration OffsetTime -> org.hibernate.type.BasicTypeReference@61607ff0
+2026-02-28 00:16:24 - Adding type registration java.time.OffsetTime -> org.hibernate.type.BasicTypeReference@61607ff0
+2026-02-28 00:16:24 - Adding type registration OffsetTimeUtc -> org.hibernate.type.BasicTypeReference@58945295
+2026-02-28 00:16:24 - Adding type registration OffsetTimeWithTimezone -> org.hibernate.type.BasicTypeReference@b63365c
+2026-02-28 00:16:24 - Adding type registration OffsetTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@6839d03b
+2026-02-28 00:16:24 - Adding type registration ZonedDateTime -> org.hibernate.type.BasicTypeReference@a44ad33
+2026-02-28 00:16:24 - Adding type registration java.time.ZonedDateTime -> org.hibernate.type.BasicTypeReference@a44ad33
+2026-02-28 00:16:24 - Adding type registration ZonedDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@703e5614
+2026-02-28 00:16:24 - Adding type registration ZonedDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@627d5f99
+2026-02-28 00:16:24 - Adding type registration date -> org.hibernate.type.BasicTypeReference@44e3f3e5
+2026-02-28 00:16:24 - Adding type registration java.sql.Date -> org.hibernate.type.BasicTypeReference@44e3f3e5
+2026-02-28 00:16:24 - Adding type registration time -> org.hibernate.type.BasicTypeReference@6be1f37f
+2026-02-28 00:16:24 - Adding type registration java.sql.Time -> org.hibernate.type.BasicTypeReference@6be1f37f
+2026-02-28 00:16:24 - Adding type registration timestamp -> org.hibernate.type.BasicTypeReference@69ed96e1
+2026-02-28 00:16:24 - Adding type registration java.sql.Timestamp -> org.hibernate.type.BasicTypeReference@69ed96e1
+2026-02-28 00:16:24 - Adding type registration java.util.Date -> org.hibernate.type.BasicTypeReference@69ed96e1
+2026-02-28 00:16:24 - Adding type registration calendar -> org.hibernate.type.BasicTypeReference@61648dd2
+2026-02-28 00:16:24 - Adding type registration java.util.Calendar -> org.hibernate.type.BasicTypeReference@61648dd2
+2026-02-28 00:16:24 - Adding type registration java.util.GregorianCalendar -> org.hibernate.type.BasicTypeReference@61648dd2
+2026-02-28 00:16:24 - Adding type registration calendar_date -> org.hibernate.type.BasicTypeReference@3ac326c0
+2026-02-28 00:16:24 - Adding type registration calendar_time -> org.hibernate.type.BasicTypeReference@5e5d40ec
+2026-02-28 00:16:24 - Adding type registration instant -> org.hibernate.type.BasicTypeReference@5b028f58
+2026-02-28 00:16:24 - Adding type registration java.time.Instant -> org.hibernate.type.BasicTypeReference@5b028f58
+2026-02-28 00:16:24 - Adding type registration uuid -> org.hibernate.type.BasicTypeReference@1e4d93f7
+2026-02-28 00:16:24 - Adding type registration java.util.UUID -> org.hibernate.type.BasicTypeReference@1e4d93f7
+2026-02-28 00:16:24 - Adding type registration pg-uuid -> org.hibernate.type.BasicTypeReference@1e4d93f7
+2026-02-28 00:16:24 - Adding type registration uuid-binary -> org.hibernate.type.BasicTypeReference@3d1b43d8
+2026-02-28 00:16:24 - Adding type registration uuid-char -> org.hibernate.type.BasicTypeReference@9f52eb7
+2026-02-28 00:16:24 - Adding type registration class -> org.hibernate.type.BasicTypeReference@46c2189e
+2026-02-28 00:16:24 - Adding type registration java.lang.Class -> org.hibernate.type.BasicTypeReference@46c2189e
+2026-02-28 00:16:24 - Adding type registration currency -> org.hibernate.type.BasicTypeReference@3462e99a
+2026-02-28 00:16:24 - Adding type registration Currency -> org.hibernate.type.BasicTypeReference@3462e99a
+2026-02-28 00:16:24 - Adding type registration java.util.Currency -> org.hibernate.type.BasicTypeReference@3462e99a
+2026-02-28 00:16:24 - Adding type registration locale -> org.hibernate.type.BasicTypeReference@5300694d
+2026-02-28 00:16:24 - Adding type registration java.util.Locale -> org.hibernate.type.BasicTypeReference@5300694d
+2026-02-28 00:16:24 - Adding type registration serializable -> org.hibernate.type.BasicTypeReference@7320750c
+2026-02-28 00:16:24 - Adding type registration java.io.Serializable -> org.hibernate.type.BasicTypeReference@7320750c
+2026-02-28 00:16:24 - Adding type registration timezone -> org.hibernate.type.BasicTypeReference@2570851e
+2026-02-28 00:16:24 - Adding type registration java.util.TimeZone -> org.hibernate.type.BasicTypeReference@2570851e
+2026-02-28 00:16:24 - Adding type registration ZoneOffset -> org.hibernate.type.BasicTypeReference@67d8613
+2026-02-28 00:16:24 - Adding type registration java.time.ZoneOffset -> org.hibernate.type.BasicTypeReference@67d8613
+2026-02-28 00:16:24 - Adding type registration url -> org.hibernate.type.BasicTypeReference@5667dd90
+2026-02-28 00:16:24 - Adding type registration java.net.URL -> org.hibernate.type.BasicTypeReference@5667dd90
+2026-02-28 00:16:24 - Adding type registration vector -> org.hibernate.type.BasicTypeReference@261f5a45
+2026-02-28 00:16:24 - Adding type registration float_vector -> org.hibernate.type.BasicTypeReference@76673ed
+2026-02-28 00:16:24 - Adding type registration double_vector -> org.hibernate.type.BasicTypeReference@6d41200c
+2026-02-28 00:16:24 - Adding type registration byte_vector -> org.hibernate.type.BasicTypeReference@522fb69
+2026-02-28 00:16:24 - Adding type registration row_version -> org.hibernate.type.BasicTypeReference@593354fa
+2026-02-28 00:16:24 - Adding type registration object -> org.hibernate.type.JavaObjectType@6219006a
+2026-02-28 00:16:24 - Adding type registration java.lang.Object -> org.hibernate.type.JavaObjectType@6219006a
+2026-02-28 00:16:24 - Adding type registration null -> org.hibernate.type.NullType@43a8bd35
+2026-02-28 00:16:24 - Adding type registration imm_date -> org.hibernate.type.BasicTypeReference@6fb219dd
+2026-02-28 00:16:24 - Adding type registration imm_time -> org.hibernate.type.BasicTypeReference@570b85dd
+2026-02-28 00:16:24 - Adding type registration imm_timestamp -> org.hibernate.type.BasicTypeReference@28ceb25e
+2026-02-28 00:16:24 - Adding type registration imm_calendar -> org.hibernate.type.BasicTypeReference@2e09e367
+2026-02-28 00:16:24 - Adding type registration imm_calendar_date -> org.hibernate.type.BasicTypeReference@518a7b8a
+2026-02-28 00:16:24 - Adding type registration imm_calendar_time -> org.hibernate.type.BasicTypeReference@5a24390b
+2026-02-28 00:16:24 - Adding type registration imm_binary -> org.hibernate.type.BasicTypeReference@7253c53
+2026-02-28 00:16:24 - Adding type registration imm_serializable -> org.hibernate.type.BasicTypeReference@66d6e50b
+2026-02-28 00:16:24 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-28 00:16:24 - HikariPool-1 - Starting...
+2026-02-28 00:16:24 - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@544733a4
+2026-02-28 00:16:24 - HikariPool-1 - Start completed.
+2026-02-28 00:16:24 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.12
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-28 00:16:24 - addDescriptor(2003, org.hibernate.type.descriptor.sql.internal.ArrayDdlTypeImpl@55cf5626) replaced previous registration(org.hibernate.type.descriptor.sql.internal.ArrayDdlTypeImpl@8de8b07)
+2026-02-28 00:16:24 - addDescriptor(6, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@7b55f0a6) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@3fc7abf6)
+2026-02-28 00:16:24 - addDescriptor(2004, BlobTypeDescriptor(BLOB_BINDING)) replaced previous registration(BlobTypeDescriptor(DEFAULT))
+2026-02-28 00:16:24 - addDescriptor(2005, ClobTypeDescriptor(CLOB_BINDING)) replaced previous registration(ClobTypeDescriptor(DEFAULT))
+2026-02-28 00:16:24 - Adding type registration JAVA_OBJECT -> org.hibernate.type.JavaObjectType@5a6d4dee
+2026-02-28 00:16:24 - Adding type registration java.lang.Object -> org.hibernate.type.JavaObjectType@5a6d4dee
+2026-02-28 00:16:24 - Type registration key [java.lang.Object] overrode previous entry : `org.hibernate.type.JavaObjectType@6219006a`
+2026-02-28 00:16:24 - Adding type registration org.hibernate.type.DurationType -> basicType@1(java.time.Duration,3015)
+2026-02-28 00:16:24 - Adding type registration Duration -> basicType@1(java.time.Duration,3015)
+2026-02-28 00:16:24 - Adding type registration java.time.Duration -> basicType@1(java.time.Duration,3015)
+2026-02-28 00:16:24 - Adding type registration org.hibernate.type.OffsetDateTimeType -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-28 00:16:24 - Adding type registration OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-28 00:16:24 - Adding type registration java.time.OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-28 00:16:24 - Adding type registration org.hibernate.type.ZonedDateTimeType -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-28 00:16:24 - Adding type registration ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-28 00:16:24 - Adding type registration java.time.ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-28 00:16:24 - Adding type registration org.hibernate.type.OffsetTimeType -> basicType@4(java.time.OffsetTime,3007)
+2026-02-28 00:16:24 - Adding type registration OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2026-02-28 00:16:24 - Adding type registration java.time.OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2026-02-28 00:16:24 - Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@71842e18] to MetadataBuildingContext [org.hibernate.boot.internal.MetadataBuildingContextRootImpl@227c0cf7]
+2026-02-28 00:16:25 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-28 00:16:25 - Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@71842e18] to SessionFactoryImplementor [org.hibernate.internal.SessionFactoryImpl@57cd77e1]
+2026-02-28 00:16:25 - Handling #sessionFactoryCreated from [org.hibernate.internal.SessionFactoryImpl@57cd77e1] for TypeConfiguration
+2026-02-28 00:16:25 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-28 00:16:25 - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-28 00:16:26 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-28 00:16:26 - 
+
+Using generated security password: ea2b4197-dde4-4d12-b671-572e7f6c9b7f
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-28 00:16:26 - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-02-28 00:16:27 - Cannot determine local hostname
+2026-02-28 00:16:27 - Exposing 3 endpoints beneath base path '/actuator'
+2026-02-28 00:16:29 - Cannot determine local hostname
+2026-02-28 00:16:29 - Tomcat started on port 8082 (http) with context path '/'
+2026-02-28 00:16:30 - Cannot determine local hostname
+2026-02-28 00:16:31 - Cannot determine local hostname
+2026-02-28 00:16:31 - Started RecommendationApplication in 10.205 seconds (process running for 10.504)
+2026-02-28 00:16:55 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-28 00:16:55 - Initializing Servlet 'dispatcherServlet'
+2026-02-28 00:16:55 - Completed initialization in 3 ms
+2026-02-28 00:16:55 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:16:56 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:17:00 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:17:00 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:17:16 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:17:16 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:17:16 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:17:16 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:17:17 - JWT 인증 완료 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-28 00:17:17 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:17:17 - 인사이트 캐시 히트 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-28 00:18:24 - JWT 인증 완료 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-28 00:18:24 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:18:24 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:18:24 - 
+    /* dynamic native SQL query */ SELECT
+        EXTRACT(DOW FROM m.recorded_at) AS day_of_week,
+        m.category AS category,
+        COUNT(*) AS cnt 
+    FROM
+        lunchpick_recommendation.meal_record m 
+    WHERE
+        m.member_id = ?   
+        AND m.recorded_at >= ? 
+    GROUP BY
+        EXTRACT(DOW FROM m.recorded_at),
+        m.category 
+    ORDER BY
+        day_of_week,
+        cnt DESC 
+Hibernate: 
+    /* dynamic native SQL query */ SELECT
+        EXTRACT(DOW FROM m.recorded_at) AS day_of_week,
+        m.category AS category,
+        COUNT(*) AS cnt 
+    FROM
+        lunchpick_recommendation.meal_record m 
+    WHERE
+        m.member_id = ?   
+        AND m.recorded_at >= ? 
+    GROUP BY
+        EXTRACT(DOW FROM m.recorded_at),
+        m.category 
+    ORDER BY
+        day_of_week,
+        cnt DESC 
+2026-02-28 00:18:24 - 
+    /* dynamic native SQL query */ SELECT
+        to_char(f.created_at, 'IYYY-IW') AS year_week,
+        COUNT(*) AS total,
+        SUM(CASE 
+            WHEN f.satisfaction = 'GOOD' 
+                THEN 1 
+            ELSE 0 
+    END) AS good_count 
+FROM
+    lunchpick_recommendation.feedback f 
+WHERE
+    f.member_id = ?   
+    AND f.created_at >= ? 
+GROUP BY
+    to_char(f.created_at, 'IYYY-IW') 
+ORDER BY
+    year_week 
+Hibernate: 
+    /* dynamic native SQL query */ SELECT
+        to_char(f.created_at, 'IYYY-IW') AS year_week,
+        COUNT(*) AS total,
+        SUM(CASE 
+            WHEN f.satisfaction = 'GOOD' 
+                THEN 1 
+            ELSE 0 
+    END) AS good_count 
+FROM
+    lunchpick_recommendation.feedback f 
+WHERE
+    f.member_id = ?   
+    AND f.created_at >= ? 
+GROUP BY
+    to_char(f.created_at, 'IYYY-IW') 
+ORDER BY
+    year_week 
+2026-02-28 00:18:24 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:18:24 - [AI Pipeline] 인사이트 분석 요청 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-28 00:18:24 - [AI Pipeline] 인사이트 클라이언트 오류 ? status: 404 NOT_FOUND
+2026-02-28 00:18:24 - [AI Pipeline Fallback] 인사이트 분석 실패 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5, cause: 404 Not Found from POST http://localhost:8084/api/v1/ai/insights
+2026-02-28 00:18:24 - 인사이트 조회 완료 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5, totalCount: 12, aiGenerated: false
+2026-02-28 00:19:44 - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:401)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:434)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:356)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-02-28 00:19:44 - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:401)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:434)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:255)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:356)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-02-28 00:19:44 - Reconnecting, last destination was localhost/127.0.0.1:16379
+2026-02-28 00:19:44 - Reconnecting, last destination was localhost/127.0.0.1:16379
+2026-02-28 00:19:44 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:19:44 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:19:53 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:19:53 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:19:53 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:19:53 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:02 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:02 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:02 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:02 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:20:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:20:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:21:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:21:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:18 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:18 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:48 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:48 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:22:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:22:49 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:49 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:23:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:23:49 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:24:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:24:19 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:19 - Cannot reconnect to [localhost/<unresolved>:16379]: Connection refused: no further information: localhost/127.0.0.1:16379
+2026-02-28 00:24:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:49 - Reconnected to localhost/<unresolved>:16379
+2026-02-28 00:24:49 - Reconnecting, last destination was localhost/<unresolved>:16379
+2026-02-28 00:24:49 - Reconnected to localhost/<unresolved>:16379
+2026-02-28 00:26:14 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:26:14 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@7fbef208 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@544733a4 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@487e50d1 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@2450b316 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@39234516 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-28 00:26:14 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:26:14 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:26:14 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:26:14 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:26:14 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:26:14 - 
+    /* dynamic native SQL query */ SELECT
+        EXTRACT(DOW FROM m.recorded_at) AS day_of_week,
+        m.category AS category,
+        COUNT(*) AS cnt 
+    FROM
+        lunchpick_recommendation.meal_record m 
+    WHERE
+        m.member_id = ?   
+        AND m.recorded_at >= ? 
+    GROUP BY
+        EXTRACT(DOW FROM m.recorded_at),
+        m.category 
+    ORDER BY
+        day_of_week,
+        cnt DESC 
+Hibernate: 
+    /* dynamic native SQL query */ SELECT
+        EXTRACT(DOW FROM m.recorded_at) AS day_of_week,
+        m.category AS category,
+        COUNT(*) AS cnt 
+    FROM
+        lunchpick_recommendation.meal_record m 
+    WHERE
+        m.member_id = ?   
+        AND m.recorded_at >= ? 
+    GROUP BY
+        EXTRACT(DOW FROM m.recorded_at),
+        m.category 
+    ORDER BY
+        day_of_week,
+        cnt DESC 
+2026-02-28 00:26:14 - 
+    /* dynamic native SQL query */ SELECT
+        to_char(f.created_at, 'IYYY-IW') AS year_week,
+        COUNT(*) AS total,
+        SUM(CASE 
+            WHEN f.satisfaction = 'GOOD' 
+                THEN 1 
+            ELSE 0 
+    END) AS good_count 
+FROM
+    lunchpick_recommendation.feedback f 
+WHERE
+    f.member_id = ?   
+    AND f.created_at >= ? 
+GROUP BY
+    to_char(f.created_at, 'IYYY-IW') 
+ORDER BY
+    year_week 
+Hibernate: 
+    /* dynamic native SQL query */ SELECT
+        to_char(f.created_at, 'IYYY-IW') AS year_week,
+        COUNT(*) AS total,
+        SUM(CASE 
+            WHEN f.satisfaction = 'GOOD' 
+                THEN 1 
+            ELSE 0 
+    END) AS good_count 
+FROM
+    lunchpick_recommendation.feedback f 
+WHERE
+    f.member_id = ?   
+    AND f.created_at >= ? 
+GROUP BY
+    to_char(f.created_at, 'IYYY-IW') 
+ORDER BY
+    year_week 
+2026-02-28 00:26:14 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:26:14 - [AI Pipeline] 인사이트 분석 요청 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:26:16 - [AI Pipeline] 인사이트 분석 성공 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:26:16 - 인사이트 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, totalCount: 13, aiGenerated: true
+2026-02-28 00:26:55 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:26:55 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:26:55 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:26:55 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:26:55 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:26:55 - 인사이트 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:26:55 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:27:07 - JWT 인증 완료 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-28 00:27:07 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:27:07 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:27:07 - 
+    /* dynamic native SQL query */ SELECT
+        EXTRACT(DOW FROM m.recorded_at) AS day_of_week,
+        m.category AS category,
+        COUNT(*) AS cnt 
+    FROM
+        lunchpick_recommendation.meal_record m 
+    WHERE
+        m.member_id = ?   
+        AND m.recorded_at >= ? 
+    GROUP BY
+        EXTRACT(DOW FROM m.recorded_at),
+        m.category 
+    ORDER BY
+        day_of_week,
+        cnt DESC 
+Hibernate: 
+    /* dynamic native SQL query */ SELECT
+        EXTRACT(DOW FROM m.recorded_at) AS day_of_week,
+        m.category AS category,
+        COUNT(*) AS cnt 
+    FROM
+        lunchpick_recommendation.meal_record m 
+    WHERE
+        m.member_id = ?   
+        AND m.recorded_at >= ? 
+    GROUP BY
+        EXTRACT(DOW FROM m.recorded_at),
+        m.category 
+    ORDER BY
+        day_of_week,
+        cnt DESC 
+2026-02-28 00:27:07 - 
+    /* dynamic native SQL query */ SELECT
+        to_char(f.created_at, 'IYYY-IW') AS year_week,
+        COUNT(*) AS total,
+        SUM(CASE 
+            WHEN f.satisfaction = 'GOOD' 
+                THEN 1 
+            ELSE 0 
+    END) AS good_count 
+FROM
+    lunchpick_recommendation.feedback f 
+WHERE
+    f.member_id = ?   
+    AND f.created_at >= ? 
+GROUP BY
+    to_char(f.created_at, 'IYYY-IW') 
+ORDER BY
+    year_week 
+Hibernate: 
+    /* dynamic native SQL query */ SELECT
+        to_char(f.created_at, 'IYYY-IW') AS year_week,
+        COUNT(*) AS total,
+        SUM(CASE 
+            WHEN f.satisfaction = 'GOOD' 
+                THEN 1 
+            ELSE 0 
+    END) AS good_count 
+FROM
+    lunchpick_recommendation.feedback f 
+WHERE
+    f.member_id = ?   
+    AND f.created_at >= ? 
+GROUP BY
+    to_char(f.created_at, 'IYYY-IW') 
+ORDER BY
+    year_week 
+2026-02-28 00:27:07 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:27:07 - [AI Pipeline] 인사이트 분석 요청 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-28 00:27:09 - [AI Pipeline] 인사이트 분석 성공 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5
+2026-02-28 00:27:09 - 인사이트 조회 완료 ? memberId: 4ccc5886-a200-4ca0-8fe1-6c630d5677f5, totalCount: 12, aiGenerated: true
+2026-02-28 00:28:04 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:04 - 추천 캐시 미스 ? AI Pipeline 호출 시작 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:04 - [KakaoMap] API 호출 ? lat: 37.5665, lon: 126.978, radius: 500m
+2026-02-28 00:28:05 - [KakaoMap] 식당 15개 조회 완료
+2026-02-28 00:28:05 - [KakaoMap] 캐시 저장 완료 ? key: kakao:place:3756:12697, count: 15
+2026-02-28 00:28:05 - 카카오맵 식당 15개를 AI 요청에 포함 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:05 - 날씨 조회 완료 ? 3.76°C, Clear, 맑음 (condition=CLEAR)
+2026-02-28 00:28:05 - [AI Pipeline] 추천 생성 요청 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, isColdStart: false
+2026-02-28 00:28:07 - [AI Pipeline] 추천 생성 성공 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, isFallback: false
+2026-02-28 00:28:08 - 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:28:08 - 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:28:08 - 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:28:08 - 추천 캐시 저장 완료 ? key: rec:9e9447a9-3e25-4fcb-b374-8eb5a849bf87:3756:12697
+2026-02-28 00:28:08 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:08 - 추천 캐시 미스 ? AI Pipeline 호출 시작 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:08 - [KakaoMap] API 호출 ? lat: 37.557303584486554, lon: 126.9543804343767, radius: 500m
+2026-02-28 00:28:08 - [KakaoMap] 식당 15개 조회 완료
+2026-02-28 00:28:08 - [KakaoMap] 캐시 저장 완료 ? key: kakao:place:3755:12695, count: 15
+2026-02-28 00:28:08 - 카카오맵 식당 15개를 AI 요청에 포함 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:08 - 날씨 조회 완료 ? 3.77°C, Clear, 맑음 (condition=CLEAR)
+2026-02-28 00:28:08 - [AI Pipeline] 추천 생성 요청 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, isColdStart: false
+2026-02-28 00:28:10 - [AI Pipeline] 추천 생성 성공 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, isFallback: false
+2026-02-28 00:28:10 - 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:28:10 - 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:28:10 - 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.recommendation.repository.entity.RecommendationEntity */insert 
+    into
+        lunchpick_recommendation.recommendation (category, confidence_score, created_at, distance_meters, estimated_walk_minutes, is_fallback, member_id, reaction_time_ms, reason_summary, recommendation_id, reject_reason, representative_menu, restaurant_id, restaurant_name, status, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-28 00:28:10 - 추천 캐시 저장 완료 ? key: rec:9e9447a9-3e25-4fcb-b374-8eb5a849bf87:3755:12695
+2026-02-28 00:28:13 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:13 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:13 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:28:13 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:28:13 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:28:13 - 인사이트 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:28:13 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:34:05 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:34:05 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:34:05 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:34:05 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:34:05 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:34:05 - 인사이트 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:34:05 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:34:05 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:34:05 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:34:05 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:34:05 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:34:05 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:34:05 - 인사이트 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:34:05 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:39:48 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:39:48 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:39:48 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:39:48 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:40:34 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:34 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:34 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:40:34 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:40:34 - 인사이트 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:40:34 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:40:34 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:41:01 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:01 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:01 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:41:01 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:41:01 - 인사이트 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:01 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:41:01 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:41:26 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:26 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:26 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:41:26 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:41:26 - 인사이트 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:41:26 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:41:26 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:44:37 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:44:37 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:44:37 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:44:37 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:44:37 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:44:37 - 인사이트 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:44:37 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 00:46:04 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:04 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:08 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:08 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:14 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:46:14 - 
+    /* <criteria> */ select
+        re1_0.id,
+        re1_0.category,
+        re1_0.confidence_score,
+        re1_0.created_at,
+        re1_0.distance_meters,
+        re1_0.estimated_walk_minutes,
+        re1_0.is_fallback,
+        re1_0.member_id,
+        re1_0.reaction_time_ms,
+        re1_0.reason_summary,
+        re1_0.recommendation_id,
+        re1_0.reject_reason,
+        re1_0.representative_menu,
+        re1_0.restaurant_id,
+        re1_0.restaurant_name,
+        re1_0.status,
+        re1_0.updated_at 
+    from
+        lunchpick_recommendation.recommendation re1_0 
+    where
+        re1_0.recommendation_id=?
+Hibernate: 
+    /* <criteria> */ select
+        re1_0.id,
+        re1_0.category,
+        re1_0.confidence_score,
+        re1_0.created_at,
+        re1_0.distance_meters,
+        re1_0.estimated_walk_minutes,
+        re1_0.is_fallback,
+        re1_0.member_id,
+        re1_0.reaction_time_ms,
+        re1_0.reason_summary,
+        re1_0.recommendation_id,
+        re1_0.reject_reason,
+        re1_0.representative_menu,
+        re1_0.restaurant_id,
+        re1_0.restaurant_name,
+        re1_0.status,
+        re1_0.updated_at 
+    from
+        lunchpick_recommendation.recommendation re1_0 
+    where
+        re1_0.recommendation_id=?
+2026-02-28 00:46:14 - 추천 이유 캐시 미스 ? AI Pipeline 호출 ? recommendationId: d19d23f1-ebe1-4d87-b6c5-dc674df13d01
+2026-02-28 00:46:16 - OpenWeatherMap API 호출 실패 ? 날씨 없이 추천 진행: connection timed out after 2000 ms: api.openweathermap.org/15.235.222.68:443
+2026-02-28 00:46:16 - [AI Pipeline] 이유 생성 요청 ? recommendationId: d19d23f1-ebe1-4d87-b6c5-dc674df13d01
+2026-02-28 00:46:17 - [AI Pipeline] 이유 생성 성공 ? recommendationId: d19d23f1-ebe1-4d87-b6c5-dc674df13d01, isReasonReady: false
+2026-02-28 00:50:20 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:50:20 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:50:24 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:50:24 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:50:33 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:50:33 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:50:33 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:50:33 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:45 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:45 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:45 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:45 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:55 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:55 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:55 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:51:55 - 추천 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:52:00 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:52:00 - JWT 인증 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:52:00 - 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+2026-02-28 00:52:00 - 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+Hibernate: 
+    /* <criteria> */ select
+        count(mre1_0.id) 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=?
+Hibernate: 
+    /* <criteria> */ select
+        mre1_0.id,
+        mre1_0.category,
+        mre1_0.created_at,
+        mre1_0.meal_id,
+        mre1_0.member_id,
+        mre1_0.menu_name,
+        mre1_0.recommendation_id,
+        mre1_0.recorded_at,
+        mre1_0.restaurant_id,
+        mre1_0.restaurant_name,
+        mre1_0.updated_at 
+    from
+        lunchpick_recommendation.meal_record mre1_0 
+    where
+        mre1_0.member_id=? 
+        and mre1_0.recorded_at between ? and ? 
+    order by
+        mre1_0.recorded_at desc
+2026-02-28 00:52:00 - 인사이트 캐시 히트 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87
+2026-02-28 00:52:00 - 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+Hibernate: 
+    /* <criteria> */ select
+        fe1_0.id,
+        fe1_0.created_at,
+        fe1_0.feedback_id,
+        fe1_0.keyword,
+        fe1_0.meal_id,
+        fe1_0.member_id,
+        fe1_0.satisfaction,
+        fe1_0.skipped,
+        fe1_0.updated_at 
+    from
+        lunchpick_recommendation.feedback fe1_0 
+    where
+        fe1_0.member_id=? 
+    order by
+        fe1_0.created_at desc
+2026-02-28 00:52:00 - 식사 이력 조회 완료 ? memberId: 9e9447a9-3e25-4fcb-b374-8eb5a849bf87, count: 13
+2026-02-28 04:14:15 - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h20m49s19ms7?s400ns).
+
+> Task :recommendation-service:bootRun FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':recommendation-service:bootRun'.
+> Process 'command 'C:\jdk\jdk-21\bin\java.exe'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 8h 35m 36s
+8 actionable tasks: 2 executed, 6 up-to-date

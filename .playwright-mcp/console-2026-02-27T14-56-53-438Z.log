@@ -1,0 +1,38 @@
+[    6786ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[    6818ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[    7345ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[    8036ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[    8295ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[    8688ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   18183ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   18217ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   22304ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   22331ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   24772ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   25411ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   25623ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   25799ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   25987ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   26146ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   26834ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[   27066ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=126.95439628421906&y=37.557297981062256:0
+[  181368ms] [ERROR] ./src/app/(main)/insights/page.tsx:562:14
+Parsing ecmascript source code failed
+  560 |                 </AiInsightBlurOverlay>
+  561 |               )
+> 562 |             })()}
+      |              ^
+  563 |
+  564 |             {/* 선호 카테고리 Top 5 */}
+  565 |             {effectiveInsights.topCategories.length > 0 && (
+
+Expected '</', got ')'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(main)/insights/page.tsx [Client Component Browser]
+    ./src/app/(main)/insights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(main)/insights/page.tsx [Client Component SSR]
+    ./src/app/(main)/insights/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127

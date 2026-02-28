@@ -1,0 +1,6 @@
+[  302700ms] [WARNING] [API] 서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  302700ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  306031ms] [WARNING] [API] 서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  306031ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  306291ms] [WARNING] [API] 서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  306291ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8082/api/v1/recommendations/today?latitude=37.55729257160228&longitude=126.95437484849784:0

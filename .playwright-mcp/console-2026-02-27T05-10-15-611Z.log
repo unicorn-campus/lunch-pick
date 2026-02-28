@@ -1,0 +1,28 @@
+[    5437ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[    5437ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    6444ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[    6444ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  965848ms] [WARNING] [API] 서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  965848ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  968333ms] [WARNING] [API] 서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  968333ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8081/api/v1/members/me:0
+[  971649ms] [WARNING] [API] 서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  971649ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8081/api/v1/members/me:0
+[  980463ms] [WARNING] [API] 서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  980463ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  983779ms] [WARNING] [API] 서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  983779ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[  984220ms] [WARNING] [API] 서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  984220ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8081/api/v1/members/me:0
+[ 3064243ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3067572ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3070904ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3074231ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3077558ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3084899ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3092254ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3099604ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3106960ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3114333ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3121728ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[ 3129154ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=X2-4mV1jAT_c8AeStbRN-' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878

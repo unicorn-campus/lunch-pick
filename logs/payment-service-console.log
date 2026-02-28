@@ -1,0 +1,664 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.1)
+
+2026-02-27 07:02:32 - Starting PaymentApplication using Java 21 with PID 20488 (C:\Users\hiond\workspace\lunch-menu-recommender\payment-service\build\libs\payment-service.jar started by hiond in C:\Users\hiond\workspace\lunch-menu-recommender)
+2026-02-27 07:02:32 - Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-02-27 07:02:32 - The following 1 profile is active: "dev"
+2026-02-27 07:02:33 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-27 07:02:33 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-27 07:02:33 - Finished Spring Data repository scanning in 136 ms. Found 2 JPA repository interfaces.
+2026-02-27 07:02:34 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-27 07:02:34 - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-27 07:02:34 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.payment.repository.jpa.PaymentHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 07:02:34 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.payment.repository.jpa.SubscriptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-27 07:02:34 - Finished Spring Data repository scanning in 26 ms. Found 0 Redis repository interfaces.
+2026-02-27 07:02:35 - BeanFactory id=02b1a61c-8ef2-383a-a384-7e602a4ce4c2
+2026-02-27 07:02:37 - Tomcat initialized with port 8083 (http)
+2026-02-27 07:02:37 - Starting service [Tomcat]
+2026-02-27 07:02:37 - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-02-27 07:02:37 - Initializing Spring embedded WebApplicationContext
+2026-02-27 07:02:37 - Root WebApplicationContext: initialization completed in 5234 ms
+2026-02-27 07:02:38 - Filter 'jwtAuthenticationFilter' configured for use
+2026-02-27 07:02:39 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-27 07:02:39 - HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-02-27 07:02:39 - HHH000026: Second-level cache disabled
+2026-02-27 07:02:40 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-27 07:02:40 - HikariPool-1 - Starting...
+2026-02-27 07:02:40 - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@10df1f34
+2026-02-27 07:02:40 - HikariPool-1 - Start completed.
+2026-02-27 07:02:40 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.12
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-27 07:02:41 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-27 07:02:41 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-27 07:02:46 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-27 07:02:46 - 
+
+Using generated security password: 869bdcd0-fe9d-4521-84e5-8a77da5a5dcb
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-27 07:02:46 - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-02-27 07:02:47 - Exposing 4 endpoints beneath base path '/actuator'
+2026-02-27 07:02:50 - Cannot determine local hostname
+2026-02-27 07:02:50 - Tomcat started on port 8083 (http) with context path '/'
+2026-02-27 07:02:51 - Cannot determine local hostname
+2026-02-27 07:02:51 - Started PaymentApplication in 21.107 seconds (process running for 21.94)
+2026-02-27 07:03:16 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-27 07:03:16 - Initializing Servlet 'dispatcherServlet'
+2026-02-27 07:03:16 - Completed initialization in 2 ms
+2026-02-27 07:04:14 - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-27 07:04:14 - 예기치 않은 오류 발생
+org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot construct instance of `com.unicorn.lunchpick.payment.dto.request.PaymentMethodDto` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('CREDIT_CARD')
+	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:409)
+	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.read(AbstractJackson2HttpMessageConverter.java:357)
+	at org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodArgumentResolver.readWithMessageConverters(AbstractMessageConverterMethodArgumentResolver.java:204)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.readWithMessageConverters(RequestResponseBodyMethodProcessor.java:176)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.resolveArgument(RequestResponseBodyMethodProcessor.java:150)
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:226)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:180)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1088)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340)
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at com.unicorn.lunchpick.payment.config.jwt.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:66)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:243)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:238)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:114)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `com.unicorn.lunchpick.payment.dto.request.PaymentMethodDto` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('CREDIT_CARD')
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 45] (through reference chain: com.unicorn.lunchpick.payment.dto.request.CreateSubscriptionRequest["paymentMethod"])
+	at com.fasterxml.jackson.databind.exc.MismatchedInputException.from(MismatchedInputException.java:63)
+	at com.fasterxml.jackson.databind.DeserializationContext.reportInputMismatch(DeserializationContext.java:1754)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleMissingInstantiator(DeserializationContext.java:1379)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer._deserializeFromString(StdDeserializer.java:311)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromString(BeanDeserializerBase.java:1592)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeOther(BeanDeserializer.java:197)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:187)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:543)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeWithErrorWrapping(BeanDeserializer.java:585)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeUsingPropertyBased(BeanDeserializer.java:447)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromObjectUsingNonDefault(BeanDeserializerBase.java:1497)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:348)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:185)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+	at com.fasterxml.jackson.databind.ObjectReader._bindAndClose(ObjectReader.java:2125)
+	at com.fasterxml.jackson.databind.ObjectReader.readValue(ObjectReader.java:1501)
+	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:398)
+	... 138 common frames omitted
+2026-02-27 07:05:10 - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-27 07:05:10 - PG 게이트웨이 장애 — 결제 실패 처리 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94, cause: 이미 프리미엄 구독이 활성화되어 있어요.
+2026-02-27 07:05:10 - 비즈니스 예외 발생 — errorCode: PAYMENT_FAILED, message: 결제가 실패했어요. 다른 결제 수단을 시도해주세요.
+2026-02-27 07:06:11 - JWT 인증 완료 — memberId: 1b472c49-2a82-404d-aeef-9f0d17d961f8
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-27 07:06:11 - PG 결제 요청 — memberId: 1b472c49-2a82-404d-aeef-9f0d17d961f8, planId: PREMIUM_MONTHLY, amount: 4900, orderId: 6d96988c-22b2-4912-8fa3-b04b23c65949
+2026-02-27 07:06:11 - Mock PG: 결제 승인 완료 — orderId: 6d96988c-22b2-4912-8fa3-b04b23c65949, amount: 4900, pgTransactionId: pg-txn-11ce2ee9
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.PaymentHistoryEntity */insert 
+    into
+        lunchpick_payment.payment_history (amount, approved_at, auto_renewal_agreed, created_at, error_code, member_id, payment_id, pg_transaction_id, plan_id, requested_at, status, subscription_id, withdrawal_deadline, withdrawal_right_acknowledged) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */insert 
+    into
+        lunchpick_payment.subscription (cancel_reason, cancel_reason_detail, cancelled_at, created_at, current_period_ends_at, member_id, next_billing_at, plan_id, started_at, status, subscription_id, trial_extension_used, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-27 07:06:11 - 구독 이벤트 발행 완료 — eventType: SUBSCRIPTION_ACTIVATED, memberId: 1b472c49-2a82-404d-aeef-9f0d17d961f8
+2026-02-27 07:06:11 - 구독 결제 완료 — memberId: 1b472c49-2a82-404d-aeef-9f0d17d961f8, subscriptionId: 0a4e404e-0d42-4dc6-b9f4-081de6591ed6, planId: PREMIUM_MONTHLY
+2026-02-27 07:07:55 - JWT 인증 완료 — memberId: 617cd0a3-ffca-43db-91b8-658b2c5e1e70
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-27 07:07:55 - PG 결제 요청 — memberId: 617cd0a3-ffca-43db-91b8-658b2c5e1e70, planId: PREMIUM_MONTHLY, amount: 4900, orderId: 1729d761-a343-41e2-8b49-817b747454c6
+2026-02-27 07:07:55 - Mock PG: 결제 승인 완료 — orderId: 1729d761-a343-41e2-8b49-817b747454c6, amount: 4900, pgTransactionId: pg-txn-f4ee548c
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.PaymentHistoryEntity */insert 
+    into
+        lunchpick_payment.payment_history (amount, approved_at, auto_renewal_agreed, created_at, error_code, member_id, payment_id, pg_transaction_id, plan_id, requested_at, status, subscription_id, withdrawal_deadline, withdrawal_right_acknowledged) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */insert 
+    into
+        lunchpick_payment.subscription (cancel_reason, cancel_reason_detail, cancelled_at, created_at, current_period_ends_at, member_id, next_billing_at, plan_id, started_at, status, subscription_id, trial_extension_used, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-27 07:07:55 - 구독 이벤트 발행 완료 — eventType: SUBSCRIPTION_ACTIVATED, memberId: 617cd0a3-ffca-43db-91b8-658b2c5e1e70
+2026-02-27 07:07:55 - 구독 결제 완료 — memberId: 617cd0a3-ffca-43db-91b8-658b2c5e1e70, subscriptionId: 1bec1ad5-cf32-4092-9b79-0e9cae4694ff, planId: PREMIUM_MONTHLY
+2026-02-27 07:08:31 - JWT 인증 완료 — memberId: 72880b46-dc1a-4822-9c18-7e07ca07a445
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-27 07:08:31 - PG 결제 요청 — memberId: 72880b46-dc1a-4822-9c18-7e07ca07a445, planId: PREMIUM_MONTHLY, amount: 4900, orderId: c012c2da-c5e4-466e-9e5d-31c72a9fb903
+2026-02-27 07:08:31 - Mock PG: 유효하지 않은 카드 번호 — orderId: c012c2da-c5e4-466e-9e5d-31c72a9fb903
+2026-02-27 07:08:31 - PG 게이트웨이 장애 — 결제 실패 처리 — memberId: 72880b46-dc1a-4822-9c18-7e07ca07a445, cause: 카드 정보를 다시 확인해주세요.
+2026-02-27 07:08:31 - 비즈니스 예외 발생 — errorCode: PAYMENT_FAILED, message: 결제가 실패했어요. 다른 결제 수단을 시도해주세요.
+2026-02-27 12:59:45 - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5h50m5s341ms321µs).
+2026-02-27 13:54:28 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 13:54:28 - 구독 플랜 조회 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, currentPlan: FREE
+2026-02-27 13:55:20 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-27 13:55:20 - PG 결제 요청 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, planId: PREMIUM_MONTHLY, amount: 4900, orderId: 54a82c48-8a93-48a7-bb69-a24b8e441733
+2026-02-27 13:55:20 - Mock PG: 결제 승인 완료 — orderId: 54a82c48-8a93-48a7-bb69-a24b8e441733, amount: 4900, pgTransactionId: pg-txn-19fd0e12
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.PaymentHistoryEntity */insert 
+    into
+        lunchpick_payment.payment_history (amount, approved_at, auto_renewal_agreed, created_at, error_code, member_id, payment_id, pg_transaction_id, plan_id, requested_at, status, subscription_id, withdrawal_deadline, withdrawal_right_acknowledged) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    /* insert for
+        com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */insert 
+    into
+        lunchpick_payment.subscription (cancel_reason, cancel_reason_detail, cancelled_at, created_at, current_period_ends_at, member_id, next_billing_at, plan_id, started_at, status, subscription_id, trial_extension_used, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-02-27 13:55:20 - 구독 이벤트 발행 완료 — eventType: SUBSCRIPTION_ACTIVATED, memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:55:20 - 구독 결제 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, subscriptionId: 9541f59a-3713-4ccc-93e4-7ea0abbb6c87, planId: PREMIUM_MONTHLY
+2026-02-27 13:55:20 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 13:55:20 - 구독 플랜 캐시 히트
+2026-02-27 14:00:19 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:00:19 - 구독 플랜 캐시 히트
+2026-02-27 14:00:52 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-27 14:00:52 - PG 게이트웨이 장애 — 결제 실패 처리 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, cause: 이미 프리미엄 구독이 활성화되어 있어요.
+2026-02-27 14:00:52 - 비즈니스 예외 발생 — errorCode: PAYMENT_FAILED, message: 결제가 실패했어요. 다른 결제 수단을 시도해주세요.
+2026-02-27 14:01:39 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-27 14:01:39 - PG 게이트웨이 장애 — 결제 실패 처리 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, cause: 이미 프리미엄 구독이 활성화되어 있어요.
+2026-02-27 14:01:39 - 비즈니스 예외 발생 — errorCode: PAYMENT_FAILED, message: 결제가 실패했어요. 다른 결제 수단을 시도해주세요.
+2026-02-27 14:01:56 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-27 14:01:56 - PG 게이트웨이 장애 — 결제 실패 처리 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, cause: 이미 프리미엄 구독이 활성화되어 있어요.
+2026-02-27 14:01:56 - 비즈니스 예외 발생 — errorCode: PAYMENT_FAILED, message: 결제가 실패했어요. 다른 결제 수단을 시도해주세요.
+2026-02-27 14:03:13 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:03:13 - 예기치 않은 오류 발생
+org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported
+	at org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping.handleNoMatch(RequestMappingInfoHandlerMapping.java:267)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.lookupHandlerMethod(AbstractHandlerMethodMapping.java:441)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.getHandlerInternal(AbstractHandlerMethodMapping.java:382)
+	at org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping.getHandlerInternal(RequestMappingInfoHandlerMapping.java:127)
+	at org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping.getHandlerInternal(RequestMappingInfoHandlerMapping.java:68)
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.getHandler(AbstractHandlerMapping.java:509)
+	at org.springframework.web.servlet.DispatcherServlet.getHandler(DispatcherServlet.java:1283)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1064)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340)
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at com.unicorn.lunchpick.payment.config.jwt.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:66)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:243)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:238)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:114)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-02-27 14:03:58 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=? 
+    fetch
+        first ? rows only
+2026-02-27 14:03:58 - PG 게이트웨이 장애 — 결제 실패 처리 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, cause: 이미 프리미엄 구독이 활성화되어 있어요.
+2026-02-27 14:03:58 - 비즈니스 예외 발생 — errorCode: PAYMENT_FAILED, message: 결제가 실패했어요. 다른 결제 수단을 시도해주세요.
+2026-02-27 14:07:11 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:07:11 - 구독 플랜 캐시 히트
+2026-02-27 14:08:04 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.member_id=? 
+        and se1_0.status=?
+2026-02-27 14:08:04 - 구독 이벤트 발행 완료 — eventType: SUBSCRIPTION_TRIAL_EXTENDED, memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:08:04 - 7일 무료 연장 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, newExpiresAt: 2026-04-03T13:55:20.423745
+Hibernate: 
+    /* update
+        for com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */update lunchpick_payment.subscription 
+    set
+        cancel_reason=?,
+        cancel_reason_detail=?,
+        cancelled_at=?,
+        current_period_ends_at=?,
+        member_id=?,
+        next_billing_at=?,
+        plan_id=?,
+        started_at=?,
+        status=?,
+        subscription_id=?,
+        trial_extension_used=?,
+        updated_at=? 
+    where
+        id=?
+2026-02-27 14:08:20 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.subscription_id=? 
+        and se1_0.member_id=?
+2026-02-27 14:08:20 - 비즈니스 예외 발생 — errorCode: SUBSCRIPTION_NOT_FOUND, message: 활성 구독 정보를 찾을 수 없습니다.
+2026-02-27 14:08:52 - JWT 인증 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+Hibernate: 
+    /* <criteria> */ select
+        se1_0.id,
+        se1_0.cancel_reason,
+        se1_0.cancel_reason_detail,
+        se1_0.cancelled_at,
+        se1_0.created_at,
+        se1_0.current_period_ends_at,
+        se1_0.member_id,
+        se1_0.next_billing_at,
+        se1_0.plan_id,
+        se1_0.started_at,
+        se1_0.status,
+        se1_0.subscription_id,
+        se1_0.trial_extension_used,
+        se1_0.updated_at 
+    from
+        lunchpick_payment.subscription se1_0 
+    where
+        se1_0.subscription_id=? 
+        and se1_0.member_id=?
+2026-02-27 14:08:52 - 구독 이벤트 발행 완료 — eventType: SUBSCRIPTION_PENDING_CANCEL, memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667
+2026-02-27 14:08:52 - 구독 해지 예약 완료 — memberId: dbdd71a7-cde8-478a-b786-8b90b7a5f667, subscriptionId: 9541f59a-3713-4ccc-93e4-7ea0abbb6c87, reason: COST
+Hibernate: 
+    /* update
+        for com.unicorn.lunchpick.payment.repository.entity.SubscriptionEntity */update lunchpick_payment.subscription 
+    set
+        cancel_reason=?,
+        cancel_reason_detail=?,
+        cancelled_at=?,
+        current_period_ends_at=?,
+        member_id=?,
+        next_billing_at=?,
+        plan_id=?,
+        started_at=?,
+        status=?,
+        subscription_id=?,
+        trial_extension_used=?,
+        updated_at=? 
+    where
+        id=?

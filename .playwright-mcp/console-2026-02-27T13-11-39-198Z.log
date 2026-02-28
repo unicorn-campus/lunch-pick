@@ -1,0 +1,17 @@
+[    4633ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[    4634ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    5642ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.5665&longitude=126.978:0
+[    5642ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    8452ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.55730894213235&longitude=126.95442249966726:0
+[    8452ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[    9462ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8082/api/v1/recommendations/today?latitude=37.55730894213235&longitude=126.95442249966726:0
+[    9462ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   34823ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[   34823ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   35835ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8081/api/v1/members/me:0
+[   35835ms] [WARNING] [API] 접근 권한이 없습니다. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[   72658ms] [ERROR] Failed to load resource: the server responded with a status of 409 () @ http://localhost:8082/api/v1/meals:0
+[  116770ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ http://localhost:8082/api/v1/meals/7c35c9d5-cf56-46a5-8015-54ecc7b1e70a/feedback:0
+[  238880ms] [ERROR] Failed to load resource: the server responded with a status of 409 () @ http://localhost:8082/api/v1/meals:0
+[  254747ms] [ERROR] Failed to load resource: the server responded with a status of 409 () @ http://localhost:8082/api/v1/meals:0
+[  443573ms] [ERROR] Failed to load resource: the server responded with a status of 409 () @ http://localhost:8082/api/v1/meals:0

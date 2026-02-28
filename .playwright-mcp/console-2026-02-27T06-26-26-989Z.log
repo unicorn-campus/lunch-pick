@@ -1,0 +1,4 @@
+[  613283ms] [ERROR] Failed to launch 'nmap://search?query=%EA%B4%91%ED%99%94%EB%AC%B8%20%EB%90%9C%EC%9E%A5%EB%A7%88%EC%9D%84&appname=com.unicorn.lunchpick' because the scheme does not have a registered handler. @ http://localhost:3000/navigation?name=%EA%B4%91%ED%99%94%EB%AC%B8%20%EB%90%9C%EC%9E%A5%EB%A7%88%EC%9D%84&address=&restaurantId=rest-001&recId=6525cc0e-aeaa-4f94-88b0-fd86a07e0bae:0
+[  624677ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ http://localhost:8082/api/v1/meals:0
+[  626620ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ http://localhost:8082/api/v1/meals:0
+[  627369ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ http://localhost:8082/api/v1/meals:0

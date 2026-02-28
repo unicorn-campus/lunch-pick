@@ -1,0 +1,376 @@
+> Task :common:generateEffectiveLombokConfig UP-TO-DATE
+> Task :common:compileJava UP-TO-DATE
+> Task :common:processResources NO-SOURCE
+> Task :common:classes UP-TO-DATE
+> Task :common:jar UP-TO-DATE
+> Task :recommendation-service:generateEffectiveLombokConfig UP-TO-DATE
+> Task :recommendation-service:compileJava UP-TO-DATE
+> Task :recommendation-service:processResources UP-TO-DATE
+> Task :recommendation-service:classes UP-TO-DATE
+> Task :recommendation-service:resolveMainClassName UP-TO-DATE
+
+> Task :recommendation-service:bootRun
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.1)
+
+2026-02-26 20:30:39 - Starting RecommendationApplication using Java 21 with PID 74308 (C:\Users\hiond\workspace\lunch-menu-recommender\recommendation-service\build\classes\java\main started by hiond in C:\Users\hiond\workspace\lunch-menu-recommender\recommendation-service)
+2026-02-26 20:30:39 - Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-02-26 20:30:39 - The following 1 profile is active: "dev"
+2026-02-26 20:30:39 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-26 20:30:39 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-26 20:30:39 - Finished Spring Data repository scanning in 61 ms. Found 5 JPA repository interfaces.
+2026-02-26 20:30:39 - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-26 20:30:39 - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-26 20:30:39 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:30:39 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.LearningMessageRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:30:39 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.MealRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:30:39 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.PreferenceVectorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:30:39 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.RecommendationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:30:39 - Finished Spring Data repository scanning in 12 ms. Found 0 Redis repository interfaces.
+2026-02-26 20:30:40 - BeanFactory id=9dcaa624-c3bb-329f-9839-2bed8592f2cb
+2026-02-26 20:30:40 - Tomcat initialized with port 8082 (http)
+2026-02-26 20:30:40 - Starting service [Tomcat]
+2026-02-26 20:30:40 - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-02-26 20:30:40 - Initializing Spring embedded WebApplicationContext
+2026-02-26 20:30:40 - Root WebApplicationContext: initialization completed in 1386 ms
+2026-02-26 20:30:40 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-26 20:30:40 - HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-02-26 20:30:40 - HHH000026: Second-level cache disabled
+2026-02-26 20:30:40 - Adding type registration boolean -> org.hibernate.type.BasicTypeReference@37a0fc8c
+2026-02-26 20:30:40 - Adding type registration boolean -> org.hibernate.type.BasicTypeReference@37a0fc8c
+2026-02-26 20:30:40 - Adding type registration java.lang.Boolean -> org.hibernate.type.BasicTypeReference@37a0fc8c
+2026-02-26 20:30:40 - Adding type registration numeric_boolean -> org.hibernate.type.BasicTypeReference@1ba3c03d
+2026-02-26 20:30:40 - Adding type registration org.hibernate.type.NumericBooleanConverter -> org.hibernate.type.BasicTypeReference@1ba3c03d
+2026-02-26 20:30:40 - Adding type registration true_false -> org.hibernate.type.BasicTypeReference@9a37591
+2026-02-26 20:30:40 - Adding type registration org.hibernate.type.TrueFalseConverter -> org.hibernate.type.BasicTypeReference@9a37591
+2026-02-26 20:30:40 - Adding type registration yes_no -> org.hibernate.type.BasicTypeReference@749c0669
+2026-02-26 20:30:40 - Adding type registration org.hibernate.type.YesNoConverter -> org.hibernate.type.BasicTypeReference@749c0669
+2026-02-26 20:30:40 - Adding type registration byte -> org.hibernate.type.BasicTypeReference@4468c0ea
+2026-02-26 20:30:40 - Adding type registration byte -> org.hibernate.type.BasicTypeReference@4468c0ea
+2026-02-26 20:30:40 - Adding type registration java.lang.Byte -> org.hibernate.type.BasicTypeReference@4468c0ea
+2026-02-26 20:30:40 - Adding type registration binary -> org.hibernate.type.BasicTypeReference@41cf4272
+2026-02-26 20:30:40 - Adding type registration byte[] -> org.hibernate.type.BasicTypeReference@41cf4272
+2026-02-26 20:30:40 - Adding type registration [B -> org.hibernate.type.BasicTypeReference@41cf4272
+2026-02-26 20:30:40 - Adding type registration binary_wrapper -> org.hibernate.type.BasicTypeReference@53d2b827
+2026-02-26 20:30:40 - Adding type registration wrapper-binary -> org.hibernate.type.BasicTypeReference@53d2b827
+2026-02-26 20:30:40 - Adding type registration image -> org.hibernate.type.BasicTypeReference@4769537a
+2026-02-26 20:30:40 - Adding type registration blob -> org.hibernate.type.BasicTypeReference@4504a4ed
+2026-02-26 20:30:40 - Adding type registration java.sql.Blob -> org.hibernate.type.BasicTypeReference@4504a4ed
+2026-02-26 20:30:40 - Adding type registration materialized_blob -> org.hibernate.type.BasicTypeReference@7ee3a2ed
+2026-02-26 20:30:40 - Adding type registration materialized_blob_wrapper -> org.hibernate.type.BasicTypeReference@38363e96
+2026-02-26 20:30:40 - Adding type registration short -> org.hibernate.type.BasicTypeReference@35c95869
+2026-02-26 20:30:40 - Adding type registration short -> org.hibernate.type.BasicTypeReference@35c95869
+2026-02-26 20:30:40 - Adding type registration java.lang.Short -> org.hibernate.type.BasicTypeReference@35c95869
+2026-02-26 20:30:40 - Adding type registration integer -> org.hibernate.type.BasicTypeReference@558aa1f1
+2026-02-26 20:30:40 - Adding type registration int -> org.hibernate.type.BasicTypeReference@558aa1f1
+2026-02-26 20:30:40 - Adding type registration java.lang.Integer -> org.hibernate.type.BasicTypeReference@558aa1f1
+2026-02-26 20:30:40 - Adding type registration long -> org.hibernate.type.BasicTypeReference@361d8567
+2026-02-26 20:30:40 - Adding type registration long -> org.hibernate.type.BasicTypeReference@361d8567
+2026-02-26 20:30:40 - Adding type registration java.lang.Long -> org.hibernate.type.BasicTypeReference@361d8567
+2026-02-26 20:30:40 - Adding type registration float -> org.hibernate.type.BasicTypeReference@3fd6dfbc
+2026-02-26 20:30:40 - Adding type registration float -> org.hibernate.type.BasicTypeReference@3fd6dfbc
+2026-02-26 20:30:40 - Adding type registration java.lang.Float -> org.hibernate.type.BasicTypeReference@3fd6dfbc
+2026-02-26 20:30:40 - Adding type registration double -> org.hibernate.type.BasicTypeReference@4023d23f
+2026-02-26 20:30:40 - Adding type registration double -> org.hibernate.type.BasicTypeReference@4023d23f
+2026-02-26 20:30:40 - Adding type registration java.lang.Double -> org.hibernate.type.BasicTypeReference@4023d23f
+2026-02-26 20:30:40 - Adding type registration big_integer -> org.hibernate.type.BasicTypeReference@402676e3
+2026-02-26 20:30:40 - Adding type registration java.math.BigInteger -> org.hibernate.type.BasicTypeReference@402676e3
+2026-02-26 20:30:40 - Adding type registration big_decimal -> org.hibernate.type.BasicTypeReference@1a4ae53d
+2026-02-26 20:30:40 - Adding type registration java.math.BigDecimal -> org.hibernate.type.BasicTypeReference@1a4ae53d
+2026-02-26 20:30:40 - Adding type registration character -> org.hibernate.type.BasicTypeReference@1368e2f7
+2026-02-26 20:30:40 - Adding type registration char -> org.hibernate.type.BasicTypeReference@1368e2f7
+2026-02-26 20:30:40 - Adding type registration java.lang.Character -> org.hibernate.type.BasicTypeReference@1368e2f7
+2026-02-26 20:30:40 - Adding type registration character_nchar -> org.hibernate.type.BasicTypeReference@4d84688f
+2026-02-26 20:30:40 - Adding type registration string -> org.hibernate.type.BasicTypeReference@3ee68eb2
+2026-02-26 20:30:40 - Adding type registration java.lang.String -> org.hibernate.type.BasicTypeReference@3ee68eb2
+2026-02-26 20:30:40 - Adding type registration nstring -> org.hibernate.type.BasicTypeReference@7348e75e
+2026-02-26 20:30:40 - Adding type registration characters -> org.hibernate.type.BasicTypeReference@27e3dc9a
+2026-02-26 20:30:40 - Adding type registration char[] -> org.hibernate.type.BasicTypeReference@27e3dc9a
+2026-02-26 20:30:40 - Adding type registration [C -> org.hibernate.type.BasicTypeReference@27e3dc9a
+2026-02-26 20:30:40 - Adding type registration wrapper-characters -> org.hibernate.type.BasicTypeReference@49cd08f9
+2026-02-26 20:30:40 - Adding type registration text -> org.hibernate.type.BasicTypeReference@43549c6c
+2026-02-26 20:30:40 - Adding type registration ntext -> org.hibernate.type.BasicTypeReference@7792e14f
+2026-02-26 20:30:40 - Adding type registration clob -> org.hibernate.type.BasicTypeReference@4eace42b
+2026-02-26 20:30:40 - Adding type registration java.sql.Clob -> org.hibernate.type.BasicTypeReference@4eace42b
+2026-02-26 20:30:40 - Adding type registration nclob -> org.hibernate.type.BasicTypeReference@6f87a7c7
+2026-02-26 20:30:40 - Adding type registration java.sql.NClob -> org.hibernate.type.BasicTypeReference@6f87a7c7
+2026-02-26 20:30:40 - Adding type registration materialized_clob -> org.hibernate.type.BasicTypeReference@857f1a7
+2026-02-26 20:30:40 - Adding type registration materialized_clob_char_array -> org.hibernate.type.BasicTypeReference@682fe17b
+2026-02-26 20:30:40 - Adding type registration materialized_clob_character_array -> org.hibernate.type.BasicTypeReference@418bdde9
+2026-02-26 20:30:40 - Adding type registration materialized_nclob -> org.hibernate.type.BasicTypeReference@13e0f380
+2026-02-26 20:30:40 - Adding type registration materialized_nclob_character_array -> org.hibernate.type.BasicTypeReference@240df292
+2026-02-26 20:30:40 - Adding type registration materialized_nclob_char_array -> org.hibernate.type.BasicTypeReference@333efb51
+2026-02-26 20:30:40 - Adding type registration Duration -> org.hibernate.type.BasicTypeReference@2c451c4a
+2026-02-26 20:30:40 - Adding type registration java.time.Duration -> org.hibernate.type.BasicTypeReference@2c451c4a
+2026-02-26 20:30:40 - Adding type registration LocalDateTime -> org.hibernate.type.BasicTypeReference@38ad86b1
+2026-02-26 20:30:40 - Adding type registration java.time.LocalDateTime -> org.hibernate.type.BasicTypeReference@38ad86b1
+2026-02-26 20:30:40 - Adding type registration LocalDate -> org.hibernate.type.BasicTypeReference@73ff7a54
+2026-02-26 20:30:40 - Adding type registration java.time.LocalDate -> org.hibernate.type.BasicTypeReference@73ff7a54
+2026-02-26 20:30:40 - Adding type registration LocalTime -> org.hibernate.type.BasicTypeReference@375ff309
+2026-02-26 20:30:40 - Adding type registration java.time.LocalTime -> org.hibernate.type.BasicTypeReference@375ff309
+2026-02-26 20:30:40 - Adding type registration OffsetDateTime -> org.hibernate.type.BasicTypeReference@337c0ee4
+2026-02-26 20:30:40 - Adding type registration java.time.OffsetDateTime -> org.hibernate.type.BasicTypeReference@337c0ee4
+2026-02-26 20:30:40 - Adding type registration OffsetDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@67b09e34
+2026-02-26 20:30:40 - Adding type registration OffsetDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@6f95654c
+2026-02-26 20:30:40 - Adding type registration OffsetTime -> org.hibernate.type.BasicTypeReference@271a140c
+2026-02-26 20:30:40 - Adding type registration java.time.OffsetTime -> org.hibernate.type.BasicTypeReference@271a140c
+2026-02-26 20:30:40 - Adding type registration OffsetTimeUtc -> org.hibernate.type.BasicTypeReference@74c23525
+2026-02-26 20:30:40 - Adding type registration OffsetTimeWithTimezone -> org.hibernate.type.BasicTypeReference@176054b7
+2026-02-26 20:30:40 - Adding type registration OffsetTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@531bec12
+2026-02-26 20:30:40 - Adding type registration ZonedDateTime -> org.hibernate.type.BasicTypeReference@24563809
+2026-02-26 20:30:40 - Adding type registration java.time.ZonedDateTime -> org.hibernate.type.BasicTypeReference@24563809
+2026-02-26 20:30:40 - Adding type registration ZonedDateTimeWithTimezone -> org.hibernate.type.BasicTypeReference@41d84abb
+2026-02-26 20:30:40 - Adding type registration ZonedDateTimeWithoutTimezone -> org.hibernate.type.BasicTypeReference@54087bdb
+2026-02-26 20:30:40 - Adding type registration date -> org.hibernate.type.BasicTypeReference@587f6634
+2026-02-26 20:30:40 - Adding type registration java.sql.Date -> org.hibernate.type.BasicTypeReference@587f6634
+2026-02-26 20:30:40 - Adding type registration time -> org.hibernate.type.BasicTypeReference@4d7c9b42
+2026-02-26 20:30:40 - Adding type registration java.sql.Time -> org.hibernate.type.BasicTypeReference@4d7c9b42
+2026-02-26 20:30:40 - Adding type registration timestamp -> org.hibernate.type.BasicTypeReference@4ef28dc4
+2026-02-26 20:30:40 - Adding type registration java.sql.Timestamp -> org.hibernate.type.BasicTypeReference@4ef28dc4
+2026-02-26 20:30:40 - Adding type registration java.util.Date -> org.hibernate.type.BasicTypeReference@4ef28dc4
+2026-02-26 20:30:40 - Adding type registration calendar -> org.hibernate.type.BasicTypeReference@59b3f162
+2026-02-26 20:30:40 - Adding type registration java.util.Calendar -> org.hibernate.type.BasicTypeReference@59b3f162
+2026-02-26 20:30:40 - Adding type registration java.util.GregorianCalendar -> org.hibernate.type.BasicTypeReference@59b3f162
+2026-02-26 20:30:40 - Adding type registration calendar_date -> org.hibernate.type.BasicTypeReference@7ade62a6
+2026-02-26 20:30:40 - Adding type registration calendar_time -> org.hibernate.type.BasicTypeReference@53d15034
+2026-02-26 20:30:40 - Adding type registration instant -> org.hibernate.type.BasicTypeReference@9976b27
+2026-02-26 20:30:40 - Adding type registration java.time.Instant -> org.hibernate.type.BasicTypeReference@9976b27
+2026-02-26 20:30:40 - Adding type registration uuid -> org.hibernate.type.BasicTypeReference@4fe9a396
+2026-02-26 20:30:40 - Adding type registration java.util.UUID -> org.hibernate.type.BasicTypeReference@4fe9a396
+2026-02-26 20:30:40 - Adding type registration pg-uuid -> org.hibernate.type.BasicTypeReference@4fe9a396
+2026-02-26 20:30:40 - Adding type registration uuid-binary -> org.hibernate.type.BasicTypeReference@462b239f
+2026-02-26 20:30:40 - Adding type registration uuid-char -> org.hibernate.type.BasicTypeReference@1fa29b9e
+2026-02-26 20:30:40 - Adding type registration class -> org.hibernate.type.BasicTypeReference@2d5e051e
+2026-02-26 20:30:40 - Adding type registration java.lang.Class -> org.hibernate.type.BasicTypeReference@2d5e051e
+2026-02-26 20:30:40 - Adding type registration currency -> org.hibernate.type.BasicTypeReference@2f29e630
+2026-02-26 20:30:40 - Adding type registration Currency -> org.hibernate.type.BasicTypeReference@2f29e630
+2026-02-26 20:30:40 - Adding type registration java.util.Currency -> org.hibernate.type.BasicTypeReference@2f29e630
+2026-02-26 20:30:40 - Adding type registration locale -> org.hibernate.type.BasicTypeReference@30811f91
+2026-02-26 20:30:40 - Adding type registration java.util.Locale -> org.hibernate.type.BasicTypeReference@30811f91
+2026-02-26 20:30:40 - Adding type registration serializable -> org.hibernate.type.BasicTypeReference@3bf40c74
+2026-02-26 20:30:40 - Adding type registration java.io.Serializable -> org.hibernate.type.BasicTypeReference@3bf40c74
+2026-02-26 20:30:40 - Adding type registration timezone -> org.hibernate.type.BasicTypeReference@665f88e1
+2026-02-26 20:30:40 - Adding type registration java.util.TimeZone -> org.hibernate.type.BasicTypeReference@665f88e1
+2026-02-26 20:30:40 - Adding type registration ZoneOffset -> org.hibernate.type.BasicTypeReference@6a7ea7c
+2026-02-26 20:30:40 - Adding type registration java.time.ZoneOffset -> org.hibernate.type.BasicTypeReference@6a7ea7c
+2026-02-26 20:30:40 - Adding type registration url -> org.hibernate.type.BasicTypeReference@3ee200ae
+2026-02-26 20:30:40 - Adding type registration java.net.URL -> org.hibernate.type.BasicTypeReference@3ee200ae
+2026-02-26 20:30:40 - Adding type registration vector -> org.hibernate.type.BasicTypeReference@25ee3caa
+2026-02-26 20:30:40 - Adding type registration float_vector -> org.hibernate.type.BasicTypeReference@3fecb076
+2026-02-26 20:30:40 - Adding type registration double_vector -> org.hibernate.type.BasicTypeReference@62159fd
+2026-02-26 20:30:40 - Adding type registration byte_vector -> org.hibernate.type.BasicTypeReference@28e8dee7
+2026-02-26 20:30:40 - Adding type registration row_version -> org.hibernate.type.BasicTypeReference@7c37ac3c
+2026-02-26 20:30:40 - Adding type registration object -> org.hibernate.type.JavaObjectType@5b028f58
+2026-02-26 20:30:40 - Adding type registration java.lang.Object -> org.hibernate.type.JavaObjectType@5b028f58
+2026-02-26 20:30:40 - Adding type registration null -> org.hibernate.type.NullType@76673ed
+2026-02-26 20:30:40 - Adding type registration imm_date -> org.hibernate.type.BasicTypeReference@6d41200c
+2026-02-26 20:30:40 - Adding type registration imm_time -> org.hibernate.type.BasicTypeReference@522fb69
+2026-02-26 20:30:40 - Adding type registration imm_timestamp -> org.hibernate.type.BasicTypeReference@593354fa
+2026-02-26 20:30:40 - Adding type registration imm_calendar -> org.hibernate.type.BasicTypeReference@6dfebd2a
+2026-02-26 20:30:40 - Adding type registration imm_calendar_date -> org.hibernate.type.BasicTypeReference@9dbb1d9
+2026-02-26 20:30:40 - Adding type registration imm_calendar_time -> org.hibernate.type.BasicTypeReference@1bb0fa38
+2026-02-26 20:30:40 - Adding type registration imm_binary -> org.hibernate.type.BasicTypeReference@58e7f930
+2026-02-26 20:30:40 - Adding type registration imm_serializable -> org.hibernate.type.BasicTypeReference@406808eb
+2026-02-26 20:30:40 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-26 20:30:40 - HikariPool-1 - Starting...
+2026-02-26 20:30:41 - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@e0f2686
+2026-02-26 20:30:41 - HikariPool-1 - Start completed.
+2026-02-26 20:30:41 - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.12
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-26 20:30:41 - addDescriptor(2003, org.hibernate.type.descriptor.sql.internal.ArrayDdlTypeImpl@20ad64c) replaced previous registration(org.hibernate.type.descriptor.sql.internal.ArrayDdlTypeImpl@39a03ccc)
+2026-02-26 20:30:41 - addDescriptor(6, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@4db45d) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@89178b4)
+2026-02-26 20:30:41 - addDescriptor(2004, BlobTypeDescriptor(BLOB_BINDING)) replaced previous registration(BlobTypeDescriptor(DEFAULT))
+2026-02-26 20:30:41 - addDescriptor(2005, ClobTypeDescriptor(CLOB_BINDING)) replaced previous registration(ClobTypeDescriptor(DEFAULT))
+2026-02-26 20:30:41 - Adding type registration JAVA_OBJECT -> org.hibernate.type.JavaObjectType@41736818
+2026-02-26 20:30:41 - Adding type registration java.lang.Object -> org.hibernate.type.JavaObjectType@41736818
+2026-02-26 20:30:41 - Type registration key [java.lang.Object] overrode previous entry : `org.hibernate.type.JavaObjectType@5b028f58`
+2026-02-26 20:30:41 - Adding type registration org.hibernate.type.DurationType -> basicType@1(java.time.Duration,3015)
+2026-02-26 20:30:41 - Adding type registration Duration -> basicType@1(java.time.Duration,3015)
+2026-02-26 20:30:41 - Adding type registration java.time.Duration -> basicType@1(java.time.Duration,3015)
+2026-02-26 20:30:41 - Adding type registration org.hibernate.type.OffsetDateTimeType -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-26 20:30:41 - Adding type registration OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-26 20:30:41 - Adding type registration java.time.OffsetDateTime -> basicType@2(java.time.OffsetDateTime,3003)
+2026-02-26 20:30:41 - Adding type registration org.hibernate.type.ZonedDateTimeType -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-26 20:30:41 - Adding type registration ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-26 20:30:41 - Adding type registration java.time.ZonedDateTime -> basicType@3(java.time.ZonedDateTime,3003)
+2026-02-26 20:30:41 - Adding type registration org.hibernate.type.OffsetTimeType -> basicType@4(java.time.OffsetTime,3007)
+2026-02-26 20:30:41 - Adding type registration OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2026-02-26 20:30:41 - Adding type registration java.time.OffsetTime -> basicType@4(java.time.OffsetTime,3007)
+2026-02-26 20:30:41 - Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@3f3a529f] to MetadataBuildingContext [org.hibernate.boot.internal.MetadataBuildingContextRootImpl@ce8b59e]
+2026-02-26 20:30:41 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-26 20:30:41 - Scoping TypeConfiguration [org.hibernate.type.spi.TypeConfiguration@3f3a529f] to SessionFactoryImplementor [org.hibernate.internal.SessionFactoryImpl@7fe75649]
+2026-02-26 20:30:41 - Handling #sessionFactoryCreated from [org.hibernate.internal.SessionFactoryImpl@7fe75649] for TypeConfiguration
+2026-02-26 20:30:41 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-26 20:30:42 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-26 20:30:42 - 
+
+Using generated security password: bb3e1790-c844-4975-b28f-33408459fbaf
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-26 20:30:42 - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-02-26 20:30:43 - Cannot determine local hostname
+2026-02-26 20:30:43 - Exposing 3 endpoints beneath base path '/actuator'
+2026-02-26 20:30:45 - Cannot determine local hostname
+2026-02-26 20:30:45 - Tomcat started on port 8082 (http) with context path '/'
+2026-02-26 20:30:46 - Cannot determine local hostname
+2026-02-26 20:30:47 - Cannot determine local hostname
+2026-02-26 20:30:47 - Started RecommendationApplication in 9.861 seconds (process running for 10.144)
+�ϰ� �۾��� �����ðڽ��ϱ� (Y/N)? �ϰ� �۾��� �����ðڽ��ϱ� (Y/N)? 
+^C2026-02-26 20:44:56 [main] INFO  c.u.l.r.RecommendationApplication - Starting RecommendationApplication using Java 21 with PID 60148 (C:\Users\hiond\workspace\lunch-menu-recommender\recommendation-service\build\libs\recommendation-service.jar started by hiond in C:\Users\hiond\workspace\lunch-menu-recommender)
+2026-02-26 20:44:56 [main] DEBUG c.u.l.r.RecommendationApplication - Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-02-26 20:44:56 [main] INFO  c.u.l.r.RecommendationApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-26 20:44:59 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-26 20:44:59 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-26 20:44:59 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 303 ms. Found 5 JPA repository interfaces.
+2026-02-26 20:45:01 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-26 20:45:01 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-26 20:45:01 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.FeedbackRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:45:01 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.LearningMessageRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:45:01 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.MealRecordRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:45:01 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.PreferenceVectorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:45:01 [main] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.unicorn.lunchpick.recommendation.repository.jpa.RecommendationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-26 20:45:01 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 65 ms. Found 0 Redis repository interfaces.
+2026-02-26 20:45:01 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=9dcaa624-c3bb-329f-9839-2bed8592f2cb
+2026-02-26 20:45:04 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8082 (http)
+2026-02-26 20:45:04 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-26 20:45:04 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-02-26 20:45:04 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-26 20:45:04 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 7401 ms
+2026-02-26 20:45:05 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-26 20:45:06 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-02-26 20:45:06 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-26 20:45:06 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-26 20:45:06 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-26 20:45:06 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4c5c0306
+2026-02-26 20:45:06 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-26 20:45:07 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.12
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-26 20:45:08 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-26 20:45:08 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-26 20:45:12 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-26 20:45:13 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: ac87b6ba-4a28-4828-b9de-36c92013361a
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-26 20:45:13 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-02-26 20:45:14 [main] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-02-26 20:45:14 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoints beneath base path '/actuator'
+2026-02-26 20:45:17 [main] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-02-26 20:45:17 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8082 (http) with context path '/'
+2026-02-26 20:45:18 [main] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-02-26 20:45:19 [main] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-02-26 20:45:19 [main] INFO  c.u.l.r.RecommendationApplication - Started RecommendationApplication in 24.597 seconds (process running for 25.617)
+2026-02-26 20:45:48 [http-nio-8082-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-26 20:45:48 [http-nio-8082-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-26 20:45:48 [http-nio-8082-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-02-26 20:48:53 [http-nio-8082-exec-4] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 20:48:53 [http-nio-8082-exec-4] INFO  c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 미스 — AI Pipeline 호출 시작 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 20:48:53 [http-nio-8082-exec-4] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 추천 생성 요청 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94, isColdStart: false
+2026-02-26 20:48:54 [http-nio-8082-exec-4] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 추천 생성 성공 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94, isFallback: true
+2026-02-26 20:48:54 [http-nio-8082-exec-4] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 저장 완료 — key: rec:04a0c32a-8c35-4ce5-aed0-08a99077fb94:3756:12697
+2026-02-26 20:49:10 [http-nio-8082-exec-6] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 20:49:11 [http-nio-8082-exec-6] DEBUG c.u.l.r.s.impl.HistoryServiceImpl - 식사 이력 조회 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94, count: 0
+2026-02-26 20:49:19 [http-nio-8082-exec-5] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 20:49:19 [http-nio-8082-exec-5] DEBUG c.u.l.r.s.impl.HistoryServiceImpl - 인사이트 데이터 부족 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94, count: 0
+2026-02-26 21:02:09 [http-nio-8082-exec-2] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:09 [http-nio-8082-exec-2] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:33 [http-nio-8082-exec-3] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:33 [http-nio-8082-exec-3] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:33 [http-nio-8082-exec-7] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:33 [http-nio-8082-exec-7] INFO  c.u.l.r.s.i.RecommendationServiceImpl - 추천 이유 캐시 미스 — AI Pipeline 호출 — recommendationId: 5ce8273d-eb55-43bb-bc16-38eadd1ce80a
+2026-02-26 21:02:33 [http-nio-8082-exec-7] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 이유 생성 요청 — recommendationId: 5ce8273d-eb55-43bb-bc16-38eadd1ce80a
+2026-02-26 21:02:33 [http-nio-8082-exec-7] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 이유 생성 성공 — recommendationId: 5ce8273d-eb55-43bb-bc16-38eadd1ce80a, isReasonReady: false
+2026-02-26 21:02:42 [http-nio-8082-exec-8] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:42 [http-nio-8082-exec-8] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:57 [http-nio-8082-exec-10] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:57 [http-nio-8082-exec-10] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:58 [http-nio-8082-exec-2] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:58 [http-nio-8082-exec-2] INFO  c.u.l.r.s.i.RecommendationServiceImpl - 추천 수락 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94, recommendationId: 5ce8273d-eb55-43bb-bc16-38eadd1ce80a, reactionTimeMs: 3000
+2026-02-26 21:02:58 [http-nio-8082-exec-3] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:02:58 [http-nio-8082-exec-3] INFO  c.u.l.r.s.i.RecommendationServiceImpl - 추천 거절 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94, reason: MOOD_NOT_MATCH
+2026-02-26 21:03:06 [http-nio-8082-exec-7] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:03:06 [http-nio-8082-exec-7] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:03:06 [http-nio-8082-exec-8] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:03:06 [http-nio-8082-exec-8] INFO  c.u.l.r.service.impl.MealServiceImpl - 식사 기록 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94, mealId: 079b871b-c3b5-4391-95b9-4ccb50cd929e
+2026-02-26 21:03:22 [http-nio-8082-exec-10] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:03:22 [http-nio-8082-exec-10] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:03:22 [http-nio-8082-exec-1] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:03:22 [http-nio-8082-exec-1] WARN  c.u.l.r.e.GlobalExceptionHandler - 비즈니스 예외 발생 — errorCode: DUPLICATE_MEAL_RECORD, message: 이미 기록되었어요. 수정하시겠어요?
+2026-02-26 21:03:22 [http-nio-8082-exec-4] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:03:22 [http-nio-8082-exec-4] WARN  c.u.l.r.e.GlobalExceptionHandler - 비즈니스 예외 발생 — errorCode: DUPLICATE_MEAL_RECORD, message: 이미 기록되었어요. 수정하시겠어요?
+2026-02-26 21:03:30 [http-nio-8082-exec-6] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 0711f870-eeb6-435e-9862-1d74a8c02753
+2026-02-26 21:03:30 [http-nio-8082-exec-6] INFO  c.u.l.r.service.impl.MealServiceImpl - 식사 기록 완료 — memberId: 0711f870-eeb6-435e-9862-1d74a8c02753, mealId: 864f1f13-7378-4534-9d85-30ccb9649bc0
+2026-02-26 21:03:31 [http-nio-8082-exec-5] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 0711f870-eeb6-435e-9862-1d74a8c02753
+2026-02-26 21:03:31 [http-nio-8082-exec-5] INFO  c.u.l.r.service.impl.MealServiceImpl - 식사 기록 취소 완료 — memberId: 0711f870-eeb6-435e-9862-1d74a8c02753, mealId: 864f1f13-7378-4534-9d85-30ccb9649bc0
+2026-02-26 21:03:45 [http-nio-8082-exec-9] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: c3652b48-3bdd-46ba-8b55-d4cb8148d5cd
+2026-02-26 21:03:45 [http-nio-8082-exec-9] INFO  c.u.l.r.service.impl.MealServiceImpl - 식사 기록 완료 — memberId: c3652b48-3bdd-46ba-8b55-d4cb8148d5cd, mealId: e1ea89f6-a1df-4fbb-83a7-adc20b73a322
+2026-02-26 21:03:45 [http-nio-8082-exec-10] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: c3652b48-3bdd-46ba-8b55-d4cb8148d5cd
+2026-02-26 21:03:45 [http-nio-8082-exec-10] INFO  c.u.l.r.service.impl.MealServiceImpl - 피드백 제출 완료 — memberId: c3652b48-3bdd-46ba-8b55-d4cb8148d5cd, satisfaction: GOOD, totalCount: 1
+2026-02-26 21:03:53 [http-nio-8082-exec-2] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 4f9b982d-3f13-4c16-941b-5f33428d8a91
+2026-02-26 21:03:53 [http-nio-8082-exec-2] INFO  c.u.l.r.service.impl.MealServiceImpl - 식사 기록 완료 — memberId: 4f9b982d-3f13-4c16-941b-5f33428d8a91, mealId: 6da6b446-5f67-4003-9aaa-5709ee8e3b6d
+2026-02-26 21:03:53 [http-nio-8082-exec-3] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 4f9b982d-3f13-4c16-941b-5f33428d8a91
+2026-02-26 21:03:53 [http-nio-8082-exec-3] INFO  c.u.l.r.service.impl.MealServiceImpl - 피드백 제출 완료 — memberId: 4f9b982d-3f13-4c16-941b-5f33428d8a91, satisfaction: NEUTRAL, totalCount: 1
+2026-02-26 21:04:11 [http-nio-8082-exec-7] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 57812c6a-bb5c-418c-b049-38f4908a6173
+2026-02-26 21:04:11 [http-nio-8082-exec-7] INFO  c.u.l.r.service.impl.MealServiceImpl - 식사 기록 완료 — memberId: 57812c6a-bb5c-418c-b049-38f4908a6173, mealId: fd1a622a-ca7c-43eb-b01f-c1dacdf5b774
+2026-02-26 21:04:14 [http-nio-8082-exec-8] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 57812c6a-bb5c-418c-b049-38f4908a6173
+2026-02-26 21:04:14 [http-nio-8082-exec-8] INFO  c.u.l.r.service.impl.MealServiceImpl - 식사 기록 취소 완료 — memberId: 57812c6a-bb5c-418c-b049-38f4908a6173, mealId: fd1a622a-ca7c-43eb-b01f-c1dacdf5b774
+2026-02-26 21:05:35 [http-nio-8082-exec-10] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: a8d9aec8-396b-416d-99cc-ff30be94fb92
+2026-02-26 21:05:35 [http-nio-8082-exec-10] INFO  c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 미스 — AI Pipeline 호출 시작 — memberId: a8d9aec8-396b-416d-99cc-ff30be94fb92
+2026-02-26 21:05:35 [http-nio-8082-exec-10] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 추천 생성 요청 — memberId: a8d9aec8-396b-416d-99cc-ff30be94fb92, isColdStart: false
+2026-02-26 21:05:35 [http-nio-8082-exec-10] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 추천 생성 성공 — memberId: a8d9aec8-396b-416d-99cc-ff30be94fb92, isFallback: true
+2026-02-26 21:05:35 [http-nio-8082-exec-10] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 저장 완료 — key: rec:a8d9aec8-396b-416d-99cc-ff30be94fb92:3756:12697
+2026-02-26 21:05:53 [http-nio-8082-exec-2] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 974358e1-4160-4df9-923e-1030799315a7
+2026-02-26 21:05:53 [http-nio-8082-exec-2] INFO  c.u.l.r.service.impl.MealServiceImpl - 식사 기록 완료 — memberId: 974358e1-4160-4df9-923e-1030799315a7, mealId: 96d01f1c-7e05-4f9d-ac0c-447625b940b5
+2026-02-26 21:06:29 [http-nio-8082-exec-3] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 974358e1-4160-4df9-923e-1030799315a7
+2026-02-26 21:06:29 [http-nio-8082-exec-3] WARN  c.u.l.r.e.GlobalExceptionHandler - 비즈니스 예외 발생 — errorCode: CANCEL_TIMEOUT, message: 이력 화면에서 수정할 수 있어요.
+2026-02-26 21:06:49 [http-nio-8082-exec-6] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:06:49 [http-nio-8082-exec-6] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 04a0c32a-8c35-4ce5-aed0-08a99077fb94
+2026-02-26 21:32:18 [http-nio-8082-exec-10] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:32:18 [http-nio-8082-exec-10] INFO  c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 미스 — AI Pipeline 호출 시작 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:32:18 [http-nio-8082-exec-10] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 추천 생성 요청 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309, isColdStart: false
+2026-02-26 21:32:19 [http-nio-8082-exec-10] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 추천 생성 성공 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309, isFallback: true
+2026-02-26 21:32:19 [http-nio-8082-exec-10] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 저장 완료 — key: rec:539397d8-d5c4-4323-a608-24a01ad9e309:3756:12697
+2026-02-26 21:34:46 [http-nio-8082-exec-4] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:34:46 [http-nio-8082-exec-4] INFO  c.u.l.r.s.i.RecommendationServiceImpl - 추천 이유 캐시 미스 — AI Pipeline 호출 — recommendationId: acbc4943-6af2-47ee-9d41-022e5eb3b961
+2026-02-26 21:34:46 [http-nio-8082-exec-4] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 이유 생성 요청 — recommendationId: acbc4943-6af2-47ee-9d41-022e5eb3b961
+2026-02-26 21:34:46 [http-nio-8082-exec-4] DEBUG c.u.l.r.client.AiPipelineClientImpl - [AI Pipeline] 이유 생성 성공 — recommendationId: acbc4943-6af2-47ee-9d41-022e5eb3b961, isReasonReady: false
+2026-02-26 21:35:40 [http-nio-8082-exec-6] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:35:40 [http-nio-8082-exec-6] INFO  c.u.l.r.s.i.RecommendationServiceImpl - 추천 수락 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309, recommendationId: acbc4943-6af2-47ee-9d41-022e5eb3b961, reactionTimeMs: 202305
+2026-02-26 21:35:40 [http-nio-8082-exec-7] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:35:40 [http-nio-8082-exec-7] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:36:12 [http-nio-8082-exec-8] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:36:12 [http-nio-8082-exec-8] INFO  c.u.l.r.service.impl.MealServiceImpl - 식사 기록 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309, mealId: cef53903-29e5-4b66-b28f-9c7e73ac4d39
+2026-02-26 21:36:43 [http-nio-8082-exec-10] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:36:43 [http-nio-8082-exec-10] INFO  c.u.l.r.service.impl.MealServiceImpl - 피드백 제출 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309, satisfaction: GOOD, totalCount: 1
+2026-02-26 21:38:26 [http-nio-8082-exec-2] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:38:26 [http-nio-8082-exec-2] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:39:01 [http-nio-8082-exec-3] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:39:02 [http-nio-8082-exec-3] INFO  c.u.l.r.s.i.RecommendationServiceImpl - 추천 거절 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309, reason: MOOD_NOT_MATCH
+2026-02-26 21:39:02 [http-nio-8082-exec-6] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:39:02 [http-nio-8082-exec-6] DEBUG c.u.l.r.s.i.RecommendationServiceImpl - 추천 캐시 히트 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:39:25 [http-nio-8082-exec-8] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:39:25 [http-nio-8082-exec-9] DEBUG c.u.l.r.c.j.JwtAuthenticationFilter - JWT 인증 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309
+2026-02-26 21:39:25 [http-nio-8082-exec-9] DEBUG c.u.l.r.s.impl.HistoryServiceImpl - 인사이트 데이터 부족 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309, count: 1
+2026-02-26 21:39:25 [http-nio-8082-exec-8] DEBUG c.u.l.r.s.impl.HistoryServiceImpl - 식사 이력 조회 완료 — memberId: 539397d8-d5c4-4323-a608-24a01ad9e309, count: 1
