@@ -59,7 +59,7 @@ podTemplate(
             resourceRequestCpu: '200m',
             resourceRequestMemory: '512Mi',
             resourceLimitCpu: '1000m',
-            resourceLimitMemory: '1Gi'
+            resourceLimitMemory: '2Gi'
         )
     ],
     volumes: [
@@ -110,7 +110,7 @@ podTemplate(
                                       -Dsonar.sourceEncoding=UTF-8 \\
                                       -Dsonar.typescript.tsconfigPaths=tsconfig.json \\
                                       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \\
-                                      -Dsonar.javascript.node.maxspace=1024
+                                      -Dsonar.javascript.node.maxspace=2048
                                     """
                                 }
 
