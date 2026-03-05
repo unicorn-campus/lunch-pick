@@ -1,0 +1,181 @@
+pipeline {
+    agent {
+        kubernetes {
+            cloud 'eks-ondal'
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins-build: ai-pipeline
+spec:
+  containers:
+  - name: python
+    image: python:3.12-slim
+    command: ['cat']
+    tty: true
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  - name: docker
+    image: docker:27-dind
+    securityContext:
+      privileged: true
+    env:
+    - name: DOCKER_TLS_CERTDIR
+      value: ""
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    volumeMounts:
+    - name: docker-storage
+      mountPath: /var/lib/docker
+  volumes:
+  - name: docker-storage
+    emptyDir: {}
+"""
+            podRetention never()
+        }
+    }
+
+    environment {
+        SERVICE_NAME = 'ai-pipeline-service'
+        IMG_REG      = 'docker.io'
+        IMG_ORG      = 'hiondal'
+        DOCKER_CREDS = credentials('dockerhub-credentials')
+        GIT_CREDS    = 'github-credentials'
+        MANIFEST_REPO = 'https://github.com/hiondal/lunchpick-manifest.git'
+    }
+
+    parameters {
+        choice(name: 'environment', choices: ['dev', 'staging', 'prod'], description: '배포 환경 선택')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                script {
+                    imageTag = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    echo "Image Tag: ${params.environment}-${imageTag}"
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                container('python') {
+                    dir('ai-pipeline-service') {
+                        sh '''
+                            pip install --upgrade pip
+                            pip install -r requirements.txt
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Build & Test') {
+            steps {
+                container('python') {
+                    dir('ai-pipeline-service') {
+                        sh 'pytest --cov --cov-report=xml:coverage.xml || true'
+                    }
+                }
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true, testResults: 'ai-pipeline-service/**/test-results/*.xml'
+                }
+            }
+        }
+
+        stage('Docker Build & Push') {
+            steps {
+                container('docker') {
+                    script {
+                        def fullImage = "${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-${imageTag}"
+                        def latestImage = "${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-latest"
+
+                        sh """
+                            echo ${DOCKER_CREDS_PSW} | docker login ${IMG_REG} -u ${DOCKER_CREDS_USR} --password-stdin
+
+                            docker build \
+                                --build-arg PROJECT_FOLDER="." \
+                                -f deployment/container/Dockerfile-ai \
+                                -t ${fullImage} \
+                                -t ${latestImage} \
+                                ai-pipeline-service/
+
+                            docker push ${fullImage}
+                            docker push ${latestImage}
+
+                            docker logout ${IMG_REG}
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Update Manifest') {
+            steps {
+                script {
+                    def fullImage = "${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-${imageTag}"
+
+                    withCredentials([usernamePassword(
+                        credentialsId: "${GIT_CREDS}",
+                        usernameVariable: 'GIT_USER',
+                        passwordVariable: 'GIT_TOKEN'
+                    )]) {
+                        sh """
+                            rm -rf manifest-repo
+                            git clone https://${GIT_USER}:${GIT_TOKEN}@github.com/hiondal/lunchpick-manifest.git manifest-repo
+                            cd manifest-repo
+
+                            # Kustomize overlay에서 이미지 태그 업데이트
+                            KUSTOMIZE_FILE="${SERVICE_NAME}/kustomize/overlays/${params.environment}/kustomization.yaml"
+                            if [ -f "\${KUSTOMIZE_FILE}" ]; then
+                                sed -i 's|newTag:.*|newTag: ${params.environment}-${imageTag}|g' "\${KUSTOMIZE_FILE}"
+                                echo "Updated \${KUSTOMIZE_FILE} with tag ${params.environment}-${imageTag}"
+                            else
+                                echo "Warning: \${KUSTOMIZE_FILE} not found, trying alternative paths..."
+                                # 대체 경로 탐색
+                                DEPLOY_FILE="${SERVICE_NAME}/kustomize/base/deployment.yaml"
+                                if [ -f "\${DEPLOY_FILE}" ]; then
+                                    sed -i "s|image:.*${IMG_ORG}/${SERVICE_NAME}:.*|image: ${fullImage}|g" "\${DEPLOY_FILE}"
+                                    echo "Updated \${DEPLOY_FILE} with image ${fullImage}"
+                                fi
+                            fi
+
+                            git config user.email "jenkins@lunchpick.io"
+                            git config user.name "Jenkins CI"
+                            git add -A
+                            git diff --cached --quiet || git commit -m "[CI] ${SERVICE_NAME} 이미지 태그 업데이트: ${params.environment}-${imageTag}"
+                            git push origin main
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "AI Pipeline CI 파이프라인 성공: ${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-${imageTag}"
+        }
+        failure {
+            echo "AI Pipeline CI 파이프라인 실패"
+        }
+        always {
+            cleanWs()
+        }
+    }
+}

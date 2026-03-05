@@ -1,0 +1,207 @@
+pipeline {
+    agent {
+        kubernetes {
+            cloud 'eks-ondal'
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins: agent
+spec:
+  containers:
+  - name: gradle
+    image: gradle:8-jdk21
+    command: ['sleep']
+    args: ['infinity']
+    volumeMounts:
+    - name: gradle-cache
+      mountPath: /home/gradle/.gradle
+  - name: docker
+    image: docker:27-dind
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: docker-storage
+      mountPath: /var/lib/docker
+  - name: git
+    image: alpine/git:latest
+    command: ['sleep']
+    args: ['infinity']
+  volumes:
+  - name: gradle-cache
+    emptyDir: {}
+  - name: docker-storage
+    emptyDir: {}
+"""
+            podRetention never()
+        }
+    }
+
+    environment {
+        IMG_REG = 'docker.io'
+        IMG_ORG = 'hiondal'
+        SYSTEM_NAME = 'lunchpick'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        MANIFEST_REPO_URL = 'https://github.com/hiondal/lunchpick-manifest.git'
+    }
+
+    parameters {
+        choice(name: 'SERVICE', choices: ['all', 'member-service', 'recommendation-service', 'payment-service'], description: '빌드할 서비스 선택')
+        string(name: 'BRANCH', defaultValue: 'main', description: '빌드 브랜치')
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: '배포 환경')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                script {
+                    imageTag = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    echo "Image Tag: ${params.ENVIRONMENT}-${imageTag}"
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                container('gradle') {
+                    script {
+                        def services = ['member-service', 'recommendation-service', 'payment-service']
+                        if (params.SERVICE != 'all') {
+                            services = [params.SERVICE]
+                        }
+                        for (service in services) {
+                            echo "Building ${service}..."
+                            sh "cd ${service} && gradle clean bootJar -x test"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                container('gradle') {
+                    script {
+                        def services = ['member-service', 'recommendation-service', 'payment-service']
+                        if (params.SERVICE != 'all') {
+                            services = [params.SERVICE]
+                        }
+                        for (service in services) {
+                            echo "Testing ${service}..."
+                            sh "cd ${service} && gradle test"
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    script {
+                        def services = ['member-service', 'recommendation-service', 'payment-service']
+                        if (params.SERVICE != 'all') {
+                            services = [params.SERVICE]
+                        }
+                        for (service in services) {
+                            junit allowEmptyResults: true, testResults: "${service}/build/test-results/test/*.xml"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Docker Build & Push') {
+            steps {
+                container('docker') {
+                    script {
+                        def services = ['member-service', 'recommendation-service', 'payment-service']
+                        if (params.SERVICE != 'all') {
+                            services = [params.SERVICE]
+                        }
+
+                        // DockerHub 로그인
+                        sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login ${IMG_REG} -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+
+                        for (service in services) {
+                            def imageName = "${IMG_REG}/${IMG_ORG}/${SYSTEM_NAME}-${service}"
+                            def tag = "${params.ENVIRONMENT}-${imageTag}"
+
+                            echo "Building Docker image: ${imageName}:${tag}"
+                            sh """
+                                docker build \
+                                    -f deployment/container/Dockerfile-backend \
+                                    --build-arg BUILD_LIB_DIR="${service}/build/libs" \
+                                    --build-arg ARTIFACTORY_FILE="${service}.jar" \
+                                    -t ${imageName}:${tag} \
+                                    -t ${imageName}:latest \
+                                    .
+                            """
+
+                            echo "Pushing Docker image: ${imageName}:${tag}"
+                            sh """
+                                docker push ${imageName}:${tag}
+                                docker push ${imageName}:latest
+                            """
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Update Manifest') {
+            steps {
+                container('git') {
+                    script {
+                        def services = ['member-service', 'recommendation-service', 'payment-service']
+                        if (params.SERVICE != 'all') {
+                            services = [params.SERVICE]
+                        }
+
+                        withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                            def manifestUrl = MANIFEST_REPO_URL.replace('https://', "https://${GIT_USER}:${GIT_TOKEN}@")
+                            def tag = "${params.ENVIRONMENT}-${imageTag}"
+
+                            sh """
+                                git clone ${manifestUrl} manifest-repo
+                                cd manifest-repo
+
+                                services="member-service recommendation-service payment-service"
+                                if [ "${params.SERVICE}" != "all" ]; then
+                                    services="${params.SERVICE}"
+                                fi
+
+                                for svc in \$services; do
+                                    MANIFEST_FILE="${params.ENVIRONMENT}/\${svc}/deployment.yaml"
+                                    if [ -f "\${MANIFEST_FILE}" ]; then
+                                        sed -i "s|image: ${IMG_REG}/${IMG_ORG}/${SYSTEM_NAME}-\${svc}:.*|image: ${IMG_REG}/${IMG_ORG}/${SYSTEM_NAME}-\${svc}:${tag}|g" "\${MANIFEST_FILE}"
+                                        echo "Updated \${MANIFEST_FILE} with tag ${tag}"
+                                    else
+                                        echo "Warning: \${MANIFEST_FILE} not found, skipping..."
+                                    fi
+                                done
+
+                                git config user.email "jenkins@lunchpick.io"
+                                git config user.name "Jenkins CI"
+                                git add -A
+                                git diff --cached --quiet || git commit -m "chore: 백엔드 이미지 태그 업데이트 ${tag}"
+                                git push origin main
+                            """
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "CI 파이프라인 성공: 백엔드 서비스 빌드 및 이미지 푸시 완료"
+        }
+        failure {
+            echo "CI 파이프라인 실패: 로그를 확인하세요"
+        }
+        always {
+            cleanWs()
+        }
+    }
+}

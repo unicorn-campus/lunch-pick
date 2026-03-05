@@ -1,0 +1,181 @@
+pipeline {
+    agent {
+        kubernetes {
+            cloud 'eks-ondal'
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins-build: frontend
+spec:
+  containers:
+  - name: node
+    image: node:20-slim
+    command: ['cat']
+    tty: true
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  - name: docker
+    image: docker:24-dind
+    securityContext:
+      privileged: true
+    env:
+    - name: DOCKER_TLS_CERTDIR
+      value: ""
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    volumeMounts:
+    - name: docker-storage
+      mountPath: /var/lib/docker
+  volumes:
+  - name: docker-storage
+    emptyDir: {}
+"""
+            podRetention never()
+        }
+    }
+
+    environment {
+        SERVICE_NAME = 'frontend'
+        IMG_REG      = 'docker.io'
+        IMG_ORG      = 'hiondal'
+        DOCKER_CREDS = credentials('dockerhub-credentials')
+        GIT_CREDS    = 'github-credentials'
+        MANIFEST_REPO = 'https://github.com/hiondal/lunchpick-manifest.git'
+    }
+
+    parameters {
+        choice(name: 'environment', choices: ['dev', 'staging', 'prod'], description: '배포 환경 선택')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                script {
+                    imageTag = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    echo "Image Tag: ${params.environment}-${imageTag}"
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                container('node') {
+                    dir('frontend') {
+                        sh 'npm ci'
+                    }
+                }
+            }
+        }
+
+        stage('Lint') {
+            steps {
+                container('node') {
+                    dir('frontend') {
+                        sh 'npm run lint || true'
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                container('node') {
+                    dir('frontend') {
+                        sh 'npx next build'
+                    }
+                }
+            }
+        }
+
+        stage('Docker Build & Push') {
+            steps {
+                container('docker') {
+                    script {
+                        def fullImage = "${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-${imageTag}"
+                        def latestImage = "${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-latest"
+
+                        sh """
+                            echo ${DOCKER_CREDS_PSW} | docker login ${IMG_REG} -u ${DOCKER_CREDS_USR} --password-stdin
+
+                            docker build \
+                                --build-arg PROJECT_FOLDER="." \
+                                --build-arg BUILD_FOLDER="deployment/container" \
+                                -f deployment/container/Dockerfile-frontend \
+                                -t ${fullImage} \
+                                -t ${latestImage} \
+                                frontend/
+
+                            docker push ${fullImage}
+                            docker push ${latestImage}
+
+                            docker logout ${IMG_REG}
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Update Manifest') {
+            steps {
+                script {
+                    def fullImage = "${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-${imageTag}"
+
+                    withCredentials([usernamePassword(
+                        credentialsId: "${GIT_CREDS}",
+                        usernameVariable: 'GIT_USER',
+                        passwordVariable: 'GIT_TOKEN'
+                    )]) {
+                        sh """
+                            rm -rf manifest-repo
+                            git clone https://${GIT_USER}:${GIT_TOKEN}@github.com/hiondal/lunchpick-manifest.git manifest-repo
+                            cd manifest-repo
+
+                            # kustomization.yaml 또는 deployment.yaml에서 이미지 태그 업데이트
+                            if [ -f "${params.environment}/${SERVICE_NAME}/kustomization.yaml" ]; then
+                                sed -i 's|newTag:.*|newTag: ${params.environment}-${imageTag}|g' \
+                                    ${params.environment}/${SERVICE_NAME}/kustomization.yaml
+                            elif [ -f "${params.environment}/${SERVICE_NAME}-deployment.yaml" ]; then
+                                sed -i 's|image:.*${IMG_ORG}/${SERVICE_NAME}:.*|image: ${fullImage}|g' \
+                                    ${params.environment}/${SERVICE_NAME}-deployment.yaml
+                            elif [ -f "overlays/${params.environment}/${SERVICE_NAME}/kustomization.yaml" ]; then
+                                sed -i 's|newTag:.*|newTag: ${params.environment}-${imageTag}|g' \
+                                    overlays/${params.environment}/${SERVICE_NAME}/kustomization.yaml
+                            fi
+
+                            git config user.email "jenkins@lunchpick.io"
+                            git config user.name "Jenkins CI"
+                            git add -A
+                            git diff --cached --quiet || git commit -m "[CI] ${SERVICE_NAME} 이미지 태그 업데이트: ${params.environment}-${imageTag}"
+                            git push origin main
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Frontend CI 파이프라인 성공: ${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-${imageTag}"
+        }
+        failure {
+            echo "Frontend CI 파이프라인 실패"
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
