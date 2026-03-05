@@ -66,11 +66,13 @@ podTemplate(
         def imageTag = getImageTag()
         def environment = params.ENVIRONMENT ?: 'dev'
         def skipSonarQube = params.SKIP_SONARQUBE ?: 'false'
+        def targetService = params.SERVICE ?: 'all'
         def imageMap = [
             'member-service': 'hiondal/lunchpick-member-service',
             'recommendation-service': 'hiondal/lunchpick-recommendation-service',
             'payment-service': 'hiondal/lunchpick-payment-service'
         ]
+        def targetMap = (targetService == 'all') ? imageMap : imageMap.subMap([targetService])
 
         try {
             stage("Get Source") {
@@ -93,7 +95,7 @@ podTemplate(
                     container('gradle') {
                         script {
                             try {
-                                imageMap.keySet().each { service ->
+                                targetMap.keySet().each { service ->
                                     withSonarQubeEnv('SonarQube') {
                                         sh """
                                             ./gradlew :${service}:test :${service}:jacocoTestReport :${service}:sonar \
@@ -133,7 +135,7 @@ podTemplate(
                             // Docker Hub 로그인
                             sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
 
-                            imageMap.each { service, imgName ->
+                            targetMap.each { service, imgName ->
                                 sh """
                                     podman build \
                                         --build-arg BUILD_LIB_DIR="${service}/build/libs" \
@@ -170,7 +172,7 @@ podTemplate(
                             cd lunchpick/kustomize/overlays/${environment}
 
                             # 각 서비스별 이미지 태그 업데이트 (imageMap 기반)
-                            ${imageMap.collect { svc, img -> "kustomize edit set image ${img}=${img}:${environment}-${imageTag}" }.join('\n                            ')}
+                            ${targetMap.collect { svc, img -> "kustomize edit set image ${img}=${img}:${environment}-${imageTag}" }.join('\n                            ')}
 
                             # Git 설정 및 푸시
                             cd ../../../..
