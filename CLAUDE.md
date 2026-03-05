@@ -166,28 +166,28 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 
 ### deploy
 - 진행 모드: 자동 진행
-- CLOUD: AWS
+- CLOUD: Azure
 - 마지막 완료 Step: Step 5 (배포 완료)
 - 레지스트리유형: DockerHub
 - IMG_REG: docker.io
 - IMG_ORG: hiondal
-- VM_HOST: aws
-- K8S_CLUSTER: eks-ondal
+- VM_HOST: azure
+- K8S_CLUSTER: aks-ondal
 - K8S_NAMESPACE: lunchpick
-- SSL_DOMAIN: web.43.201.25.39.nip.io
-- 프론트엔드: https://web.43.201.25.39.nip.io
-- 백엔드 API: https://api.web.43.201.25.39.nip.io
+- SSL_DOMAIN: web.20.249.211.140.nip.io
+- 프론트엔드: https://web.20.249.211.140.nip.io
+- 백엔드 API: https://api.web.20.249.211.140.nip.io
 
 ### cicd
 - 진행 모드: 단계별 승인
-- CI_TOOL: GitHubActions
-- CLOUD: AWS
+- CI_TOOL: Jenkins
+- CLOUD: Azure
 - 레지스트리유형: DockerHub
 - AI_SERVICE: ai-pipeline-service
 - MANIFEST_REPO_URL: https://github.com/hiondal/lunchpick-manifest.git
-- VM_HOST: aws
+- VM_HOST: azure
 - ENVIRONMENTS: dev
-- K8S_CLUSTER: eks-ondal
+- K8S_CLUSTER: aks-ondal
 - K8S_NAMESPACE: lunchpick
 - 마지막 완료 Step: Step 4 (완료 보고서 작성 완료)
 

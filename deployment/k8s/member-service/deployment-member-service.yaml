@@ -17,7 +17,7 @@ spec:
       - name: lunchpick
       containers:
       - name: member-service
-        image: hiondal/lunchpick-member-service:latest
+        image: hiondal/lunchpick-member-service:dev-20260305132601
         imagePullPolicy: Always
         ports:
         - containerPort: 8081

@@ -17,7 +17,7 @@ spec:
       - name: lunchpick
       containers:
       - name: payment-service
-        image: hiondal/lunchpick-payment-service:latest
+        image: hiondal/lunchpick-payment-service:dev-20260305132601
         imagePullPolicy: Always
         ports:
         - containerPort: 8083

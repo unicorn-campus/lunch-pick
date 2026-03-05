@@ -7,7 +7,7 @@ data:
   APP_ENV: "production"
   APP_PORT: "8084"
   LOG_LEVEL: "INFO"
-  DB_HOST: "postgres-postgresql"
+  DB_HOST: "postgresql"
   DB_PORT: "5432"
   DB_USER: "lunchpick"
   REDIS_DB: "4"

@@ -17,10 +17,10 @@ spec:
         - name: lunchpick
       containers:
         - name: ai-pipeline-service
-          image: hiondal/lunchpick-ai-pipeline-service:latest
+          image: hiondal/lunchpick-ai-pipeline-service:dev-20260305132440
           imagePullPolicy: Always
           ports:
-            - containerPort: 8000
+            - containerPort: 8084
           envFrom:
             - configMapRef:
                 name: cm-ai-pipeline-service
@@ -36,19 +36,19 @@ spec:
           startupProbe:
             httpGet:
               path: /health
-              port: 8000
+              port: 8084
             initialDelaySeconds: 15
             periodSeconds: 5
             failureThreshold: 10
           readinessProbe:
             httpGet:
               path: /health
-              port: 8000
+              port: 8084
             periodSeconds: 10
             failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /health
-              port: 8000
+              port: 8084
             periodSeconds: 15
             failureThreshold: 3

@@ -3,13 +3,10 @@ kind: Ingress
 metadata:
   name: lunchpick
   namespace: lunchpick
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
 spec:
-  ingressClassName: alb
+  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
-  - host: api.web.43.201.25.39.nip.io
+  - host: api.web.20.249.211.140.nip.io
     http:
       paths:
       # member-service

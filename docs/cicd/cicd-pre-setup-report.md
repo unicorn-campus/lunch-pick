@@ -4,29 +4,26 @@
 
 | 항목 | 값 |
 |------|-----|
-| CLOUD | AWS |
+| CLOUD | Azure |
 | CI_TOOL | Jenkins |
-| K8S_CLUSTER | eks-ondal |
-| VM_HOST | aws (43.201.25.39) |
+| K8S_CLUSTER | aks-ondal |
+| VM_HOST | azure (20.249.211.140) |
 | 레지스트리 | DockerHub (docker.io/hiondal) |
 
 ## 2. 클라우드 사전작업
 
 | 리소스 | 상태 |
 |--------|------|
-| StorageClass (gp2-eks-auto) | 생성 완료 |
-| IngressClass (alb) | 생성 완료 |
-| ALB Subnet 태그 | 등록 완료 (4개 서브넷) |
-| NodePool (cicd) | 생성 완료 (spot, t3a/m5a large/xlarge) |
-| NodePool (sonarqube) | 생성 완료 (spot, t3a/m5a xlarge/2xlarge) |
+| NodePool (cicd) | 생성 완료 (Karpenter, on-demand, D family) |
+| NodePool (sonarqube) | 생성 완료 (Karpenter, on-demand, D family) |
 
 ## 3. 도구 설치 결과
 
-| 도구 | 네임스페이스 | Helm Release | 상태 | Ingress Address |
-|------|-----------|-------------|------|----------------|
-| Jenkins | jenkins | jenkins (bitnami 13.6.17) | 설치 완료, Pod Ready | k8s-jenkins-jenkins-2646a74345-289826574.ap-northeast-2.elb.amazonaws.com |
-| SonarQube | sonarqube | sonar (bitnami 8.1.17) | 설치 완료, Pod Ready (affinity 패치 적용) | k8s-sonarqub-sonarson-79285d79a9-869210287.ap-northeast-2.elb.amazonaws.com |
-| ArgoCD | argocd | argocd (argo 3.35.4) | 설치 완료, Pod Ready (insecure 모드 정상) | k8s-argocd-argocdse-4b25862b32-2013769863.ap-northeast-2.elb.amazonaws.com |
+| 도구 | 네임스페이스 | Helm Release | 상태 | 비고 |
+|------|-----------|-------------|------|------|
+| Jenkins | jenkins | jenkins (bitnami 13.6.17) | 설치 완료, Pod Ready | AKS Gatekeeper 정책 대응 (agentListenerService 비활성화) |
+| SonarQube | sonarqube | sonar (bitnami 8.1.17) | 설치 완료, Pod Ready | 메모리 6Gi로 증가 (OOMKill 대응), affinity 패치 적용 |
+| ArgoCD | argocd | argocd (argo 3.35.4) | 설치 완료, Pod Ready | insecure 모드 정상, AKS 정책 대응 (clusterAdminAccess false) |
 
 ## 4. 접속 정보
 
@@ -34,7 +31,7 @@
 |------|-----|----|----|
 | Jenkins | http://myjenkins.io | admin | P@ssw0rd$ |
 | SonarQube | http://mysonar.io | admin | sonarP@ssw0rd$ |
-| ArgoCD | http://myargocd.io | admin | xMGYD4tIFoljrQra |
+| ArgoCD | http://myargocd.io | admin | TGgMuEOAmPJWOlS7 |
 
 > 암호 조회 명령:
 > - Jenkins: `kubectl get secret jenkins -n jenkins -o jsonpath='{.data.jenkins-password}' | base64 -d`
@@ -64,7 +61,15 @@
 | URL | https://github.com/hiondal/lunchpick-manifest.git |
 | 상태 | 이미 존재 (기존 사용) |
 
-## 8. 수동 후속 작업
+## 8. 백엔드 빌드/테스트
+
+| 항목 | 결과 |
+|------|------|
+| SonarQube/JaCoCo 플러그인 | build.gradle에 설정 완료 |
+| ./gradlew clean build | BUILD SUCCESSFUL (43 tasks) |
+| JaCoCo 리포트 | member-service, payment-service, recommendation-service 생성 확인 |
+
+## 9. 수동 후속 작업
 
 ### Jenkins 플러그인 설치 (웹 UI: http://myjenkins.io)
 - Kubernetes, Pipeline Utility Steps, Docker Pipeline, GitHub, Blue Ocean, SonarQube Scanner

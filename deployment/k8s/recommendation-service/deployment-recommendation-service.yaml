@@ -17,7 +17,7 @@ spec:
       - name: lunchpick
       containers:
       - name: recommendation-service
-        image: hiondal/lunchpick-recommendation-service:latest
+        image: hiondal/lunchpick-recommendation-service:dev-20260305132601
         imagePullPolicy: Always
         ports:
         - containerPort: 8082

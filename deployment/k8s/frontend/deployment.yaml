@@ -17,7 +17,7 @@ spec:
         - name: lunchpick
       containers:
         - name: frontend
-          image: hiondal/lunchpick-frontend:latest
+          image: hiondal/lunchpick-frontend:dev-20260305132520
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
