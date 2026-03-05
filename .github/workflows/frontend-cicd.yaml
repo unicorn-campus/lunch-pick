@@ -82,7 +82,9 @@ jobs:
       - name: Build and Test
         working-directory: frontend
         run: |
-          NODE_OPTIONS="--max-old-space-size=3072" npm run build
+          # npx로 직접 실행하여 prebuild 훅(generate-runtime-env.sh) 스킵
+          # CI에서는 K8s ConfigMap이 runtime-env.js를 덮어쓰므로 생성 불필요
+          NODE_OPTIONS="--max-old-space-size=3072" npx next build
           npm run lint || true
       # --- Flutter ---
       # - name: Install dependencies

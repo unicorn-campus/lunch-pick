@@ -15,17 +15,20 @@ ENV_FILE="${1:-$PROJECT_ROOT/.env}"
 OUTPUT_FILE="$PROJECT_ROOT/frontend/public/runtime-env.js"
 
 if [ ! -f "$ENV_FILE" ]; then
-  echo "ERROR: .env 파일을 찾을 수 없습니다: $ENV_FILE"
-  exit 1
+  echo "WARNING: .env 파일 없음 ($ENV_FILE). 기본값으로 runtime-env.js를 생성합니다."
 fi
 
-# .env 파일에서 값 읽기 (# 주석, 빈 줄 무시)
+# .env 파일에서 값 읽기 (# 주석, 빈 줄 무시). 파일 없으면 기본값 반환
 get_env() {
   local key="$1"
   local default="$2"
-  local value
-  value=$(grep -E "^${key}=" "$ENV_FILE" | head -1 | cut -d'=' -f2- | tr -d '\r')
-  echo "${value:-$default}"
+  if [ -f "$ENV_FILE" ]; then
+    local value
+    value=$(grep -E "^${key}=" "$ENV_FILE" | head -1 | cut -d'=' -f2- | tr -d '\r')
+    echo "${value:-$default}"
+  else
+    echo "$default"
+  fi
 }
 
 # 서비스 포트 → 호스트 URL 매핑
