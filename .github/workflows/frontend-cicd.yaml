@@ -248,8 +248,10 @@ jobs:
 
     - name: Update Frontend Manifest Repository
       run: |
-        REPO_URL=$(echo "https://github.com/hiondal/lunchpick-manifest.git" | sed 's|https://||')
-        git clone https://${{ secrets.GIT_USERNAME }}:${{ secrets.GIT_PASSWORD }}@${REPO_URL} manifest-repo
+        # credential helper 사용으로 특수문자 이슈 방지
+        git config --global credential.helper store
+        echo "https://${{ secrets.GIT_USERNAME }}:${{ secrets.GIT_PASSWORD }}@github.com" > ~/.git-credentials
+        git clone https://github.com/hiondal/lunchpick-manifest.git manifest-repo
         cd manifest-repo
 
         curl -sL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz" | tar xz
