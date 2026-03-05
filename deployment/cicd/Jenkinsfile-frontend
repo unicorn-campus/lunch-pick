@@ -133,21 +133,13 @@ podTemplate(
                     container('podman') {
                         withCredentials([
                             usernamePassword(
-                                credentialsId: 'imagereg-credentials',
-                                usernameVariable: 'IMG_USERNAME',
-                                passwordVariable: 'IMG_PASSWORD'
-                            ),
-                            usernamePassword(
                                 credentialsId: 'dockerhub-credentials',
                                 usernameVariable: 'DOCKERHUB_USERNAME',
                                 passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
-                            // Docker Hub 로그인 (rate limit 해결)
+                            // Docker Hub 로그인
                             sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
-
-                            // 이미지 레지스트리 로그인 (DockerHub)
-                            sh "podman login docker.io --username \$IMG_USERNAME --password \$IMG_PASSWORD"
 
                             sh """
                                 podman build \\
