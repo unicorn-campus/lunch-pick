@@ -83,7 +83,7 @@ podTemplate(
                     sh """
                         cd frontend
                         npm ci
-                        NODE_OPTIONS="--max-old-space-size=3072" npm run build
+                        NODE_OPTIONS="--max-old-space-size=3072" npx next build
                         npm run lint || true
                     """
                 }
