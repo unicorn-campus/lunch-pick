@@ -142,8 +142,7 @@ podTemplate(
                                         --build-arg BUILD_LIB_DIR=${service}/build/libs \\
                                         --build-arg ARTIFACTORY_FILE=${service}.jar \\
                                         --destination=${imgName}:${environment}-${imageTag} \\
-                                        --cache=false \\
-                                        --cleanup
+                                        --cache=false
                                 """
                             }
                         }
