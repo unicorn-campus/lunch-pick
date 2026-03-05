@@ -1,0 +1,266 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      # --- React / Vue ---
+      - 'frontend/src/**'
+      - 'frontend/public/**'
+      - 'frontend/package*.json'
+      - 'frontend/tsconfig*.json'
+      - 'frontend/next.config.ts'
+      - '.github/**'
+      # --- Flutter ---
+      # - 'lib/**'
+      # - 'web/**'
+      # - 'pubspec.*'
+      # - 'analysis_options.yaml'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      SKIP_SONARQUBE:
+        description: 'Skip SonarQube Analysis'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+env:
+  CLOUD: ${{ vars.CLOUD || 'AWS' }}
+  REGISTRY: ${{ vars.REGISTRY }}
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.set_outputs.outputs.image_tag }}
+      environment: ${{ steps.set_outputs.outputs.environment }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # --- React / Vue (Node.js) ---
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      # --- Flutter ---
+      # - name: Set up Flutter
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: 'stable'
+      #     cache: true
+
+      - name: Determine environment
+        id: determine_env
+        run: |
+          ENVIRONMENT="${{ github.event.inputs.ENVIRONMENT || vars.ENVIRONMENT || 'dev' }}"
+          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+
+      # --- React / Vue (Node.js) ---
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build and Test
+        working-directory: frontend
+        run: |
+          NODE_OPTIONS="--max-old-space-size=3072" npm run build
+          npm run lint || true
+      # --- Flutter ---
+      # - name: Install dependencies
+      #   run: flutter pub get
+      #
+      # - name: Build and Test
+      #   run: |
+      #     flutter build web --release
+      #     flutter analyze || true
+
+      - name: Add SonarQube host entry
+        run: echo "${{ secrets.SONAR_HOST_IP }} mysonar.io" | sudo tee -a /etc/hosts
+
+      - name: SonarQube Analysis & Quality Gate
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          # Check if SonarQube should be skipped
+          SKIP_SONARQUBE="${{ github.event.inputs.SKIP_SONARQUBE || 'false' }}"
+
+          if [[ "$SKIP_SONARQUBE" == "true" ]]; then
+            echo "Skipping SonarQube Analysis (SKIP_SONARQUBE=$SKIP_SONARQUBE)"
+            exit 0
+          fi
+
+          # --- React / Vue (JS/TS) ---
+          npm install -g sonarqube-scanner
+          sonar-scanner \
+            -Dsonar.projectKey=frontend-${{ steps.determine_env.outputs.environment }} \
+            -Dsonar.projectName=frontend-${{ steps.determine_env.outputs.environment }} \
+            -Dsonar.sources=frontend/src \
+            -Dsonar.tests=frontend/src \
+            -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx \
+            -Dsonar.exclusions=node_modules/**,dist/**,build/**,.next/**,coverage/**,**/*.config.js,**/*.config.ts,scripts/** \
+            -Dsonar.scm.disabled=true \
+            -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.typescript.tsconfigPaths=frontend/tsconfig.json \
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info \
+            -Dsonar.javascript.node.maxspace=2048 \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.token=$SONAR_TOKEN
+          # --- Flutter (Dart) ---
+          # npm install -g sonarqube-scanner
+          # sonar-scanner \
+          #   -Dsonar.projectKey=frontend-${{ steps.determine_env.outputs.environment }} \
+          #   -Dsonar.projectName=frontend-${{ steps.determine_env.outputs.environment }} \
+          #   -Dsonar.sources=lib \
+          #   -Dsonar.tests=test \
+          #   -Dsonar.test.inclusions=**/*_test.dart \
+          #   -Dsonar.exclusions=build/**,.dart_tool/**,.packages/** \
+          #   -Dsonar.scm.disabled=true \
+          #   -Dsonar.sourceEncoding=UTF-8 \
+          #   -Dsonar.host.url=$SONAR_HOST_URL \
+          #   -Dsonar.token=$SONAR_TOKEN
+
+      # --- React / Vue ---
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: frontend/.next/
+      # --- Flutter ---
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: dist
+      #     path: build/web/
+
+      - name: Set outputs
+        id: set_outputs
+        run: |
+          # Generate timestamp for image tag
+          IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "environment=${{ steps.determine_env.outputs.environment }}" >> $GITHUB_OUTPUT
+
+  release:
+    name: Build and Push Docker Image
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set environment variables from build job
+        run: |
+          echo "REGISTRY=${{ vars.REGISTRY }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT=${{ needs.build.outputs.environment }}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${{ needs.build.outputs.image_tag }}" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub (prevent rate limit)
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      # Cloud-conditional registry login
+      # === AWS ECR ===
+      - name: Configure AWS credentials
+        if: ${{ env.CLOUD == 'AWS' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.ECR_REGION }}
+
+      - name: Login to Amazon ECR
+        if: ${{ env.CLOUD == 'AWS' }}
+        run: |
+          aws ecr get-login-password --region ${{ vars.ECR_REGION }} | docker login --username AWS --password-stdin ${{ env.REGISTRY }}
+
+      # === Azure ACR ===
+      - name: Login to Azure Container Registry
+        if: ${{ env.CLOUD == 'Azure' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      # === GCP Artifact Registry ===
+      - name: Authenticate to Google Cloud
+        if: ${{ env.CLOUD == 'GCP' }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Login to Google Artifact Registry
+        if: ${{ env.CLOUD == 'GCP' }}
+        run: |
+          gcloud auth configure-docker ${{ vars.GCR_REGION }}-docker.pkg.dev
+
+      - name: Build and push Docker image
+        run: |
+          docker build \
+            --platform linux/amd64 \
+            -f deployment/container/Dockerfile-frontend \
+            --build-arg PROJECT_FOLDER="frontend" \
+            --build-arg BUILD_FOLDER="deployment/container" \
+            -t hiondal/lunchpick-frontend:${{ needs.build.outputs.environment }}-${{ needs.build.outputs.image_tag }} .
+
+          docker push hiondal/lunchpick-frontend:${{ needs.build.outputs.environment }}-${{ needs.build.outputs.image_tag }}
+
+  update-manifest:
+    name: Update Frontend Manifest Repository
+    needs: [build, release]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set image tag environment variable
+      run: |
+        echo "IMAGE_TAG=${{ needs.build.outputs.image_tag }}" >> $GITHUB_ENV
+        echo "ENVIRONMENT=${{ needs.build.outputs.environment }}" >> $GITHUB_ENV
+
+    - name: Update Frontend Manifest Repository
+      run: |
+        REPO_URL=$(echo "https://github.com/hiondal/lunchpick-manifest.git" | sed 's|https://||')
+        git clone https://${{ secrets.GIT_USERNAME }}:${{ secrets.GIT_PASSWORD }}@${REPO_URL} manifest-repo
+        cd manifest-repo
+
+        curl -sL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz" | tar xz
+        sudo mv kustomize /usr/local/bin/
+
+        cd frontend/kustomize/overlays/${{ env.ENVIRONMENT }}
+        kustomize edit set image hiondal/lunchpick-frontend=hiondal/lunchpick-frontend:${{ env.ENVIRONMENT }}-${{ env.IMAGE_TAG }}
+
+        cd ../../../..
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add .
+        git commit -m "Update frontend ${{ env.ENVIRONMENT }} image to ${{ env.ENVIRONMENT }}-${{ env.IMAGE_TAG }}"
+        git push origin main
+
+        echo "매니페스트 업데이트 완료. ArgoCD가 자동으로 배포합니다."
