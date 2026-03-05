@@ -1,28 +1,28 @@
-# frontend Dockerfile
-FROM node:18-alpine
+# frontend Dockerfile (Next.js standalone)
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# 의존성 복사
+# 의존성 복사 및 설치
 COPY package*.json ./
+RUN npm ci
 
-# 의존성 설치
-RUN npm ci --omit=dev
-
-# 소스 복사
+# 소스 복사 (runtime-env.js는 로컬에서 미리 생성)
 COPY . .
 
-# 빌드
-RUN npm run build
+# prebuild 스킵하고 직접 next build 실행
+RUN npx next build
 
-# 빌드 결과를 nginx로 서빙 (또는 standalone)
+# Runner 스테이지
 FROM node:20-alpine AS runner
 WORKDIR /app
-COPY --from=0 /app/public ./public
-COPY --from=0 /app/.next/standalone ./
 
-# 포트 노출
+ENV NODE_ENV=production
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
 EXPOSE 3000
 
-# 애플리케이션 실행
 CMD ["node", "server.js"]

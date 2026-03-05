@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm-payment-service
+  namespace: lunchpick
+data:
+  SERVER_PORT: "8083"
+  DB_NAME: "payment"
+  DB_USER: "lunchpick"
+  REDIS_DATABASE: "3"
+  KAFKA_BROKERS: "redis-master:6379"
+  MQ_SUBSCRIPTION_TOPIC: "subscription-events"
+  LOG_FILE_PATH: "logs/payment-service.log"

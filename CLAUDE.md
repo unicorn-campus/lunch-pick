@@ -165,16 +165,30 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 - 마지막 완료 Step: Step 9 (설계 완료)
 
 ### deploy
+- 진행 모드: 자동 진행
+- CLOUD: AWS
+- 마지막 완료 Step: Step 5 (배포 완료)
+- 레지스트리유형: DockerHub
+- IMG_REG: docker.io
+- IMG_ORG: hiondal
+- VM_HOST: aws
+- K8S_CLUSTER: eks-ondal
+- K8S_NAMESPACE: lunchpick
+- SSL_DOMAIN: web.43.201.25.39.nip.io
+- 프론트엔드: https://web.43.201.25.39.nip.io
+- 백엔드 API: https://api.web.43.201.25.39.nip.io
+
+### cicd
 - 진행 모드: 단계별 승인
-- CLOUD: Azure
-- 마지막 완료 Step: Step 2 (Azure 전환 후 Step 3부터 재시작)
-- 레지스트리유형: ACR
-- ACR명: acrlunchpick
-- REGISTRY_URL: acrlunchpick.azurecr.io/lunchpick
-- VM.HOST: azure
-- VM.IP: 20.249.211.13
-- VM.USERID: azureuser
-- VM.KEY파일: ~/.ssh/my-vm.pem
+- CI_TOOL: Jenkins
+- CLOUD: AWS
+- 레지스트리유형: DockerHub
+- AI_SERVICE: ai-pipeline-service
+- MANIFEST_REPO_URL: https://github.com/hiondal/lunchpick-manifest.git
+- VM_HOST: aws
+- K8S_CLUSTER: eks-ondal
+- K8S_NAMESPACE: lunchpick
+- 마지막 완료 Step: Step 3 (CI/CD 파이프라인 빌드 검증 완료)
 
 ## 프로젝트 네이밍
 - ORG (회사/조직명): unicorn

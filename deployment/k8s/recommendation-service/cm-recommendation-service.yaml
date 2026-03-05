@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm-recommendation-service
+  namespace: lunchpick
+data:
+  SERVER_PORT: "8082"
+  DB_NAME: "recommendation"
+  DB_USER: "lunchpick"
+  REDIS_DATABASE: "2"
+  MEMBER_SERVICE_URL: "http://member-service:80"
+  AI_PIPELINE_SERVICE_URL: "http://ai-pipeline-service:80"
+  WEATHER_API_URL: "https://api.openweathermap.org"
+  LOG_FILE_PATH: "logs/recommendation-service.log"

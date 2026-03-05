@@ -1,0 +1,87 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lunchpick
+  namespace: lunchpick
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+  - host: api.web.43.201.25.39.nip.io
+    http:
+      paths:
+      # member-service
+      - path: /api/v1/auth
+        pathType: Prefix
+        backend:
+          service:
+            name: member-service
+            port:
+              number: 80
+      - path: /api/v1/members
+        pathType: Prefix
+        backend:
+          service:
+            name: member-service
+            port:
+              number: 80
+      - path: /api/v1/onboarding
+        pathType: Prefix
+        backend:
+          service:
+            name: member-service
+            port:
+              number: 80
+      - path: /api/test
+        pathType: Prefix
+        backend:
+          service:
+            name: member-service
+            port:
+              number: 80
+      - path: /internal/members
+        pathType: Prefix
+        backend:
+          service:
+            name: member-service
+            port:
+              number: 80
+      # recommendation-service
+      - path: /api/v1/recommendations
+        pathType: Prefix
+        backend:
+          service:
+            name: recommendation-service
+            port:
+              number: 80
+      - path: /api/v1/history
+        pathType: Prefix
+        backend:
+          service:
+            name: recommendation-service
+            port:
+              number: 80
+      - path: /api/v1/insights
+        pathType: Prefix
+        backend:
+          service:
+            name: recommendation-service
+            port:
+              number: 80
+      - path: /api/v1/meals
+        pathType: Prefix
+        backend:
+          service:
+            name: recommendation-service
+            port:
+              number: 80
+      # payment-service
+      - path: /api/v1/subscriptions
+        pathType: Prefix
+        backend:
+          service:
+            name: payment-service
+            port:
+              number: 80

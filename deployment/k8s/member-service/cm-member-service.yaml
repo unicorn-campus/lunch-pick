@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm-member-service
+  namespace: lunchpick
+data:
+  SERVER_PORT: "8081"
+  DB_NAME: "member"
+  DB_USER: "lunchpick"
+  REDIS_DATABASE: "1"
+  KAFKA_BROKERS: "redis-master:6379"
+  MQ_SUBSCRIPTION_TOPIC: "subscription-events"
+  KAKAO_REDIRECT_URI: "https://web.43.201.25.39.nip.io/login"
+  LOG_FILE_PATH: "logs/member-service.log"
