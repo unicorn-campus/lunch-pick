@@ -3,7 +3,7 @@
 ## 실행 환경 정보
 | 항목 | 값 |
 |------|-----|
-| CLOUD | AWS |
+| CLOUD | Azure |
 | IMG_REG | docker.io |
 | IMG_NAME | hiondal/lunchpick-frontend |
 | MANIFEST_REPO_URL | https://github.com/hiondal/lunchpick-manifest.git |
@@ -12,11 +12,11 @@
 
 ## 클라우드별 추가 정보
 
-**AWS:**
+**Azure:**
 | 항목 | 값 |
 |------|-----|
-| ECR_REGION | vars.ECR_REGION (Repository Variable) |
-| EKS_CLUSTER | eks-ondal |
+| K8S_CLUSTER | aks-ondal |
+| K8S_NAMESPACE | lunchpick |
 
 ## 서비스 정보
 | 항목 | 값 |
@@ -47,14 +47,16 @@ Build and Test → SonarQube Analysis → Build and Push Docker Image → Update
 | {MANIFEST_SECRET_GIT_USERNAME} | GIT_USERNAME |
 | {MANIFEST_SECRET_GIT_PASSWORD} | GIT_PASSWORD |
 | {프론트엔드-디렉토리} | frontend |
-| CLOUD 기본값 | 'Azure' → 'AWS' |
+| CLOUD 기본값 | 'Azure' 유지 |
 
 ## 모노레포 대응
-- push paths에 `frontend/` 프리픽스 추가
-- npm ci, npm run build 단계에 `working-directory: frontend` 설정
-- SonarQube sources/tests 경로를 `frontend/src`로 조정
+- push paths에 `frontend/` 프리픽스 추가 (`frontend/src/**`, `frontend/public/**` 등)
+- npm ci, next build 단계에 `working-directory: frontend` 설정
+- setup-node의 `cache-dependency-path`를 `frontend/package-lock.json`으로 지정
+- SonarQube sources/tests 경로를 `frontend/src`, `frontend/tsconfig.json`으로 조정
 - Upload artifact 경로를 `frontend/.next/`로 변경
-- Docker build의 PROJECT_FOLDER를 `frontend`으로 설정
+- Download artifact 경로를 `frontend/.next/`로 변경
+- Docker build의 `PROJECT_FOLDER="frontend"` 설정
 
 ## 검증 체크리스트
 - [x] React/Node.js 블록 활성화, Flutter 블록 주석
@@ -65,3 +67,5 @@ Build and Test → SonarQube Analysis → Build and Push Docker Image → Update
 - [x] kubectl apply 없음
 - [x] CI/CD 분리 원칙 준수 (CI: 빌드/푸시/매니페스트 tag 업데이트, CD: ArgoCD 자동 배포)
 - [x] 시크릿 하드코딩 없음
+- [x] YAML 문법 유효성 검증 완료
+- [x] 모노레포 경로 반영 (frontend/ prefix)
