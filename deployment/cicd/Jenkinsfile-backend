@@ -131,7 +131,7 @@ podTemplate(
                             )
                         ]) {
                             sh """
-                                echo '{"auths":{"docker.io":{"username":"'\$IMG_USERNAME'","password":"'\$IMG_PASSWORD'"}}}' > /kaniko/.docker/config.json
+                                echo '{"auths":{"https://index.docker.io/v1/":{"username":"'\$IMG_USERNAME'","password":"'\$IMG_PASSWORD'"}}}' > /kaniko/.docker/config.json
                             """
 
                             targetMap.each { service, imgName ->
