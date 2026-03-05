@@ -87,7 +87,7 @@ spec:
             steps {
                 container('python') {
                     dir('ai-pipeline-service') {
-                        sh 'pytest --cov --cov-report=xml:coverage.xml || true'
+                        sh 'pytest || true'
                     }
                 }
             }
@@ -175,7 +175,7 @@ spec:
             echo "AI Pipeline CI 파이프라인 실패"
         }
         always {
-            cleanWs()
+            deleteDir()
         }
     }
 }

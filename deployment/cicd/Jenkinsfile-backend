@@ -201,7 +201,7 @@ spec:
             echo "CI 파이프라인 실패: 로그를 확인하세요"
         }
         always {
-            cleanWs()
+            deleteDir()
         }
     }
 }
