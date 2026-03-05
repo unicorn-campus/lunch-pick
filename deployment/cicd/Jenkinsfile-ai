@@ -24,7 +24,7 @@ podTemplate(
             value: "cicd"
             effect: "NoSchedule"
           nodeSelector:
-            dedicated: cicd
+            agentpool: cicd
     ''',
     containers: [
         containerTemplate(
