@@ -143,9 +143,9 @@ podTemplate(
                                 podman build \
                                     -f deployment/container/Dockerfile-ai \
                                     --build-arg PROJECT_FOLDER="ai-pipeline-service" \
-                                    -t docker.io/hiondal/ai-pipeline-service:${environment}-${imageTag} .
+                                    -t hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag} .
 
-                                podman push docker.io/hiondal/ai-pipeline-service:${environment}-${imageTag}
+                                podman push hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
                             """
                         }
                     }
@@ -174,7 +174,7 @@ podTemplate(
                             cd ai-pipeline-service/kustomize/overlays/${environment}
 
                             echo "Updating ai-pipeline-service image tag..."
-                            \${KUSTOMIZE_BIN} edit set image docker.io/hiondal/ai-pipeline-service=docker.io/hiondal/ai-pipeline-service:${environment}-${imageTag}
+                            \${KUSTOMIZE_BIN} edit set image hiondal/lunchpick-ai-pipeline-service=hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
 
                             # Git 설정 및 푸시
                             cd ../../../..

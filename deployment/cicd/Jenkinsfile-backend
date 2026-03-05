@@ -66,7 +66,11 @@ podTemplate(
         def imageTag = getImageTag()
         def environment = params.ENVIRONMENT ?: 'dev'
         def skipSonarQube = params.SKIP_SONARQUBE ?: 'false'
-        def services = ['member-service', 'recommendation-service', 'payment-service']
+        def imageMap = [
+            'member-service': 'hiondal/lunchpick-member-service',
+            'recommendation-service': 'hiondal/lunchpick-recommendation-service',
+            'payment-service': 'hiondal/lunchpick-payment-service'
+        ]
 
         try {
             stage("Get Source") {
@@ -88,7 +92,7 @@ podTemplate(
                 } else {
                     container('gradle') {
                         // 각 서비스별로 개별적으로 SonarQube 분석 및 Quality Gate 확인
-                        services.each { service ->
+                        imageMap.keySet().each { service ->
                             withSonarQubeEnv('SonarQube') {
                                 echo "🔍 Starting SonarQube analysis for ${service}..."
 
@@ -135,15 +139,15 @@ podTemplate(
                             // Docker Hub 로그인
                             sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
 
-                            services.each { service ->
+                            imageMap.each { service, imgName ->
                                 sh """
                                     podman build \
                                         --build-arg BUILD_LIB_DIR="${service}/build/libs" \
                                         --build-arg ARTIFACTORY_FILE="${service}.jar" \
                                         -f deployment/container/Dockerfile-backend \
-                                        -t docker.io/hiondal/${service}:${environment}-${imageTag} .
+                                        -t ${imgName}:${environment}-${imageTag} .
 
-                                    podman push docker.io/hiondal/${service}:${environment}-${imageTag}
+                                    podman push ${imgName}:${environment}-${imageTag}
                                 """
                             }
                         }
@@ -171,12 +175,8 @@ podTemplate(
                             # 매니페스트 업데이트 (kustomize 방식)
                             cd lunchpick/kustomize/overlays/${environment}
 
-                            # 각 서비스별 이미지 태그 업데이트
-                            services="member-service recommendation-service payment-service"
-                            for service in \$services; do
-                                echo "Updating \$service image tag..."
-                                kustomize edit set image docker.io/hiondal/\$service=docker.io/hiondal/\$service:${environment}-${imageTag}
-                            done
+                            # 각 서비스별 이미지 태그 업데이트 (imageMap 기반)
+                            ${imageMap.collect { svc, img -> "kustomize edit set image ${img}=${img}:${environment}-${imageTag}" }.join('\n                            ')}
 
                             # Git 설정 및 푸시
                             cd ../../../..

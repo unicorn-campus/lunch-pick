@@ -146,9 +146,9 @@ podTemplate(
                                     -f deployment/container/Dockerfile-frontend \\
                                     --build-arg PROJECT_FOLDER="frontend" \\
                                     --build-arg BUILD_FOLDER="deployment/container" \\
-                                    -t docker.io/hiondal/frontend:${environment}-${imageTag} .
+                                    -t hiondal/lunchpick-frontend:${environment}-${imageTag} .
 
-                                podman push docker.io/hiondal/frontend:${environment}-${imageTag}
+                                podman push hiondal/lunchpick-frontend:${environment}-${imageTag}
                             """
                         }
                     }
@@ -176,7 +176,7 @@ podTemplate(
                             cd frontend/kustomize/overlays/${environment}
 
                             echo "Updating frontend image tag..."
-                            kustomize edit set image docker.io/hiondal/frontend=docker.io/hiondal/frontend:${environment}-${imageTag}
+                            kustomize edit set image hiondal/lunchpick-frontend=hiondal/lunchpick-frontend:${environment}-${imageTag}
 
                             # Git 설정 및 푸시
                             cd ../../../..
