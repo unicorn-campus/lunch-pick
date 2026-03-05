@@ -18,6 +18,13 @@ podTemplate(
         spec:
           terminationGracePeriodSeconds: 3
           restartPolicy: Never
+          nodeSelector:
+            role: cicd
+          tolerations:
+          - key: "role"
+            operator: "Equal"
+            value: "cicd"
+            effect: "NoSchedule"
     ''',
     containers: [
         containerTemplate(
@@ -25,8 +32,8 @@ podTemplate(
             image: 'node:20-slim',
             ttyEnabled: true,
             command: 'cat',
-            resourceRequestCpu: '400m',
-            resourceRequestMemory: '1Gi',
+            resourceRequestCpu: '200m',
+            resourceRequestMemory: '512Mi',
             resourceLimitCpu: '2000m',
             resourceLimitMemory: '4Gi'
         ),
@@ -36,8 +43,8 @@ podTemplate(
             ttyEnabled: true,
             command: 'cat',
             privileged: true,
-            resourceRequestCpu: '400m',
-            resourceRequestMemory: '2Gi',
+            resourceRequestCpu: '200m',
+            resourceRequestMemory: '512Mi',
             resourceLimitCpu: '2000m',
             resourceLimitMemory: '4Gi'
         ),
