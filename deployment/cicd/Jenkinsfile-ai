@@ -12,7 +12,7 @@ podTemplate(
     serviceAccount: 'jenkins',
     slaveConnectTimeout: 300,
     idleMinutes: 1,
-    activeDeadlineSeconds: 3600,
+    activeDeadlineSeconds: 7200,
     podRetention: never(),  // 파드 자동 정리 옵션: never(), onFailure(), always(), default()
     yaml: '''
         spec:
