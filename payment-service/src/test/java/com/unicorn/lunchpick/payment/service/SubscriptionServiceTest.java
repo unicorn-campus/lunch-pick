@@ -181,7 +181,7 @@ class SubscriptionServiceTest {
         // When & Then
         assertThatThrownBy(() -> subscriptionService.createSubscription(MEMBER_ID, request))
                 .isInstanceOf(PaymentException.class)
-                .hasMessageContaining("카드 정보를 다시 확인");
+                .hasMessageContaining("다시 확인해주세요");
         then(paymentHistoryRepository).should(never()).save(any());
     }
 
@@ -204,7 +204,7 @@ class SubscriptionServiceTest {
         // When & Then
         assertThatThrownBy(() -> subscriptionService.createSubscription(MEMBER_ID, request))
                 .isInstanceOf(PaymentException.class)
-                .hasMessageContaining("카드 정보를 다시 확인");
+                .hasMessageContaining("다시 확인해주세요");
         then(paymentHistoryRepository).should(never()).save(any());
     }
 
@@ -227,7 +227,7 @@ class SubscriptionServiceTest {
         // When & Then
         assertThatThrownBy(() -> subscriptionService.createSubscription(MEMBER_ID, request))
                 .isInstanceOf(PaymentException.class)
-                .hasMessageContaining("결제가 실패했어요");
+                .hasMessageContaining("결제에 실패했어요");
         then(paymentHistoryRepository).should(never()).save(any());
     }
 
@@ -248,7 +248,7 @@ class SubscriptionServiceTest {
         // When & Then
         assertThatThrownBy(() -> subscriptionService.createSubscription(MEMBER_ID, request))
                 .isInstanceOf(PaymentException.class)
-                .hasMessageContaining("이미 프리미엄 구독이 활성화");
+                .hasMessageContaining("이미 프리미엄을 이용 중");
         then(paymentHistoryRepository).should(never()).save(any());
     }
 

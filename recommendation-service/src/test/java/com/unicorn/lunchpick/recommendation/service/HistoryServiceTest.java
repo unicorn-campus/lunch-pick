@@ -1,5 +1,7 @@
 package com.unicorn.lunchpick.recommendation.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unicorn.lunchpick.recommendation.client.AiPipelineClient;
 import com.unicorn.lunchpick.recommendation.dto.response.InsightsResponse;
 import com.unicorn.lunchpick.recommendation.dto.response.MealHistoryResponse;
 import com.unicorn.lunchpick.recommendation.exception.RecommendationException;
@@ -14,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +26,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
@@ -40,6 +45,18 @@ class HistoryServiceTest {
 
     @Mock
     private FeedbackRepository feedbackRepository;
+
+    @Mock
+    private AiPipelineClient aiPipelineClient;
+
+    @Mock
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Mock
+    private ValueOperations<String, String> valueOperations;
+
+    @Mock
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private HistoryServiceImpl historyService;
@@ -165,6 +182,9 @@ class HistoryServiceTest {
     void getTasteInsights_sufficientData_returnsCategoryDistribution() {
         // Given
         given(mealRecordRepository.countByMemberId(MEMBER_ID)).willReturn(15L);
+        given(stringRedisTemplate.opsForValue()).willReturn(valueOperations);
+        given(valueOperations.get(anyString())).willReturn(null);
+        given(feedbackRepository.findByMemberIdOrderByCreatedAtDesc(MEMBER_ID)).willReturn(List.of());
 
         List<MealRecordEntity> recentMeals = List.of(
                 buildMeal("한식"), buildMeal("한식"), buildMeal("한식"),
@@ -189,6 +209,9 @@ class HistoryServiceTest {
     void getTasteInsights_milestone_returnsMilestoneBadge() {
         // Given
         given(mealRecordRepository.countByMemberId(MEMBER_ID)).willReturn(35L);
+        given(stringRedisTemplate.opsForValue()).willReturn(valueOperations);
+        given(valueOperations.get(anyString())).willReturn(null);
+        given(feedbackRepository.findByMemberIdOrderByCreatedAtDesc(MEMBER_ID)).willReturn(List.of());
         given(mealRecordRepository.findByMemberIdAndRecordedAtBetweenOrderByRecordedAtDesc(
                 eq(MEMBER_ID), any(), any())).willReturn(List.of(buildMeal("한식")));
 

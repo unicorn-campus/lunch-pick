@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,11 +64,12 @@ class MealServiceTest {
     @DisplayName("식사 기록 생성 — 점심 시간대(12:00)에 정상 생성")
     void createMeal_validTime_returnsMealResponse() {
         // Given
+        setMealTimeValidationEnabled(true);
         LocalDateTime recordedAt = LocalDateTime.now().withHour(12).withMinute(0);
         CreateMealRequest request = new CreateMealRequest(
                 "rec-001", "rest-001", "김치찌개", recordedAt);
-        given(mealRecordRepository.existsByMemberIdAndRecordedAtBetween(
-                eq(MEMBER_ID), any(), any())).willReturn(false);
+        given(mealRecordRepository.findByMemberIdAndRecordedAtBetweenOrderByRecordedAtDesc(
+                eq(MEMBER_ID), any(), any())).willReturn(List.of());
         given(mealRecordRepository.save(any())).willAnswer(inv -> inv.getArgument(0));
 
         // When
@@ -83,6 +85,7 @@ class MealServiceTest {
     @DisplayName("식사 기록 생성 — 09:00에 기록 시 INVALID_MEAL_TIME 예외")
     void createMeal_beforeMealTime_throwsException() {
         // Given
+        setMealTimeValidationEnabled(true);
         LocalDateTime recordedAt = LocalDateTime.now().withHour(9).withMinute(0);
         CreateMealRequest request = new CreateMealRequest(
                 null, "rest-001", "김치찌개", recordedAt);
@@ -98,6 +101,7 @@ class MealServiceTest {
     @DisplayName("식사 기록 생성 — 16:00에 기록 시 INVALID_MEAL_TIME 예외")
     void createMeal_afterMealTime_throwsException() {
         // Given
+        setMealTimeValidationEnabled(true);
         LocalDateTime recordedAt = LocalDateTime.now().withHour(16).withMinute(0);
         CreateMealRequest request = new CreateMealRequest(
                 null, "rest-001", "김치찌개", recordedAt);
@@ -109,19 +113,30 @@ class MealServiceTest {
     }
 
     @Test
-    @DisplayName("식사 기록 생성 — 당일 중복 기록 시 DUPLICATE_MEAL_RECORD 예외")
-    void createMeal_duplicate_throwsException() {
+    @DisplayName("식사 기록 생성 — 당일 중복 기록 시 duplicate=true 응답 반환")
+    void createMeal_duplicate_returnsDuplicateResponse() {
         // Given
+        setMealTimeValidationEnabled(true);
         LocalDateTime recordedAt = LocalDateTime.now().withHour(12).withMinute(0);
         CreateMealRequest request = new CreateMealRequest(
                 null, "rest-001", "김치찌개", recordedAt);
-        given(mealRecordRepository.existsByMemberIdAndRecordedAtBetween(
-                eq(MEMBER_ID), any(), any())).willReturn(true);
+        MealRecordEntity existing = MealRecordEntity.builder()
+                .mealId("existing-meal")
+                .memberId(MEMBER_ID)
+                .restaurantName("기존 식당")
+                .menuName("된장찌개")
+                .category("한식")
+                .recordedAt(recordedAt)
+                .build();
+        given(mealRecordRepository.findByMemberIdAndRecordedAtBetweenOrderByRecordedAtDesc(
+                eq(MEMBER_ID), any(), any())).willReturn(List.of(existing));
 
-        // When & Then
-        assertThatThrownBy(() -> mealService.createMeal(MEMBER_ID, request))
-                .isInstanceOf(RecommendationException.class)
-                .hasMessageContaining("이미 기록");
+        // When
+        MealResponse response = mealService.createMeal(MEMBER_ID, request);
+
+        // Then
+        assertThat(response.duplicate()).isTrue();
+        assertThat(response.message()).contains("이미 기록");
         then(mealRecordRepository).should(never()).save(any());
     }
 
@@ -218,6 +233,20 @@ class MealServiceTest {
                 .isInstanceOf(RecommendationException.class)
                 .hasMessageContaining("이력 화면에서 수정");
         then(mealRecordRepository).should(never()).delete(any());
+    }
+
+    /**
+     * mealTimeValidationEnabled 필드를 Reflection으로 설정 (테스트 전용)
+     */
+    private void setMealTimeValidationEnabled(boolean value) {
+        try {
+            java.lang.reflect.Field field =
+                    MealServiceImpl.class.getDeclaredField("mealTimeValidationEnabled");
+            field.setAccessible(true);
+            field.set(mealService, value);
+        } catch (Exception e) {
+            throw new RuntimeException("mealTimeValidationEnabled 설정 실패", e);
+        }
     }
 
     /**
