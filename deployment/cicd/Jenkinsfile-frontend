@@ -144,7 +144,7 @@ podTemplate(
                             sh """
                                 podman build \\
                                     -f deployment/container/Dockerfile-frontend \\
-                                    --build-arg PROJECT_FOLDER="." \\
+                                    --build-arg PROJECT_FOLDER="frontend" \\
                                     --build-arg BUILD_FOLDER="deployment/container" \\
                                     -t docker.io/hiondal/frontend:${environment}-${imageTag} .
 
