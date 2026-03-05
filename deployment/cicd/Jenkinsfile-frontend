@@ -18,13 +18,6 @@ podTemplate(
         spec:
           terminationGracePeriodSeconds: 3
           restartPolicy: Never
-          tolerations:
-          - key: "dedicated"
-            operator: "Equal"
-            value: "cicd"
-            effect: "NoSchedule"
-          nodeSelector:
-            agentpool: cicd
     ''',
     containers: [
         containerTemplate(
@@ -139,7 +132,7 @@ podTemplate(
                     container('kaniko') {
                         withCredentials([
                             usernamePassword(
-                                credentialsId: 'imagereg-credentials',
+                                credentialsId: 'dockerhub-credentials',
                                 usernameVariable: 'IMG_USERNAME',
                                 passwordVariable: 'IMG_PASSWORD'
                             )
