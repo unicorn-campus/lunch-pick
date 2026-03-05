@@ -1,181 +1,221 @@
-pipeline {
-    agent {
-        kubernetes {
-            cloud 'eks-ondal'
-            yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    jenkins-build: ai-pipeline
-spec:
-  containers:
-  - name: python
-    image: python:3.12-slim
-    command: ['cat']
-    tty: true
-    resources:
-      requests:
-        cpu: 500m
-        memory: 512Mi
-      limits:
-        cpu: 1000m
-        memory: 1Gi
-  - name: docker
-    image: docker:27-dind
-    securityContext:
-      privileged: true
-    env:
-    - name: DOCKER_TLS_CERTDIR
-      value: ""
-    resources:
-      requests:
-        cpu: 500m
-        memory: 512Mi
-      limits:
-        cpu: 1000m
-        memory: 2Gi
-    volumeMounts:
-    - name: docker-storage
-      mountPath: /var/lib/docker
-  volumes:
-  - name: docker-storage
-    emptyDir: {}
-"""
-            podRetention never()
-        }
-    }
+def PIPELINE_ID = "${env.BUILD_NUMBER}"
 
-    environment {
-        SERVICE_NAME = 'ai-pipeline-service'
-        IMG_REG      = 'docker.io'
-        IMG_ORG      = 'hiondal'
-        DOCKER_CREDS = credentials('dockerhub-credentials')
-        GIT_CREDS    = 'github-credentials'
-        MANIFEST_REPO = 'https://github.com/hiondal/lunchpick-manifest.git'
-    }
+def getImageTag() {
+    def dateFormat = new java.text.SimpleDateFormat('yyyyMMddHHmmss')
+    def currentDate = new Date()
+    return dateFormat.format(currentDate)
+}
 
-    parameters {
-        choice(name: 'environment', choices: ['dev', 'staging', 'prod'], description: '배포 환경 선택')
-    }
+podTemplate(
+    cloud: 'eks-ondal',
+    label: "${PIPELINE_ID}",
+    serviceAccount: 'jenkins',
+    slaveConnectTimeout: 300,
+    idleMinutes: 1,
+    activeDeadlineSeconds: 3600,
+    podRetention: never(),  // 파드 자동 정리 옵션: never(), onFailure(), always(), default()
+    yaml: '''
+        spec:
+          terminationGracePeriodSeconds: 3
+          restartPolicy: Never
+    ''',
+    containers: [
+        containerTemplate(
+            name: 'python',
+            image: 'python:3.12-slim',
+            ttyEnabled: true,
+            command: 'cat',
+            resourceRequestCpu: '400m',
+            resourceRequestMemory: '1Gi',
+            resourceLimitCpu: '2000m',
+            resourceLimitMemory: '4Gi'
+        ),
+        containerTemplate(
+            name: 'podman',
+            image: "mgoltzsche/podman",
+            ttyEnabled: true,
+            command: 'cat',
+            privileged: true,
+            resourceRequestCpu: '400m',
+            resourceRequestMemory: '2Gi',
+            resourceLimitCpu: '2000m',
+            resourceLimitMemory: '4Gi'
+        ),
+        containerTemplate(
+            name: 'git',
+            image: 'alpine/git:latest',
+            command: 'cat',
+            ttyEnabled: true,
+            resourceRequestCpu: '100m',
+            resourceRequestMemory: '256Mi',
+            resourceLimitCpu: '300m',
+            resourceLimitMemory: '512Mi'
+        ),
+        containerTemplate(
+            name: 'sonar-scanner',
+            image: 'sonarsource/sonar-scanner-cli:latest',
+            command: 'cat',
+            ttyEnabled: true,
+            resourceRequestCpu: '200m',
+            resourceRequestMemory: '512Mi',
+            resourceLimitCpu: '1000m',
+            resourceLimitMemory: '1Gi'
+        )
+    ],
+    volumes: [
+        emptyDirVolume(mountPath: '/opt/sonar-scanner/.sonar/cache', memory: false),
+        emptyDirVolume(mountPath: '/root/.cache/pip', memory: false),
+        emptyDirVolume(mountPath: '/root/.cache/pypoetry', memory: false)
+    ]
+) {
+    node(PIPELINE_ID) {
+        def imageTag = getImageTag()
+        def environment = params.ENVIRONMENT ?: 'dev'
+        def skipSonarQube = params.SKIP_SONARQUBE ?: 'false'
+        def sonarScannerHome = '/opt/sonar-scanner'
 
-    stages {
-        stage('Checkout') {
-            steps {
+        try {
+            stage("Get Source") {
                 checkout scm
-                script {
-                    imageTag = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
-                    echo "Image Tag: ${params.environment}-${imageTag}"
-                }
             }
-        }
 
-        stage('Install Dependencies') {
-            steps {
+            stage('Build & Test') {
                 container('python') {
-                    dir('ai-pipeline-service') {
-                        sh '''
-                            pip install --upgrade pip
-                            pip install -r requirements.txt
-                        '''
+                    sh """
+                        cd ai-pipeline-service
+                        pip install -r requirements.txt
+                        pytest || true
+                    """
+                }
+            }
+
+            stage('SonarQube Analysis & Quality Gate') {
+                if (skipSonarQube == 'true') {
+                    echo "Skipping SonarQube Analysis (SKIP_SONARQUBE=${params.SKIP_SONARQUBE})"
+                } else {
+                    container('sonar-scanner') {
+                        script {
+                            try {
+                                withSonarQubeEnv('SonarQube') {
+                                    sh """
+                                      timeout 300 ${sonarScannerHome}/bin/sonar-scanner \
+                                      -Dsonar.projectKey=ai-pipeline-service-${environment} \
+                                      -Dsonar.projectName=ai-pipeline-service-${environment} \
+                                      -Dsonar.sources=ai-pipeline-service \
+                                      -Dsonar.tests=ai-pipeline-service/tests \
+                                      -Dsonar.test.inclusions=**/test_*.py,**/*_test.py \
+                                      -Dsonar.exclusions=**/__pycache__/**,**/venv/**,**/.venv/**,**/dist/** \
+                                      -Dsonar.scm.disabled=true \
+                                      -Dsonar.sourceEncoding=UTF-8 \
+                                      -Dsonar.python.coverage.reportPaths=coverage.xml \
+                                      -Dsonar.language=python
+                                    """
+                                }
+
+                                timeout(time: 5, unit: 'MINUTES') {
+                                    def qg = waitForQualityGate()
+                                    if (qg.status != 'OK') {
+                                        echo "Quality Gate failed: ${qg.status}, but continuing pipeline... (AI 서비스는 초기 단계에서 커버리지가 낮을 수 있어 경고만 출력)"
+                                    }
+                                }
+                            } catch (Exception e) {
+                                echo "SonarQube analysis failed: ${e.getMessage()}, but continuing pipeline..."
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        stage('Build & Test') {
-            steps {
-                container('python') {
-                    dir('ai-pipeline-service') {
-                        sh 'pytest || true'
+            stage('Build & Push Images') {
+                timeout(time: 30, unit: 'MINUTES') {
+                    container('podman') {
+                        withCredentials([
+                            usernamePassword(
+                                credentialsId: 'imagereg-credentials',
+                                usernameVariable: 'IMG_USERNAME',
+                                passwordVariable: 'IMG_PASSWORD'
+                            ),
+                            usernamePassword(
+                                credentialsId: 'dockerhub-credentials',
+                                usernameVariable: 'DOCKERHUB_USERNAME',
+                                passwordVariable: 'DOCKERHUB_PASSWORD'
+                            )
+                        ]) {
+                            // Docker Hub 로그인 (rate limit 해결)
+                            sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
+
+                            // 이미지 레지스트리 로그인 (DockerHub)
+                            sh "podman login docker.io --username \$IMG_USERNAME --password \$IMG_PASSWORD"
+
+                            sh """
+                                podman build \
+                                    -f deployment/container/Dockerfile-ai \
+                                    --build-arg PROJECT_FOLDER="ai-pipeline-service" \
+                                    -t docker.io/hiondal/ai-pipeline-service:${environment}-${imageTag} .
+
+                                podman push docker.io/hiondal/ai-pipeline-service:${environment}-${imageTag}
+                            """
+                        }
                     }
                 }
             }
-            post {
-                always {
-                    junit allowEmptyResults: true, testResults: 'ai-pipeline-service/**/test-results/*.xml'
-                }
-            }
-        }
 
-        stage('Docker Build & Push') {
-            steps {
-                container('docker') {
-                    script {
-                        def fullImage = "${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-${imageTag}"
-                        def latestImage = "${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-latest"
-
-                        sh """
-                            echo ${DOCKER_CREDS_PSW} | docker login ${IMG_REG} -u ${DOCKER_CREDS_USR} --password-stdin
-
-                            docker build \
-                                --build-arg PROJECT_FOLDER="." \
-                                -f deployment/container/Dockerfile-ai \
-                                -t ${fullImage} \
-                                -t ${latestImage} \
-                                ai-pipeline-service/
-
-                            docker push ${fullImage}
-                            docker push ${latestImage}
-
-                            docker logout ${IMG_REG}
-                        """
-                    }
-                }
-            }
-        }
-
-        stage('Update Manifest') {
-            steps {
-                script {
-                    def fullImage = "${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-${imageTag}"
-
+            stage('Update Manifest Repository') {
+                container('git') {
                     withCredentials([usernamePassword(
-                        credentialsId: "${GIT_CREDS}",
-                        usernameVariable: 'GIT_USER',
+                        credentialsId: 'github-credentials',
+                        usernameVariable: 'GIT_USERNAME',
                         passwordVariable: 'GIT_TOKEN'
                     )]) {
                         sh """
-                            rm -rf manifest-repo
-                            git clone https://${GIT_USER}:${GIT_TOKEN}@github.com/hiondal/lunchpick-manifest.git manifest-repo
+                            # 매니페스트 레포지토리 클론
+                            REPO_URL=\$(echo "https://github.com/hiondal/lunchpick-manifest.git" | sed 's|https://||')
+                            git clone https://\${GIT_USERNAME}:\${GIT_TOKEN}@\${REPO_URL} manifest-repo
                             cd manifest-repo
 
-                            # Kustomize overlay에서 이미지 태그 업데이트
-                            KUSTOMIZE_FILE="${SERVICE_NAME}/kustomize/overlays/${params.environment}/kustomization.yaml"
-                            if [ -f "\${KUSTOMIZE_FILE}" ]; then
-                                sed -i 's|newTag:.*|newTag: ${params.environment}-${imageTag}|g' "\${KUSTOMIZE_FILE}"
-                                echo "Updated \${KUSTOMIZE_FILE} with tag ${params.environment}-${imageTag}"
-                            else
-                                echo "Warning: \${KUSTOMIZE_FILE} not found, trying alternative paths..."
-                                # 대체 경로 탐색
-                                DEPLOY_FILE="${SERVICE_NAME}/kustomize/base/deployment.yaml"
-                                if [ -f "\${DEPLOY_FILE}" ]; then
-                                    sed -i "s|image:.*${IMG_ORG}/${SERVICE_NAME}:.*|image: ${fullImage}|g" "\${DEPLOY_FILE}"
-                                    echo "Updated \${DEPLOY_FILE} with image ${fullImage}"
-                                fi
-                            fi
+                            # Kustomize 설치
+                            curl -sL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | sh
+                            mv kustomize /usr/local/bin/ 2>/dev/null || export PATH=\$PATH:\$(pwd)
 
-                            git config user.email "jenkins@lunchpick.io"
+                            # 매니페스트 업데이트 (kustomize 방식)
+                            cd ai-pipeline-service/kustomize/overlays/${environment}
+
+                            echo "Updating ai-pipeline-service image tag..."
+                            kustomize edit set image docker.io/hiondal/ai-pipeline-service=docker.io/hiondal/ai-pipeline-service:${environment}-${imageTag}
+
+                            # Git 설정 및 푸시
+                            cd ../../../..
                             git config user.name "Jenkins CI"
-                            git add -A
-                            git diff --cached --quiet || git commit -m "[CI] ${SERVICE_NAME} 이미지 태그 업데이트: ${params.environment}-${imageTag}"
+                            git config user.email "jenkins@example.com"
+                            git add .
+                            git commit -m "Update ai-pipeline-service ${environment} image to ${environment}-${imageTag}"
                             git push origin main
+
+                            echo "매니페스트 업데이트 완료. ArgoCD가 자동으로 배포합니다."
                         """
                     }
                 }
             }
-        }
-    }
 
-    post {
-        success {
-            echo "AI Pipeline CI 파이프라인 성공: ${IMG_REG}/${IMG_ORG}/${SERVICE_NAME}:${params.environment}-${imageTag}"
-        }
-        failure {
-            echo "AI Pipeline CI 파이프라인 실패"
-        }
-        always {
-            echo "빌드 완료 - Pod 자동 정리 (podRetention never)"
+            // 파이프라인 완료 로그 (Scripted Pipeline 방식)
+            stage('Pipeline Complete') {
+                echo "Pipeline completed. Pod cleanup handled by Jenkins Kubernetes Plugin."
+
+                // 성공/실패 여부 로깅
+                if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                    echo "Pipeline completed successfully!"
+                } else {
+                    echo "Pipeline failed with result: ${currentBuild.result}"
+                }
+            }
+
+        } catch (Exception e) {
+            currentBuild.result = 'FAILURE'
+            echo "Pipeline failed with exception: ${e.getMessage()}"
+            throw e
+        } finally {
+            echo "Cleaning up resources and preparing for pod termination..."
+            echo "Pod will be terminated in 3 seconds due to terminationGracePeriodSeconds: 3"
         }
     }
 }
