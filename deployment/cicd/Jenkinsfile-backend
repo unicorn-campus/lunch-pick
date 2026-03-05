@@ -21,11 +21,10 @@ podTemplate(
     ''',
     containers: [
         containerTemplate(
-            name: 'podman',
-            image: "mgoltzsche/podman",
+            name: 'kaniko',
+            image: 'gcr.io/kaniko-project/executor:debug',
             ttyEnabled: true,
-            command: 'cat',
-            privileged: true,
+            command: '/busybox/cat',
             resourceRequestCpu: '500m',
             resourceRequestMemory: '2Gi',
             resourceLimitCpu: '2000m',
@@ -41,8 +40,6 @@ podTemplate(
             resourceLimitCpu: '1000m',
             resourceLimitMemory: '2Gi',
             envVars: [
-                envVar(key: 'DOCKER_HOST', value: 'unix:///run/podman/podman.sock'),
-                envVar(key: 'TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE', value: '/run/podman/podman.sock'),
                 envVar(key: 'TESTCONTAINERS_RYUK_DISABLED', value: 'true')
             ]
         ),
@@ -58,8 +55,7 @@ podTemplate(
         )
     ],
     volumes: [
-        emptyDirVolume(mountPath: '/home/gradle/.gradle', memory: false),
-        emptyDirVolume(mountPath: '/run/podman', memory: false)
+        emptyDirVolume(mountPath: '/home/gradle/.gradle', memory: false)
     ]
 ) {
     node(PIPELINE_ID) {
@@ -126,32 +122,28 @@ podTemplate(
 
             stage('Build & Push Images') {
                 timeout(time: 30, unit: 'MINUTES') {
-                    container('podman') {
+                    container('kaniko') {
                         withCredentials([
                             usernamePassword(
                                 credentialsId: 'imagereg-credentials',
                                 usernameVariable: 'IMG_USERNAME',
                                 passwordVariable: 'IMG_PASSWORD'
-                            ),
-                            usernamePassword(
-                                credentialsId: 'dockerhub-credentials',
-                                usernameVariable: 'DOCKERHUB_USERNAME',
-                                passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
-                            sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
-                            sh "podman login docker.io --username \$IMG_USERNAME --password \$IMG_PASSWORD"
+                            sh """
+                                echo '{"auths":{"docker.io":{"username":"'\$IMG_USERNAME'","password":"'\$IMG_PASSWORD'"}}}' > /kaniko/.docker/config.json
+                            """
 
                             targetMap.each { service, imgName ->
                                 sh """
-                                    podman build \\
-                                        --platform linux/amd64 \\
-                                        --build-arg BUILD_LIB_DIR="${service}/build/libs" \\
-                                        --build-arg ARTIFACTORY_FILE="${service}.jar" \\
-                                        -f deployment/container/Dockerfile-backend \\
-                                        -t ${imgName}:${environment}-${imageTag} .
-
-                                    podman push ${imgName}:${environment}-${imageTag}
+                                    /kaniko/executor \\
+                                        --dockerfile=deployment/container/Dockerfile-backend \\
+                                        --context=dir://. \\
+                                        --build-arg BUILD_LIB_DIR=${service}/build/libs \\
+                                        --build-arg ARTIFACTORY_FILE=${service}.jar \\
+                                        --destination=${imgName}:${environment}-${imageTag} \\
+                                        --cache=false \\
+                                        --cleanup
                                 """
                             }
                         }

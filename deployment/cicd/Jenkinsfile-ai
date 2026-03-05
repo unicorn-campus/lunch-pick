@@ -31,11 +31,10 @@ podTemplate(
             resourceLimitMemory: '4Gi'
         ),
         containerTemplate(
-            name: 'podman',
-            image: "mgoltzsche/podman",
+            name: 'kaniko',
+            image: 'gcr.io/kaniko-project/executor:debug',
             ttyEnabled: true,
-            command: 'cat',
-            privileged: true,
+            command: '/busybox/cat',
             resourceRequestCpu: '400m',
             resourceRequestMemory: '2Gi',
             resourceLimitCpu: '2000m',
@@ -128,31 +127,24 @@ podTemplate(
 
             stage('Build & Push Images') {
                 timeout(time: 30, unit: 'MINUTES') {
-                    container('podman') {
+                    container('kaniko') {
                         withCredentials([
                             usernamePassword(
                                 credentialsId: 'imagereg-credentials',
                                 usernameVariable: 'IMG_USERNAME',
                                 passwordVariable: 'IMG_PASSWORD'
-                            ),
-                            usernamePassword(
-                                credentialsId: 'dockerhub-credentials',
-                                usernameVariable: 'DOCKERHUB_USERNAME',
-                                passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
-                            sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
-                            sh "podman login docker.io --username \$IMG_USERNAME --password \$IMG_PASSWORD"
-
                             sh """
-                                podman build \\
-                                    --platform linux/amd64 \\
-                                    -f deployment/container/Dockerfile-ai \\
-                                    --build-arg PROJECT_FOLDER="ai-pipeline-service" \\
-                                    --build-arg EXPORT_PORT="8000" \\
-                                    -t docker.io/hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag} .
+                                echo '{"auths":{"docker.io":{"username":"'\$IMG_USERNAME'","password":"'\$IMG_PASSWORD'"}}}' > /kaniko/.docker/config.json
 
-                                podman push docker.io/hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
+                                /kaniko/executor \\
+                                    --dockerfile=deployment/container/Dockerfile-ai \\
+                                    --context=dir://. \\
+                                    --build-arg PROJECT_FOLDER=ai-pipeline-service \\
+                                    --build-arg EXPORT_PORT=8000 \\
+                                    --destination=docker.io/hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag} \\
+                                    --cache=false
                             """
                         }
                     }
