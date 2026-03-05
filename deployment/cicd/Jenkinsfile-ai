@@ -1,4 +1,4 @@
-def PIPELINE_ID = "ai-${env.BUILD_NUMBER}"
+def PIPELINE_ID = "${env.BUILD_NUMBER}"
 
 def getImageTag() {
     def dateFormat = new java.text.SimpleDateFormat('yyyyMMddHHmmss')
@@ -7,13 +7,13 @@ def getImageTag() {
 }
 
 podTemplate(
-    cloud: 'eks-ondal',
+    cloud: 'aks-ondal',
     label: "${PIPELINE_ID}",
     serviceAccount: 'jenkins',
     slaveConnectTimeout: 300,
     idleMinutes: 1,
-    activeDeadlineSeconds: 7200,
-    podRetention: never(),  // 파드 자동 정리 옵션: never(), onFailure(), always(), default()
+    activeDeadlineSeconds: 3600,
+    podRetention: never(),
     yaml: '''
         spec:
           terminationGracePeriodSeconds: 3
@@ -64,8 +64,7 @@ podTemplate(
     ],
     volumes: [
         emptyDirVolume(mountPath: '/opt/sonar-scanner/.sonar/cache', memory: false),
-        emptyDirVolume(mountPath: '/root/.cache/pip', memory: false),
-        emptyDirVolume(mountPath: '/root/.cache/pypoetry', memory: false)
+        emptyDirVolume(mountPath: '/root/.cache/pip', memory: false)
     ]
 ) {
     node(PIPELINE_ID) {
@@ -98,16 +97,17 @@ podTemplate(
                             try {
                                 withSonarQubeEnv('SonarQube') {
                                     sh """
-                                      timeout 300 ${sonarScannerHome}/bin/sonar-scanner \
-                                      -Dsonar.projectKey=ai-pipeline-service-${environment} \
-                                      -Dsonar.projectName=ai-pipeline-service-${environment} \
-                                      -Dsonar.sources=ai-pipeline-service \
-                                      -Dsonar.tests=ai-pipeline-service/tests \
-                                      -Dsonar.test.inclusions=**/test_*.py,**/*_test.py \
-                                      -Dsonar.exclusions=**/__pycache__/**,**/venv/**,**/.venv/**,**/dist/** \
-                                      -Dsonar.scm.disabled=true \
-                                      -Dsonar.sourceEncoding=UTF-8 \
-                                      -Dsonar.python.coverage.reportPaths=coverage.xml \
+                                      cd ai-pipeline-service
+                                      timeout 300 ${sonarScannerHome}/bin/sonar-scanner \\
+                                      -Dsonar.projectKey=ai-pipeline-service-${environment} \\
+                                      -Dsonar.projectName=ai-pipeline-service-${environment} \\
+                                      -Dsonar.sources=. \\
+                                      -Dsonar.tests=tests \\
+                                      -Dsonar.test.inclusions=**/test_*.py,**/*_test.py \\
+                                      -Dsonar.exclusions=**/__pycache__/**,**/venv/**,**/.venv/**,**/dist/** \\
+                                      -Dsonar.scm.disabled=true \\
+                                      -Dsonar.sourceEncoding=UTF-8 \\
+                                      -Dsonar.python.coverage.reportPaths=coverage.xml \\
                                       -Dsonar.language=python
                                     """
                                 }
@@ -115,7 +115,7 @@ podTemplate(
                                 timeout(time: 5, unit: 'MINUTES') {
                                     def qg = waitForQualityGate()
                                     if (qg.status != 'OK') {
-                                        echo "Quality Gate failed: ${qg.status}, but continuing pipeline... (AI 서비스는 초기 단계에서 커버리지가 낮을 수 있어 경고만 출력)"
+                                        echo "Quality Gate failed: ${qg.status}, but continuing pipeline..."
                                     }
                                 }
                             } catch (Exception e) {
@@ -131,21 +131,28 @@ podTemplate(
                     container('podman') {
                         withCredentials([
                             usernamePassword(
+                                credentialsId: 'imagereg-credentials',
+                                usernameVariable: 'IMG_USERNAME',
+                                passwordVariable: 'IMG_PASSWORD'
+                            ),
+                            usernamePassword(
                                 credentialsId: 'dockerhub-credentials',
                                 usernameVariable: 'DOCKERHUB_USERNAME',
                                 passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
-                            // Docker Hub 로그인 (이미지 레지스트리 = DockerHub)
                             sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
+                            sh "podman login docker.io --username \$IMG_USERNAME --password \$IMG_PASSWORD"
 
                             sh """
-                                podman build \
-                                    -f deployment/container/Dockerfile-ai \
-                                    --build-arg PROJECT_FOLDER="ai-pipeline-service" \
-                                    -t hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag} .
+                                podman build \\
+                                    --platform linux/amd64 \\
+                                    -f deployment/container/Dockerfile-ai \\
+                                    --build-arg PROJECT_FOLDER="ai-pipeline-service" \\
+                                    --build-arg EXPORT_PORT="8000" \\
+                                    -t docker.io/hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag} .
 
-                                podman push hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
+                                podman push docker.io/hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
                             """
                         }
                     }
@@ -160,22 +167,18 @@ podTemplate(
                         passwordVariable: 'GIT_TOKEN'
                     )]) {
                         sh """
-                            # 매니페스트 레포지토리 클론
                             REPO_URL=\$(echo "https://github.com/hiondal/lunchpick-manifest.git" | sed 's|https://||')
                             git clone https://\${GIT_USERNAME}:\${GIT_TOKEN}@\${REPO_URL} manifest-repo
                             cd manifest-repo
 
-                            # Kustomize 바이너리 직접 다운로드 (alpine/git의 ash는 bash 스크립트 비호환)
                             wget -qO- "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz" | tar xz
                             mv kustomize /usr/local/bin/ 2>/dev/null || export PATH=\$PATH:\$(pwd)
 
-                            # 매니페스트 업데이트 (kustomize 방식)
                             cd ai-pipeline-service/kustomize/overlays/${environment}
 
                             echo "Updating ai-pipeline-service image tag..."
-                            kustomize edit set image hiondal/lunchpick-ai-pipeline-service=hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
+                            kustomize edit set image docker.io/hiondal/lunchpick-ai-pipeline-service=docker.io/hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
 
-                            # Git 설정 및 푸시
                             cd ../../../..
                             git config user.name "Jenkins CI"
                             git config user.email "jenkins@example.com"
@@ -189,11 +192,8 @@ podTemplate(
                 }
             }
 
-            // 파이프라인 완료 로그 (Scripted Pipeline 방식)
             stage('Pipeline Complete') {
                 echo "Pipeline completed. Pod cleanup handled by Jenkins Kubernetes Plugin."
-
-                // 성공/실패 여부 로깅
                 if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
                     echo "Pipeline completed successfully!"
                 } else {
@@ -207,7 +207,6 @@ podTemplate(
             throw e
         } finally {
             echo "Cleaning up resources and preparing for pod termination..."
-            echo "Pod will be terminated in 3 seconds due to terminationGracePeriodSeconds: 3"
         }
     }
 }

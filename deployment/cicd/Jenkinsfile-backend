@@ -7,13 +7,13 @@ def getImageTag() {
 }
 
 podTemplate(
-    cloud: 'eks-ondal',
+    cloud: 'aks-ondal',
     label: "${PIPELINE_ID}",
     serviceAccount: 'jenkins',
     slaveConnectTimeout: 300,
     idleMinutes: 1,
     activeDeadlineSeconds: 3600,
-    podRetention: never(),  // 파드 자동 정리 옵션: never(), onFailure(), always(), default()
+    podRetention: never(),
     yaml: '''
         spec:
           terminationGracePeriodSeconds: 3
@@ -26,8 +26,8 @@ podTemplate(
             ttyEnabled: true,
             command: 'cat',
             privileged: true,
-            resourceRequestCpu: '200m',
-            resourceRequestMemory: '512Mi',
+            resourceRequestCpu: '500m',
+            resourceRequestMemory: '2Gi',
             resourceLimitCpu: '2000m',
             resourceLimitMemory: '4Gi'
         ),
@@ -36,8 +36,8 @@ podTemplate(
             image: 'gradle:jdk21',
             ttyEnabled: true,
             command: 'cat',
-            resourceRequestCpu: '200m',
-            resourceRequestMemory: '512Mi',
+            resourceRequestCpu: '500m',
+            resourceRequestMemory: '1Gi',
             resourceLimitCpu: '1000m',
             resourceLimitMemory: '2Gi',
             envVars: [
@@ -68,9 +68,9 @@ podTemplate(
         def skipSonarQube = params.SKIP_SONARQUBE ?: 'false'
         def targetService = params.SERVICE ?: 'all'
         def imageMap = [
-            'member-service': 'hiondal/lunchpick-member-service',
-            'recommendation-service': 'hiondal/lunchpick-recommendation-service',
-            'payment-service': 'hiondal/lunchpick-payment-service'
+            'member-service': 'docker.io/hiondal/lunchpick-member-service',
+            'recommendation-service': 'docker.io/hiondal/lunchpick-recommendation-service',
+            'payment-service': 'docker.io/hiondal/lunchpick-payment-service'
         ]
         def targetMap = (targetService == 'all') ? imageMap : imageMap.subMap([targetService])
 
@@ -100,11 +100,11 @@ podTemplate(
                                 targetMap.keySet().each { service ->
                                     withSonarQubeEnv('SonarQube') {
                                         sh """
-                                            ./gradlew :${service}:test :${service}:jacocoTestReport :${service}:sonar \
-                                                -Dsonar.projectKey=lunchpick-${service}-${environment} \
-                                                -Dsonar.projectName=lunchpick-${service}-${environment} \
-                                                -Dsonar.java.binaries=build/classes/java/main \
-                                                -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml \
+                                            ./gradlew :${service}:test :${service}:jacocoTestReport :${service}:sonar \\
+                                                -Dsonar.projectKey=lunchpick-${service}-${environment} \\
+                                                -Dsonar.projectName=lunchpick-${service}-${environment} \\
+                                                -Dsonar.java.binaries=build/classes/java/main \\
+                                                -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml \\
                                                 -Dsonar.exclusions=**/config/**,**/entity/**,**/dto/**,**/*Application.class,**/exception/**
                                         """
                                     }
@@ -129,20 +129,26 @@ podTemplate(
                     container('podman') {
                         withCredentials([
                             usernamePassword(
+                                credentialsId: 'imagereg-credentials',
+                                usernameVariable: 'IMG_USERNAME',
+                                passwordVariable: 'IMG_PASSWORD'
+                            ),
+                            usernamePassword(
                                 credentialsId: 'dockerhub-credentials',
                                 usernameVariable: 'DOCKERHUB_USERNAME',
                                 passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
-                            // Docker Hub 로그인
                             sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
+                            sh "podman login docker.io --username \$IMG_USERNAME --password \$IMG_PASSWORD"
 
                             targetMap.each { service, imgName ->
                                 sh """
-                                    podman build \
-                                        --build-arg BUILD_LIB_DIR="${service}/build/libs" \
-                                        --build-arg ARTIFACTORY_FILE="${service}.jar" \
-                                        -f deployment/container/Dockerfile-backend \
+                                    podman build \\
+                                        --platform linux/amd64 \\
+                                        --build-arg BUILD_LIB_DIR="${service}/build/libs" \\
+                                        --build-arg ARTIFACTORY_FILE="${service}.jar" \\
+                                        -f deployment/container/Dockerfile-backend \\
                                         -t ${imgName}:${environment}-${imageTag} .
 
                                     podman push ${imgName}:${environment}-${imageTag}
@@ -161,22 +167,19 @@ podTemplate(
                         passwordVariable: 'GIT_TOKEN'
                     )]) {
                         sh """
-                            # 매니페스트 레포지토리 클론
                             REPO_URL=\$(echo "https://github.com/hiondal/lunchpick-manifest.git" | sed 's|https://||')
                             git clone https://\${GIT_USERNAME}:\${GIT_TOKEN}@\${REPO_URL} manifest-repo
                             cd manifest-repo
 
-                            # Kustomize 바이너리 직접 다운로드 (alpine/git의 ash는 bash 스크립트 비호환)
                             wget -qO- "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz" | tar xz
                             mv kustomize /usr/local/bin/ 2>/dev/null || export PATH=\$PATH:\$(pwd)
 
-                            # 매니페스트 업데이트 (kustomize 방식)
                             cd lunchpick/kustomize/overlays/${environment}
 
-                            # 각 서비스별 이미지 태그 업데이트 (imageMap 기반)
-                            ${targetMap.collect { svc, img -> "kustomize edit set image ${img}=${img}:${environment}-${imageTag}" }.join('\n                            ')}
+                            kustomize edit set image docker.io/hiondal/lunchpick-member-service=docker.io/hiondal/lunchpick-member-service:${environment}-${imageTag}
+                            kustomize edit set image docker.io/hiondal/lunchpick-recommendation-service=docker.io/hiondal/lunchpick-recommendation-service:${environment}-${imageTag}
+                            kustomize edit set image docker.io/hiondal/lunchpick-payment-service=docker.io/hiondal/lunchpick-payment-service:${environment}-${imageTag}
 
-                            # Git 설정 및 푸시
                             cd ../../../..
                             git config user.name "Jenkins CI"
                             git config user.email "jenkins@example.com"
@@ -190,25 +193,21 @@ podTemplate(
                 }
             }
 
-            // 파이프라인 완료 로그 (Scripted Pipeline 방식)
             stage('Pipeline Complete') {
-                echo "🧹 Pipeline completed. Pod cleanup handled by Jenkins Kubernetes Plugin."
-
-                // 성공/실패 여부 로깅
+                echo "Pipeline completed. Pod cleanup handled by Jenkins Kubernetes Plugin."
                 if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
-                    echo "✅ Pipeline completed successfully!"
+                    echo "Pipeline completed successfully!"
                 } else {
-                    echo "❌ Pipeline failed with result: ${currentBuild.result}"
+                    echo "Pipeline failed with result: ${currentBuild.result}"
                 }
             }
 
         } catch (Exception e) {
             currentBuild.result = 'FAILURE'
-            echo "❌ Pipeline failed with exception: ${e.getMessage()}"
+            echo "Pipeline failed with exception: ${e.getMessage()}"
             throw e
         } finally {
-            echo "🧹 Cleaning up resources and preparing for pod termination..."
-            echo "Pod will be terminated in 3 seconds due to terminationGracePeriodSeconds: 3"
+            echo "Cleaning up resources and preparing for pod termination..."
         }
     }
 }

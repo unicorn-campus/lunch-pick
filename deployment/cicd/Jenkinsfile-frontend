@@ -7,13 +7,13 @@ def getImageTag() {
 }
 
 podTemplate(
-    cloud: 'eks-ondal',
+    cloud: 'aks-ondal',
     label: "${PIPELINE_ID}",
     serviceAccount: 'jenkins',
     slaveConnectTimeout: 300,
     idleMinutes: 1,
     activeDeadlineSeconds: 3600,
-    podRetention: never(),  // 파드 자동 정리 옵션: never(), onFailure(), always(), default()
+    podRetention: never(),
     yaml: '''
         spec:
           terminationGracePeriodSeconds: 3
@@ -25,8 +25,8 @@ podTemplate(
             image: 'node:20-slim',
             ttyEnabled: true,
             command: 'cat',
-            resourceRequestCpu: '200m',
-            resourceRequestMemory: '512Mi',
+            resourceRequestCpu: '400m',
+            resourceRequestMemory: '1Gi',
             resourceLimitCpu: '2000m',
             resourceLimitMemory: '4Gi'
         ),
@@ -36,8 +36,8 @@ podTemplate(
             ttyEnabled: true,
             command: 'cat',
             privileged: true,
-            resourceRequestCpu: '200m',
-            resourceRequestMemory: '512Mi',
+            resourceRequestCpu: '400m',
+            resourceRequestMemory: '2Gi',
             resourceLimitCpu: '2000m',
             resourceLimitMemory: '4Gi'
         ),
@@ -83,7 +83,7 @@ podTemplate(
                     sh """
                         cd frontend
                         npm ci
-                        NODE_OPTIONS="--max-old-space-size=3072" npx next build
+                        NODE_OPTIONS="--max-old-space-size=3072" npm run build
                         npm run lint || true
                     """
                 }
@@ -117,7 +117,7 @@ podTemplate(
                                 timeout(time: 5, unit: 'MINUTES') {
                                     def qg = waitForQualityGate()
                                     if (qg.status != 'OK') {
-                                        echo "Quality Gate failed: ${qg.status}, but continuing pipeline... (프론트엔드는 초기 단계에서 커버리지가 낮을 수 있어 경고만 출력)"
+                                        echo "Quality Gate failed: ${qg.status}, but continuing pipeline..."
                                     }
                                 }
                             } catch (Exception e) {
@@ -133,22 +133,28 @@ podTemplate(
                     container('podman') {
                         withCredentials([
                             usernamePassword(
+                                credentialsId: 'imagereg-credentials',
+                                usernameVariable: 'IMG_USERNAME',
+                                passwordVariable: 'IMG_PASSWORD'
+                            ),
+                            usernamePassword(
                                 credentialsId: 'dockerhub-credentials',
                                 usernameVariable: 'DOCKERHUB_USERNAME',
                                 passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
-                            // Docker Hub 로그인
                             sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
+                            sh "podman login docker.io --username \$IMG_USERNAME --password \$IMG_PASSWORD"
 
                             sh """
                                 podman build \\
+                                    --platform linux/amd64 \\
                                     -f deployment/container/Dockerfile-frontend \\
                                     --build-arg PROJECT_FOLDER="frontend" \\
                                     --build-arg BUILD_FOLDER="deployment/container" \\
-                                    -t hiondal/lunchpick-frontend:${environment}-${imageTag} .
+                                    -t docker.io/hiondal/lunchpick-frontend:${environment}-${imageTag} .
 
-                                podman push hiondal/lunchpick-frontend:${environment}-${imageTag}
+                                podman push docker.io/hiondal/lunchpick-frontend:${environment}-${imageTag}
                             """
                         }
                     }
@@ -163,22 +169,18 @@ podTemplate(
                         passwordVariable: 'GIT_TOKEN'
                     )]) {
                         sh """
-                            # 매니페스트 레포지토리 클론
                             REPO_URL=\$(echo "https://github.com/hiondal/lunchpick-manifest.git" | sed 's|https://||')
                             git clone https://\${GIT_USERNAME}:\${GIT_TOKEN}@\${REPO_URL} manifest-repo
                             cd manifest-repo
 
-                            # Kustomize 바이너리 직접 다운로드 (alpine ash는 bash 스크립트 비호환)
                             wget -qO- "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz" | tar xz
                             mv kustomize /usr/local/bin/ 2>/dev/null || export PATH=\$PATH:\$(pwd)
 
-                            # 매니페스트 업데이트 (kustomize 방식)
                             cd frontend/kustomize/overlays/${environment}
 
                             echo "Updating frontend image tag..."
-                            kustomize edit set image hiondal/lunchpick-frontend=hiondal/lunchpick-frontend:${environment}-${imageTag}
+                            kustomize edit set image docker.io/hiondal/lunchpick-frontend=docker.io/hiondal/lunchpick-frontend:${environment}-${imageTag}
 
-                            # Git 설정 및 푸시
                             cd ../../../..
                             git config user.name "Jenkins CI"
                             git config user.email "jenkins@example.com"
@@ -192,11 +194,8 @@ podTemplate(
                 }
             }
 
-            // 파이프라인 완료 로그 (Scripted Pipeline 방식)
             stage('Pipeline Complete') {
                 echo "Pipeline completed. Pod cleanup handled by Jenkins Kubernetes Plugin."
-
-                // 성공/실패 여부 로깅
                 if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
                     echo "Pipeline completed successfully!"
                 } else {
@@ -210,7 +209,6 @@ podTemplate(
             throw e
         } finally {
             echo "Cleaning up resources and preparing for pod termination..."
-            echo "Pod will be terminated in 3 seconds due to terminationGracePeriodSeconds: 3"
         }
     }
 }
