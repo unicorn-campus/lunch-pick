@@ -1,4 +1,4 @@
-def PIPELINE_ID = "${env.BUILD_NUMBER}"
+def PIPELINE_ID = "ai-${env.BUILD_NUMBER}"
 
 def getImageTag() {
     def dateFormat = new java.text.SimpleDateFormat('yyyyMMddHHmmss')
