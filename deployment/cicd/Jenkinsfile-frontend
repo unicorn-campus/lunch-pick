@@ -42,7 +42,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'git',
-            image: 'alpine/git:latest',
+            image: 'alpine/git:2.47.2',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '100m',
@@ -52,7 +52,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'sonar-scanner',
-            image: 'sonarsource/sonar-scanner-cli:latest',
+            image: 'sonarsource/sonar-scanner-cli:5.0',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '200m',

@@ -45,7 +45,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'git',
-            image: 'alpine/git:latest',
+            image: 'alpine/git:2.47.2',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '100m',
