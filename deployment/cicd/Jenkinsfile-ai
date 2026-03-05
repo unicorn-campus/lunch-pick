@@ -52,7 +52,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'sonar-scanner',
-            image: 'sonarsource/sonar-scanner-cli:5.0',
+            image: 'sonarsource/sonar-scanner-cli:11',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '200m',
