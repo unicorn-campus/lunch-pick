@@ -165,16 +165,15 @@ podTemplate(
                             git clone https://\${GIT_USERNAME}:\${GIT_TOKEN}@\${REPO_URL} manifest-repo
                             cd manifest-repo
 
-                            # Kustomize 설치
-                            curl -sL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | sh
-                            chmod +x kustomize
-                            KUSTOMIZE_BIN=\$(pwd)/kustomize
+                            # Kustomize 바이너리 직접 다운로드 (alpine/git의 ash는 bash 스크립트 비호환)
+                            wget -qO- "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.6.0/kustomize_v5.6.0_linux_amd64.tar.gz" | tar xz
+                            mv kustomize /usr/local/bin/ 2>/dev/null || export PATH=\$PATH:\$(pwd)
 
                             # 매니페스트 업데이트 (kustomize 방식)
                             cd ai-pipeline-service/kustomize/overlays/${environment}
 
                             echo "Updating ai-pipeline-service image tag..."
-                            \${KUSTOMIZE_BIN} edit set image hiondal/lunchpick-ai-pipeline-service=hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
+                            kustomize edit set image hiondal/lunchpick-ai-pipeline-service=hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
 
                             # Git 설정 및 푸시
                             cd ../../../..
