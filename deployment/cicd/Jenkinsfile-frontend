@@ -94,7 +94,7 @@ spec:
             steps {
                 container('node') {
                     dir('frontend') {
-                        sh 'npx next build'
+                        sh 'NODE_OPTIONS="--max-old-space-size=3072" npx next build'
                     }
                 }
             }
@@ -175,7 +175,7 @@ spec:
             echo "Frontend CI 파이프라인 실패"
         }
         always {
-            deleteDir()
+            echo "빌드 완료 - Pod 자동 정리 (podRetention never)"
         }
     }
 }
