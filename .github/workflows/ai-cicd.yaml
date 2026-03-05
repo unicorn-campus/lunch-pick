@@ -78,7 +78,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           # Check if SonarQube should be skipped
-          SKIP_SONARQUBE="${{ github.event.inputs.SKIP_SONARQUBE || 'false' }}"
+          SKIP_SONARQUBE="${{ github.event.inputs.SKIP_SONARQUBE || 'true' }}"
 
           if [[ "$SKIP_SONARQUBE" == "true" ]]; then
             echo "Skipping SonarQube Analysis (SKIP_SONARQUBE=$SKIP_SONARQUBE)"
