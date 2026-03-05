@@ -167,13 +167,14 @@ podTemplate(
 
                             # Kustomize 설치
                             curl -sL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | sh
-                            mv kustomize /usr/local/bin/ 2>/dev/null || export PATH=\$PATH:\$(pwd)
+                            chmod +x kustomize
+                            KUSTOMIZE_BIN=\$(pwd)/kustomize
 
                             # 매니페스트 업데이트 (kustomize 방식)
                             cd ai-pipeline-service/kustomize/overlays/${environment}
 
                             echo "Updating ai-pipeline-service image tag..."
-                            kustomize edit set image docker.io/hiondal/ai-pipeline-service=docker.io/hiondal/ai-pipeline-service:${environment}-${imageTag}
+                            \${KUSTOMIZE_BIN} edit set image docker.io/hiondal/ai-pipeline-service=docker.io/hiondal/ai-pipeline-service:${environment}-${imageTag}
 
                             # Git 설정 및 푸시
                             cd ../../../..
