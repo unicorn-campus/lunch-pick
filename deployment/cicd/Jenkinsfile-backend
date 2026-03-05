@@ -130,21 +130,17 @@ podTemplate(
                                 passwordVariable: 'IMG_PASSWORD'
                             )
                         ]) {
-                            sh """
-                                echo '{"auths":{"https://index.docker.io/v1/":{"username":"'\$IMG_USERNAME'","password":"'\$IMG_PASSWORD'"}}}' > /kaniko/.docker/config.json
-                            """
-
+                            def kanikoCommands = "echo '{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"'\$IMG_USERNAME'\",\"password\":\"'\$IMG_PASSWORD'\"}}}' > /kaniko/.docker/config.json\n"
                             targetMap.each { service, imgName ->
-                                sh """
-                                    /kaniko/executor \\
-                                        --dockerfile=deployment/container/Dockerfile-backend \\
-                                        --context=dir://. \\
-                                        --build-arg BUILD_LIB_DIR=${service}/build/libs \\
-                                        --build-arg ARTIFACTORY_FILE=${service}.jar \\
-                                        --destination=${imgName}:${environment}-${imageTag} \\
-                                        --cache=false
-                                """
+                                kanikoCommands += """/kaniko/executor \\
+                                    --dockerfile=deployment/container/Dockerfile-backend \\
+                                    --context=dir://. \\
+                                    --build-arg BUILD_LIB_DIR=${service}/build/libs \\
+                                    --build-arg ARTIFACTORY_FILE=${service}.jar \\
+                                    --destination=${imgName}:${environment}-${imageTag} \\
+                                    --cache=false\n"""
                             }
+                            sh kanikoCommands
                         }
                     }
                 }
