@@ -1,4 +1,4 @@
-def PIPELINE_ID = "${env.BUILD_NUMBER}"
+def PIPELINE_ID = "backend-${env.BUILD_NUMBER}"
 
 def getImageTag() {
     def dateFormat = new java.text.SimpleDateFormat('yyyyMMddHHmmss')
@@ -45,7 +45,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'git',
-            image: 'alpine/git:latest',
+            image: 'alpine/git:2.47.2',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '100m',
@@ -137,7 +137,8 @@ podTemplate(
                         ]) {
                             // Kaniko는 단일 sh 블록에서 모든 빌드를 실행해야 함
                             // (executor 실행 후 컨테이너 파일시스템 변경으로 별도 sh 블록 실패)
-                            def kanikoCommands = "echo '{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"'\$DOCKERHUB_USERNAME'\",\"password\":\"'\$DOCKERHUB_PASSWORD'\"},\"asia-northeast3-docker.pkg.dev\":{\"username\":\"'\$IMG_USERNAME'\",\"password\":\"'\$IMG_PASSWORD'\"}}}' > /kaniko/.docker/config.json\n"
+                            // printf %s를 사용하여 SA JSON 키의 특수문자/공백 안전 처리
+                            def kanikoCommands = """printf '{"auths":{"https://index.docker.io/v1/":{"username":"%s","password":"%s"},"asia-northeast3-docker.pkg.dev":{"username":"%s","password":"%s"}}}' "\$DOCKERHUB_USERNAME" "\$DOCKERHUB_PASSWORD" "\$IMG_USERNAME" "\$IMG_PASSWORD" > /kaniko/.docker/config.json\n"""
                             targetMap.each { service, imgName ->
                                 kanikoCommands += """/kaniko/executor \\
                                     --dockerfile=deployment/container/Dockerfile-backend \\
