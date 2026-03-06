@@ -141,7 +141,7 @@ podTemplate(
                             )
                         ]) {
                             sh """
-                                echo '{"auths":{"https://index.docker.io/v1/":{"username":"'\$DOCKERHUB_USERNAME'","password":"'\$DOCKERHUB_PASSWORD'"},"asia-northeast3-docker.pkg.dev":{"username":"'\$IMG_USERNAME'","password":"'\$IMG_PASSWORD'"}}}' > /kaniko/.docker/config.json
+                                printf '{"auths":{"https://index.docker.io/v1/":{"username":"%s","password":"%s"},"asia-northeast3-docker.pkg.dev":{"username":"%s","password":"%s"}}}' "\$DOCKERHUB_USERNAME" "\$DOCKERHUB_PASSWORD" "\$IMG_USERNAME" "\$IMG_PASSWORD" > /kaniko/.docker/config.json
 
                                 /kaniko/executor \\
                                     --dockerfile=deployment/container/Dockerfile-ai \\
