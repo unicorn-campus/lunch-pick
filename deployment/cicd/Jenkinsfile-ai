@@ -31,11 +31,10 @@ podTemplate(
             resourceLimitMemory: '4Gi'
         ),
         containerTemplate(
-            name: 'podman',
-            image: "mgoltzsche/podman",
+            name: 'kaniko',
+            image: 'gcr.io/kaniko-project/executor:debug',
             ttyEnabled: true,
-            command: 'cat',
-            privileged: true,
+            command: '/busybox/cat',
             resourceRequestCpu: '400m',
             resourceRequestMemory: '2Gi',
             resourceLimitCpu: '2000m',
@@ -128,7 +127,7 @@ podTemplate(
 
             stage('Build & Push Images') {
                 timeout(time: 30, unit: 'MINUTES') {
-                    container('podman') {
+                    container('kaniko') {
                         withCredentials([
                             usernamePassword(
                                 credentialsId: 'imagereg-credentials',
@@ -141,21 +140,16 @@ podTemplate(
                                 passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
-                            // Docker Hub 로그인 (rate limit 해결)
-                            sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
-
-                            // GCP Artifact Registry 로그인
-                            sh "podman login asia-northeast3-docker.pkg.dev --username \$IMG_USERNAME --password \$IMG_PASSWORD"
-
                             sh """
-                                podman build \\
-                                    --platform linux/amd64 \\
-                                    -f deployment/container/Dockerfile-ai \\
-                                    --build-arg PROJECT_FOLDER="ai-pipeline-service" \\
-                                    --build-arg EXPORT_PORT="8000" \\
-                                    -t asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service:${environment}-${imageTag} .
+                                echo '{"auths":{"https://index.docker.io/v1/":{"username":"'\$DOCKERHUB_USERNAME'","password":"'\$DOCKERHUB_PASSWORD'"},"asia-northeast3-docker.pkg.dev":{"username":"'\$IMG_USERNAME'","password":"'\$IMG_PASSWORD'"}}}' > /kaniko/.docker/config.json
 
-                                podman push asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service:${environment}-${imageTag}
+                                /kaniko/executor \\
+                                    --dockerfile=deployment/container/Dockerfile-ai \\
+                                    --context=dir://. \\
+                                    --build-arg PROJECT_FOLDER=ai-pipeline-service \\
+                                    --build-arg EXPORT_PORT=8000 \\
+                                    --destination=asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service:${environment}-${imageTag} \\
+                                    --cache=false
                             """
                         }
                     }

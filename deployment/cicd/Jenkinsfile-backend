@@ -21,11 +21,10 @@ podTemplate(
     ''',
     containers: [
         containerTemplate(
-            name: 'podman',
-            image: "mgoltzsche/podman",
+            name: 'kaniko',
+            image: 'gcr.io/kaniko-project/executor:debug',
             ttyEnabled: true,
-            command: 'cat',
-            privileged: true,
+            command: '/busybox/cat',
             resourceRequestCpu: '500m',
             resourceRequestMemory: '2Gi',
             resourceLimitCpu: '2000m',
@@ -41,8 +40,6 @@ podTemplate(
             resourceLimitCpu: '1000m',
             resourceLimitMemory: '2Gi',
             envVars: [
-                envVar(key: 'DOCKER_HOST', value: 'unix:///run/podman/podman.sock'),
-                envVar(key: 'TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE', value: '/run/podman/podman.sock'),
                 envVar(key: 'TESTCONTAINERS_RYUK_DISABLED', value: 'true')
             ]
         ),
@@ -58,8 +55,7 @@ podTemplate(
         )
     ],
     volumes: [
-        emptyDirVolume(mountPath: '/home/gradle/.gradle', memory: false),
-        emptyDirVolume(mountPath: '/run/podman', memory: false)
+        emptyDirVolume(mountPath: '/home/gradle/.gradle', memory: false)
     ]
 ) {
     node(PIPELINE_ID) {
@@ -126,7 +122,7 @@ podTemplate(
 
             stage('Build & Push Images') {
                 timeout(time: 30, unit: 'MINUTES') {
-                    container('podman') {
+                    container('kaniko') {
                         withCredentials([
                             usernamePassword(
                                 credentialsId: 'imagereg-credentials',
@@ -139,24 +135,19 @@ podTemplate(
                                 passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
-                            // Docker Hub 로그인 (rate limit 해결)
-                            sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
-
-                            // GCP Artifact Registry 로그인
-                            sh "podman login asia-northeast3-docker.pkg.dev --username \$IMG_USERNAME --password \$IMG_PASSWORD"
-
+                            // Kaniko는 단일 sh 블록에서 모든 빌드를 실행해야 함
+                            // (executor 실행 후 컨테이너 파일시스템 변경으로 별도 sh 블록 실패)
+                            def kanikoCommands = "echo '{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"'\$DOCKERHUB_USERNAME'\",\"password\":\"'\$DOCKERHUB_PASSWORD'\"},\"asia-northeast3-docker.pkg.dev\":{\"username\":\"'\$IMG_USERNAME'\",\"password\":\"'\$IMG_PASSWORD'\"}}}' > /kaniko/.docker/config.json\n"
                             targetMap.each { service, imgName ->
-                                sh """
-                                    podman build \\
-                                        --platform linux/amd64 \\
-                                        --build-arg BUILD_LIB_DIR="${service}/build/libs" \\
-                                        --build-arg ARTIFACTORY_FILE="${service}.jar" \\
-                                        -f deployment/container/Dockerfile-backend \\
-                                        -t ${imgName}:${environment}-${imageTag} .
-
-                                    podman push ${imgName}:${environment}-${imageTag}
-                                """
+                                kanikoCommands += """/kaniko/executor \\
+                                    --dockerfile=deployment/container/Dockerfile-backend \\
+                                    --context=dir://. \\
+                                    --build-arg BUILD_LIB_DIR=${service}/build/libs \\
+                                    --build-arg ARTIFACTORY_FILE=${service}.jar \\
+                                    --destination=${imgName}:${environment}-${imageTag} \\
+                                    --cache=false\n"""
                             }
+                            sh kanikoCommands
                         }
                     }
                 }
