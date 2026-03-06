@@ -1,4 +1,4 @@
-def PIPELINE_ID = "${env.BUILD_NUMBER}"
+def PIPELINE_ID = "ai-${env.BUILD_NUMBER}"
 
 def getImageTag() {
     def dateFormat = new java.text.SimpleDateFormat('yyyyMMddHHmmss')
@@ -42,7 +42,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'git',
-            image: 'alpine/git:latest',
+            image: 'alpine/git:2.47.2',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '100m',
@@ -52,7 +52,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'sonar-scanner',
-            image: 'sonarsource/sonar-scanner-cli:latest',
+            image: 'sonarsource/sonar-scanner-cli:11',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '200m',
@@ -100,7 +100,7 @@ podTemplate(
                                       timeout 300 ${sonarScannerHome}/bin/sonar-scanner \\
                                       -Dsonar.projectKey=ai-pipeline-service-${environment} \\
                                       -Dsonar.projectName=ai-pipeline-service-${environment} \\
-                                      -Dsonar.sources=. \\
+                                      -Dsonar.sources=app \\
                                       -Dsonar.tests=tests \\
                                       -Dsonar.test.inclusions=**/test_*.py,**/*_test.py \\
                                       -Dsonar.exclusions=**/__pycache__/**,**/venv/**,**/.venv/**,**/dist/** \\
