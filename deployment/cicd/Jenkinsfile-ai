@@ -141,8 +141,8 @@ podTemplate(
                             )
                         ]) {
                             sh """
-                                DOCKERHUB_AUTH=\$(printf '%s:%s' "\$DOCKERHUB_USERNAME" "\$DOCKERHUB_PASSWORD" | /busybox/base64)
-                                GCR_AUTH=\$(printf '%s:%s' "\$IMG_USERNAME" "\$IMG_PASSWORD" | /busybox/base64)
+                                DOCKERHUB_AUTH=\$(printf '%s:%s' "\$DOCKERHUB_USERNAME" "\$DOCKERHUB_PASSWORD" | /busybox/base64 | tr -d '\\n')
+                                GCR_AUTH=\$(printf '%s:%s' "\$IMG_USERNAME" "\$IMG_PASSWORD" | /busybox/base64 | tr -d '\\n')
 
                                 echo '{"auths":{"https://index.docker.io/v1/":{"auth":"'"\$DOCKERHUB_AUTH"'"},"asia-northeast3-docker.pkg.dev":{"auth":"'"\$GCR_AUTH"'"}}}' > /kaniko/.docker/config.json
 
