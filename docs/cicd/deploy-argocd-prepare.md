@@ -1,7 +1,7 @@
 # ArgoCD 매니페스트 레포지토리 구성 결과 보고서
 
 ## 작업 일시
-2026-03-05
+2026-03-06
 
 ## 매니페스트 레포지토리 구성
 
@@ -84,21 +84,15 @@ lunchpick-manifest/
 - **레이블**: argocd.argoproj.io/secret-type=repository
 - **상태**: 등록 완료
 
-### Application 등록 상태
+### Application 등록 상태 (dev 환경만 등록)
 ```
 NAME                          SYNC STATUS   HEALTH STATUS
-ai-pipeline-service-dev       Unknown       Healthy
-ai-pipeline-service-prod      Unknown       Healthy
-ai-pipeline-service-staging   Unknown       Healthy
-frontend-dev                  Unknown       Healthy
-frontend-prod                 Unknown       Healthy
-frontend-staging              Unknown       Healthy
-lunchpick-dev                 Unknown       Healthy
-lunchpick-prod                Unknown       Healthy
-lunchpick-staging             Unknown       Healthy
+ai-pipeline-service-dev       Synced        Progressing
+frontend-dev                  Synced        Progressing
+lunchpick-dev                 Synced        Progressing
 ```
 
-> SYNC STATUS가 Unknown인 것은 매니페스트 레포에 image tag만 존재하고 실제 배포가 아직 수행되지 않았기 때문입니다. CI 파이프라인 실행 후 image tag가 업데이트되면 ArgoCD가 자동 동기화하여 배포합니다.
+> Synced/Progressing 상태는 ArgoCD가 매니페스트 레포를 정상적으로 감시하고 있음을 의미합니다. CI 파이프라인 실행 후 image tag가 업데이트되면 ArgoCD가 자동 동기화하여 배포합니다.
 
 ## ArgoCD 감시 설정
 

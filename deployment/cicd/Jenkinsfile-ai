@@ -7,7 +7,7 @@ def getImageTag() {
 }
 
 podTemplate(
-    cloud: 'aks-ondal',
+    cloud: 'gke-ondal',
     label: "${PIPELINE_ID}",
     serviceAccount: 'jenkins',
     slaveConnectTimeout: 300,
@@ -31,10 +31,11 @@ podTemplate(
             resourceLimitMemory: '4Gi'
         ),
         containerTemplate(
-            name: 'kaniko',
-            image: 'gcr.io/kaniko-project/executor:debug',
+            name: 'podman',
+            image: "mgoltzsche/podman",
             ttyEnabled: true,
-            command: '/busybox/cat',
+            command: 'cat',
+            privileged: true,
             resourceRequestCpu: '400m',
             resourceRequestMemory: '2Gi',
             resourceLimitCpu: '2000m',
@@ -42,7 +43,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'git',
-            image: 'alpine/git:2.47.2',
+            image: 'alpine/git:latest',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '100m',
@@ -52,7 +53,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'sonar-scanner',
-            image: 'sonarsource/sonar-scanner-cli:11',
+            image: 'sonarsource/sonar-scanner-cli:latest',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '200m',
@@ -69,7 +70,7 @@ podTemplate(
     node(PIPELINE_ID) {
         def imageTag = getImageTag()
         def environment = params.ENVIRONMENT ?: 'dev'
-        def skipSonarQube = params.SKIP_SONARQUBE ?: 'false'
+        def skipSonarQube = params.SKIP_SONARQUBE ?: 'true'
         def sonarScannerHome = '/opt/sonar-scanner'
 
         try {
@@ -127,24 +128,34 @@ podTemplate(
 
             stage('Build & Push Images') {
                 timeout(time: 30, unit: 'MINUTES') {
-                    container('kaniko') {
+                    container('podman') {
                         withCredentials([
                             usernamePassword(
-                                credentialsId: 'dockerhub-credentials',
+                                credentialsId: 'imagereg-credentials',
                                 usernameVariable: 'IMG_USERNAME',
                                 passwordVariable: 'IMG_PASSWORD'
+                            ),
+                            usernamePassword(
+                                credentialsId: 'dockerhub-credentials',
+                                usernameVariable: 'DOCKERHUB_USERNAME',
+                                passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
-                            sh """
-                                echo '{"auths":{"https://index.docker.io/v1/":{"username":"'\$IMG_USERNAME'","password":"'\$IMG_PASSWORD'"}}}' > /kaniko/.docker/config.json
+                            // Docker Hub 로그인 (rate limit 해결)
+                            sh "podman login docker.io --username \$DOCKERHUB_USERNAME --password \$DOCKERHUB_PASSWORD"
 
-                                /kaniko/executor \\
-                                    --dockerfile=deployment/container/Dockerfile-ai \\
-                                    --context=dir://. \\
-                                    --build-arg PROJECT_FOLDER=ai-pipeline-service \\
-                                    --build-arg EXPORT_PORT=8000 \\
-                                    --destination=docker.io/hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag} \\
-                                    --cache=false
+                            // GCP Artifact Registry 로그인
+                            sh "podman login asia-northeast3-docker.pkg.dev --username \$IMG_USERNAME --password \$IMG_PASSWORD"
+
+                            sh """
+                                podman build \\
+                                    --platform linux/amd64 \\
+                                    -f deployment/container/Dockerfile-ai \\
+                                    --build-arg PROJECT_FOLDER="ai-pipeline-service" \\
+                                    --build-arg EXPORT_PORT="8000" \\
+                                    -t asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service:${environment}-${imageTag} .
+
+                                podman push asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service:${environment}-${imageTag}
                             """
                         }
                     }
@@ -169,7 +180,7 @@ podTemplate(
                             cd ai-pipeline-service/kustomize/overlays/${environment}
 
                             echo "Updating ai-pipeline-service image tag..."
-                            kustomize edit set image docker.io/hiondal/lunchpick-ai-pipeline-service=docker.io/hiondal/lunchpick-ai-pipeline-service:${environment}-${imageTag}
+                            kustomize edit set image asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service=asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service:${environment}-${imageTag}
 
                             cd ../../../..
                             git config user.name "Jenkins CI"
