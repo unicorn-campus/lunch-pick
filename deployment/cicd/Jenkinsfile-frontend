@@ -22,6 +22,12 @@ podTemplate(
           - name: kaniko
             resources:
               requests:
+                ephemeral-storage: "5Gi"
+              limits:
+                ephemeral-storage: "20Gi"
+          - name: node
+            resources:
+              requests:
                 ephemeral-storage: "2Gi"
               limits:
                 ephemeral-storage: "10Gi"
