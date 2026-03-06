@@ -3,11 +3,11 @@ kind: Ingress
 metadata:
   name: frontend
   namespace: lunchpick
+  annotations:
+    kubernetes.io/ingress.class: "gce"
 spec:
-  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
-    - host: web.20.249.211.140.nip.io
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix

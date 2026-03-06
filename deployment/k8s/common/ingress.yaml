@@ -3,11 +3,11 @@ kind: Ingress
 metadata:
   name: lunchpick
   namespace: lunchpick
+  annotations:
+    kubernetes.io/ingress.class: "gce"
 spec:
-  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
-  - host: api.web.20.249.211.140.nip.io
-    http:
+  - http:
       paths:
       # member-service
       - path: /api/v1/auth
@@ -80,5 +80,20 @@ spec:
         backend:
           service:
             name: payment-service
+            port:
+              number: 80
+      # ai-pipeline-service
+      - path: /api/v1/ai
+        pathType: Prefix
+        backend:
+          service:
+            name: ai-pipeline-service
+            port:
+              number: 80
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: ai-pipeline-service
             port:
               number: 80

@@ -17,7 +17,7 @@ spec:
       - name: lunchpick
       containers:
       - name: recommendation-service
-        image: hiondal/lunchpick-recommendation-service:dev-20260305132601
+        image: asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/recommendation-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8082
@@ -32,7 +32,7 @@ spec:
             name: secret-recommendation-service
         resources:
           requests:
-            cpu: "250m"
+            cpu: "500m"
             memory: "256Mi"
           limits:
             cpu: "1000m"

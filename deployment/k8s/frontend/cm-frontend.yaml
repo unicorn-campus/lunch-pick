@@ -8,10 +8,10 @@ data:
     window.__runtime_config__ = {
       APP_ENV: "production",
       API_GROUP: "/api/v1",
-      MEMBER_HOST: "https://api.web.20.249.211.140.nip.io",
-      RECOMMENDATION_HOST: "https://api.web.20.249.211.140.nip.io",
-      PAYMENT_HOST: "https://api.web.20.249.211.140.nip.io",
-      AI_HOST: "https://api.web.20.249.211.140.nip.io",
+      MEMBER_HOST: "https://api.web.34.50.22.190.nip.io",
+      RECOMMENDATION_HOST: "https://api.web.34.50.22.190.nip.io",
+      PAYMENT_HOST: "https://api.web.34.50.22.190.nip.io",
+      AI_HOST: "https://api.web.34.50.22.190.nip.io",
       KAKAO_CLIENT_ID: "d34722dff8545446e14b2616bb62c6b0",
       KAKAO_API_KEY: "b588f91e780efc914b282ad7e3688e01",
       KAKAO_JS_KEY: "298b6fef9e85e51d5ffbdbbc782fa3c5"

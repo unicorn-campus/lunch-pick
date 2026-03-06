@@ -17,7 +17,7 @@ spec:
         - name: lunchpick
       containers:
         - name: ai-pipeline-service
-          image: hiondal/lunchpick-ai-pipeline-service:dev-20260305132440
+          image: asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8084
@@ -28,7 +28,7 @@ spec:
                 name: secret-ai-pipeline-service
           resources:
             requests:
-              cpu: 250m
+              cpu: 500m
               memory: 256Mi
             limits:
               cpu: 1000m

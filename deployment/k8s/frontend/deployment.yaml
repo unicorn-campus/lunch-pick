@@ -17,13 +17,13 @@ spec:
         - name: lunchpick
       containers:
         - name: frontend
-          image: hiondal/lunchpick-frontend:dev-20260305132520
+          image: asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
           resources:
             requests:
-              cpu: 250m
+              cpu: 500m
               memory: 256Mi
             limits:
               cpu: 1000m

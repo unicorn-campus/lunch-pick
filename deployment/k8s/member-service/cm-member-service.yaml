@@ -10,5 +10,5 @@ data:
   REDIS_DATABASE: "1"
   KAFKA_BROKERS: "redis-master:6379"
   MQ_SUBSCRIPTION_TOPIC: "subscription-events"
-  KAKAO_REDIRECT_URI: "https://web.20.249.211.140.nip.io/login"
+  KAKAO_REDIRECT_URI: "https://web.34.50.22.190.nip.io/login"
   LOG_FILE_PATH: "logs/member-service.log"

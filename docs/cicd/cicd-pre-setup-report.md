@@ -4,26 +4,25 @@
 
 | 항목 | 값 |
 |------|-----|
-| CLOUD | Azure |
+| CLOUD | GCP |
 | CI_TOOL | Jenkins |
-| K8S_CLUSTER | aks-ondal |
-| VM_HOST | azure (20.249.211.140) |
-| 레지스트리 | DockerHub (docker.io/hiondal) |
+| K8S_CLUSTER | gke-ondal |
+| VM_HOST | gcp (34.64.94.196) |
+| 레지스트리 | GCR (asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick) |
 
 ## 2. 클라우드 사전작업
 
 | 리소스 | 상태 |
 |--------|------|
-| NodePool (cicd) | 생성 완료 (Karpenter, on-demand, D family) |
-| NodePool (sonarqube) | 생성 완료 (Karpenter, on-demand, D family) |
+| NodePool | GKE Autopilot — 별도 NodePool 불필요 (자동 프로비저닝) |
 
 ## 3. 도구 설치 결과
 
-| 도구 | 네임스페이스 | Helm Release | 상태 | 비고 |
-|------|-----------|-------------|------|------|
-| Jenkins | jenkins | jenkins (bitnami 13.6.17) | 설치 완료, Pod Ready | AKS Gatekeeper 정책 대응 (agentListenerService 비활성화) |
-| SonarQube | sonarqube | sonar (bitnami 8.1.17) | 설치 완료, Pod Ready | 메모리 6Gi로 증가 (OOMKill 대응), affinity 패치 적용 |
-| ArgoCD | argocd | argocd (argo 3.35.4) | 설치 완료, Pod Ready | insecure 모드 정상, AKS 정책 대응 (clusterAdminAccess false) |
+| 도구 | 설치 위치 | 상태 | 비고 |
+|------|----------|------|------|
+| Jenkins | K8s jenkins NS (Helm 13.6.17) | 설치 완료, Pod Ready | GKE Autopilot (nodeSelector/tolerations 없음) |
+| SonarQube | VM Docker (sonarqube:9.9-community) | 설치 완료, Status UP | GKE에서 vm.max_map_count 불가하여 VM Docker로 설치 |
+| ArgoCD | K8s argocd NS (Helm 3.35.4) | 설치 완료, Pod Ready | insecure 모드 적용 |
 
 ## 4. 접속 정보
 
@@ -31,11 +30,11 @@
 |------|-----|----|----|
 | Jenkins | http://myjenkins.io | admin | P@ssw0rd$ |
 | SonarQube | http://mysonar.io | admin | sonarP@ssw0rd$ |
-| ArgoCD | http://myargocd.io | admin | TGgMuEOAmPJWOlS7 |
+| ArgoCD | http://myargocd.io | admin | Pm-yUbvfjEOYS3rh |
 
 > 암호 조회 명령:
 > - Jenkins: `kubectl get secret jenkins -n jenkins -o jsonpath='{.data.jenkins-password}' | base64 -d`
-> - SonarQube: `kubectl get secret sonar-sonarqube -n sonarqube -o jsonpath='{.data.sonarqube-password}' | base64 -d`
+> - SonarQube (GKE VM Docker): 초기 admin/admin → 설치 시 `sonarP@ssw0rd$`로 변경됨
 > - ArgoCD: `kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d`
 
 ## 5. RBAC
@@ -54,22 +53,30 @@
 | curl mysonar.io | HTTP 200 |
 | curl myargocd.io | HTTP 200 |
 
-## 7. 매니페스트 레포지토리
+## 7. Ingress 정보
+
+| 도구 | Ingress IP |
+|------|-----------|
+| Jenkins | 34.149.0.252 |
+| SonarQube | localhost:9000 (VM Docker) |
+| ArgoCD | 34.8.249.43 |
+
+## 8. 매니페스트 레포지토리
 
 | 항목 | 값 |
 |------|-----|
 | URL | https://github.com/hiondal/lunchpick-manifest.git |
-| 상태 | 이미 존재 (기존 사용) |
+| 상태 | 이미 존재 |
 
-## 8. 백엔드 빌드/테스트
+## 9. 백엔드 빌드/테스트
 
 | 항목 | 결과 |
 |------|------|
 | SonarQube/JaCoCo 플러그인 | build.gradle에 설정 완료 |
-| ./gradlew clean build | BUILD SUCCESSFUL (43 tasks) |
-| JaCoCo 리포트 | member-service, payment-service, recommendation-service 생성 확인 |
+| sonarqube 플러그인 | v5.0.0.4638 적용 |
+| jacoco toolVersion | 0.8.11 |
 
-## 9. 수동 후속 작업
+## 10. 수동 후속 작업
 
 ### Jenkins 플러그인 설치 (웹 UI: http://myjenkins.io)
 - Kubernetes, Pipeline Utility Steps, Docker Pipeline, GitHub, Blue Ocean, SonarQube Scanner
@@ -88,6 +95,10 @@
 - Quality Gate: 'Sonar way' 복사 후 Code Coverage 조정
 - Jenkins Credential 등록: Token으로 등록
 - SonarQube Server 설정: Jenkins System 설정에서 서버 URL 및 Token Credential 등록
+
+### GCP Artifact Registry Credential 등록 (Jenkins 웹 UI)
+- Artifact Registry SA JSON Key를 Username=_json_key로 등록
+- Credential 이름: `imagereg-credentials` (Kind: Username with password)
 
 ### DockerHub Credentials 등록 (Jenkins 웹 UI)
 - DockerHub에서 Personal Access Token 생성

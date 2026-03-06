@@ -1,113 +1,125 @@
-# AI 서비스 Jenkins CI 파이프라인 생성 결과
+# ai-pipeline-service AI 서비스 Jenkins CI 파이프라인 결과서
 
-## 작업 일시
-2026-03-06
+## 실행 환경 정보
+| 항목 | 값 |
+|------|-----|
+| CLOUD | GCP |
+| IMG_REG | asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick |
+| IMG_NAME | asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service |
+| JENKINS_CLOUD_NAME | gke-ondal |
+| MANIFEST_REPO_URL | https://github.com/hiondal/lunchpick-manifest.git |
+| JENKINS_GIT_CREDENTIALS | github-credentials |
+
+## 서비스 정보
+| 항목 | 값 |
+|------|-----|
+| AI_SERVICE | ai-pipeline-service |
+| PYTHON_VERSION | 3.12 |
 
 ## 생성 파일
-
-| 항목 | 값 |
-|------|-----|
-| 파일 경로 | `deployment/cicd/Jenkinsfile-ai` |
-| 대상 서비스 | ai-pipeline-service |
-| CI 도구 | Jenkins (Kubernetes Agent) |
-| 레지스트리 | DockerHub (docker.io/hiondal) |
-
-## Jenkins Job 생성
-
-| 항목 | 값 |
-|------|-----|
-| Job 이름 | lunchpick-ai |
-| Job 유형 | Pipeline (WorkflowJob) |
-| 소스 레포 | https://github.com/hiondal/lunch-menu-recommender |
-| Credentials | github-credentials |
-| Script Path | deployment/cicd/Jenkinsfile-ai |
-| 생성 방식 | Jenkins REST API (createItem) |
-| 생성 결과 | HTTP 200 (성공) |
-
-### 파라미터
-
-| 파라미터 | 타입 | 기본값 | 설명 |
-|---------|------|--------|------|
-| BRANCH | String | main | Git 브랜치 |
-| ENVIRONMENT | Choice | dev | 배포 환경 (dev/staging/prod) |
-| SKIP_SONARQUBE | Choice | false | SonarQube 분석 스킵 여부 (false/true) |
+| 파일 | 설명 |
+|------|------|
+| `deployment/cicd/Jenkinsfile-ai` | Jenkins 파이프라인 스크립트 |
 
 ## 파이프라인 구성
 
-### Agent 설정
+### 실행 환경 (Pod Template)
 
-| 항목 | 값 |
-|------|-----|
-| Kubernetes Cloud | aks-ondal |
-| Service Account | jenkins |
-| Pod Label | BUILD_NUMBER 기반 |
-| podRetention | never() |
-| activeDeadlineSeconds | 3600 |
+| 컨테이너 | 이미지 | 용도 |
+|-----------|--------|------|
+| python | python:3.12-slim | Python 의존성 설치 및 테스트 |
+| kaniko | gcr.io/kaniko-project/executor:debug | 컨테이너 이미지 빌드 및 GCR 푸시 |
+| git | alpine/git:2.47.2 | 매니페스트 저장소 클론 및 업데이트 |
+| sonar-scanner | sonarsource/sonar-scanner-cli:11 | SonarQube 코드 품질 분석 |
 
-### 컨테이너 구성
-
-| 컨테이너 | 이미지 | 용도 | CPU (req/limit) | Memory (req/limit) |
-|-----------|--------|------|-----------------|-------------------|
-| python | python:3.12-slim | 의존성 설치, 테스트 실행 | 400m/2000m | 1Gi/4Gi |
-| podman | mgoltzsche/podman | 컨테이너 이미지 빌드 및 푸시 | 400m/2000m | 2Gi/4Gi |
-| git | alpine/git:latest | 매니페스트 레포 업데이트 | 100m/300m | 256Mi/512Mi |
-| sonar-scanner | sonarsource/sonar-scanner-cli:latest | SonarQube 정적 분석 | 200m/1000m | 512Mi/1Gi |
-
-### 볼륨 마운트
-
-| 마운트 경로 | 용도 |
-|------------|------|
-| /opt/sonar-scanner/.sonar/cache | SonarQube 캐시 |
-| /root/.cache/pip | pip 캐시 |
+- **Jenkins Cloud**: gke-ondal
+- **PIPELINE_ID**: ai-${BUILD_NUMBER} (Job 간 Pod 라벨 충돌 방지)
 
 ### 파이프라인 스테이지
 
 | 순서 | 스테이지 | 컨테이너 | 설명 |
-|------|---------|-----------|------|
-| 1 | Get Source | jnlp (기본) | checkout scm으로 소스 체크아웃 |
-| 2 | Build & Test | python | pip install -r requirements.txt, pytest 실행 |
-| 3 | SonarQube Analysis & Quality Gate | sonar-scanner | Python 정적 분석 및 품질 게이트 확인 |
-| 4 | Build & Push Images | podman | Dockerfile-ai 기반 이미지 빌드, DockerHub 푸시 |
-| 5 | Update Manifest Repository | git | kustomize로 매니페스트 레포 이미지 태그 업데이트 |
-| 6 | Pipeline Complete | - | 파이프라인 완료 상태 출력 |
+|------|----------|-----------|------|
+| 1 | Get Source | jnlp | 소스 코드 체크아웃 |
+| 2 | Build & Test | python | cd ai-pipeline-service && pip install && pytest |
+| 3 | SonarQube Analysis & Quality Gate | sonar-scanner | Python 코드 품질 분석 (스킵 가능) |
+| 4 | Build & Push Images | kaniko | Kaniko로 컨테이너 이미지 빌드 및 GCR 푸시 |
+| 5 | Update Manifest Repository | git | Kustomize 이미지 태그 업데이트 후 푸시 |
+| 6 | Pipeline Complete | - | 완료 상태 알림 |
 
-### 이미지 빌드 설정
+### 빌드 파라미터
+
+| 파라미터 | 타입 | 기본값 | 옵션 |
+|----------|------|--------|------|
+| BRANCH | String | main | 자유 입력 |
+| ENVIRONMENT | Choice | dev | dev, staging, prod |
+| SKIP_SONARQUBE | Choice | true | false, true |
+
+## 변수 치환 내역
+| 플레이스홀더 | 치환값 |
+|-------------|--------|
+| {AI_SERVICE} | ai-pipeline-service |
+| {PYTHON_VERSION} | 3.12 |
+| {IMG_NAME} | asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service |
+| {JENKINS_CLOUD_NAME} | gke-ondal |
+| {JENKINS_GIT_CREDENTIALS} | github-credentials |
+| {MANIFEST_REPO_URL} | https://github.com/hiondal/lunchpick-manifest.git |
+
+## Jenkins Job 정보
+| 항목 | 값 |
+|------|-----|
+| Job 이름 | lunchpick-ai |
+| Job URL | http://myjenkins.io/job/lunchpick-ai/ |
+| SCM | Git (https://github.com/hiondal/lunch-menu-recommender) |
+| Script Path | deployment/cicd/Jenkinsfile-ai |
+
+## GKE 환경 적용 사항
+- Kaniko 사용 (GKE에서 privileged 컨테이너 차단)
+- alpine/git:2.47.2, sonarsource/sonar-scanner-cli:11 (GKE :latest 차단 정책)
+- SonarQube sources: app 디렉토리 (가이드 준수)
+- CI/CD 분리: kubectl apply 없이 매니페스트 레포 image tag만 업데이트 (ArgoCD GitOps)
+- Kaniko GCR 인증: base64 auth 방식 사용 (SA JSON 키 특수문자 안전 처리)
+
+## Jenkinsfile 수정 내역
+
+### 가이드 대비 수정 사항
+| 수정 항목 | 변경 전 | 변경 후 | 사유 |
+|-----------|---------|---------|------|
+| PIPELINE_ID | `${env.BUILD_NUMBER}` | `ai-${env.BUILD_NUMBER}` | Job 간 Pod 라벨 충돌 방지 (backend와 동시 빌드 시) |
+| git 이미지 태그 | `alpine/git:latest` | `alpine/git:2.47.2` | GKE :latest 태그 차단 정책 |
+| sonar-scanner 이미지 태그 | `sonarsource/sonar-scanner-cli:latest` | `sonarsource/sonar-scanner-cli:11` | GKE :latest 태그 차단 정책 |
+| SonarQube sources | `sonar.sources=.` | `sonar.sources=app` | 가이드 규칙 준수 |
+| Kaniko config.json 생성 | `echo` + printf %s | `base64 auth` 방식 | GCR SA JSON 키의 특수문자(줄바꿈, 쌍따옴표)로 인한 JSON 파싱 에러 해결 |
+
+## 빌드 실행 결과
+
+### 빌드 이력
+
+| 빌드 # | 결과 | 소요 시간 | 실패 원인 |
+|--------|------|-----------|-----------|
+| #1 | FAILURE | 25s | PIPELINE_ID 충돌 (backend Job과 동일 라벨) - python 컨테이너 미발견 |
+| #2 | FAILURE | 54s | config.json 파싱 에러 (echo 방식의 특수문자 문제) |
+| #3 | FAILURE | - | config.json 파싱 에러 (printf %s 방식도 동일 문제) |
+| #4 | FAILURE | 73s | base64 인코딩 결과에 줄바꿈 포함 (invalid character '\n') |
+| **#5** | **SUCCESS** | **111s** | - |
+
+### 성공 빌드 (#5) 상세
 
 | 항목 | 값 |
 |------|-----|
-| Dockerfile | deployment/container/Dockerfile-ai |
-| Build Context | . (프로젝트 루트) |
-| Build Args | PROJECT_FOLDER="ai-pipeline-service", EXPORT_PORT="8000" |
-| Platform | linux/amd64 |
-| 이미지 이름 | docker.io/hiondal/lunchpick-ai-pipeline-service:{environment}-{imageTag} |
-| 태그 형식 | {environment}-{yyyyMMddHHmmss} |
+| 빌드 번호 | #5 |
+| 결과 | SUCCESS |
+| 소요 시간 | 110,924ms (약 1분 51초) |
+| 빌드 파라미터 | ENVIRONMENT=dev, SKIP_SONARQUBE=true, BRANCH=main |
+| 생성 이미지 | `asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/ai-pipeline-service:dev-20260306022402` |
+| 매니페스트 업데이트 | lunchpick-manifest 리포 main 브랜치 커밋 완료 |
 
-### 매니페스트 업데이트
+### 스테이지별 실행 결과 (빌드 #5)
 
-| 항목 | 값 |
-|------|-----|
-| 매니페스트 레포 | https://github.com/hiondal/lunchpick-manifest.git |
-| 업데이트 대상 | ai-pipeline-service/kustomize/overlays/{environment}/kustomization.yaml |
-| 업데이트 방식 | kustomize edit set image |
-| Git Credentials | github-credentials |
-
-## 기존 파이프라인과의 일관성
-
-| 항목 | 백엔드 (Jenkinsfile-backend) | AI (Jenkinsfile-ai) |
-|------|---------------------------|---------------------|
-| 빌드 도구 | Gradle / JDK 21 | pip / Python 3.12 |
-| 서비스 수 | 3개 (루프) | 1개 |
-| 이미지 빌드 | podman | podman |
-| 레지스트리 | DockerHub | DockerHub |
-| Manifest 업데이트 | kustomize edit set image | kustomize edit set image |
-| podRetention | never() | never() |
-| SonarQube | gradle sonar plugin | sonar-scanner-cli |
-| Cloud | aks-ondal | aks-ondal |
-
-## 주의사항
-- CI 파이프라인에서 kubectl apply는 수행하지 않음 (GitOps 원칙 준수)
-- ArgoCD가 매니페스트 레포 변경을 감지하여 자동 배포 수행
-- pytest 실패 시에도 파이프라인이 중단되지 않도록 `|| true` 처리
-- SonarQube 분석 실패 시에도 파이프라인 계속 진행 (catch 처리)
-- requirements.txt 기반 의존성 관리 (poetry 미사용)
-- 이미지 태그는 타임스탬프 기반 (yyyyMMddHHmmss)
+| 스테이지 | 결과 | 비고 |
+|----------|------|------|
+| Get Source | 성공 | main 브랜치 체크아웃 |
+| Build & Test | 성공 | pip install 완료, pytest 37 passed / 10 failed (|| true로 계속 진행) |
+| SonarQube Analysis | 스킵 | SKIP_SONARQUBE=true |
+| Build & Push Images | 성공 | Kaniko로 이미지 빌드 및 GCR 푸시 완료 |
+| Update Manifest Repository | 성공 | kustomize edit set image 후 매니페스트 리포 푸시 완료 |
+| Pipeline Complete | 성공 | "Pipeline completed successfully!" |

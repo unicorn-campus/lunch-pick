@@ -165,31 +165,32 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 - 마지막 완료 Step: Step 9 (설계 완료)
 
 ### deploy
-- 진행 모드: 자동 진행
-- CLOUD: Azure
+- 진행 모드: 단계별 승인
+- CLOUD: GCP
 - 마지막 완료 Step: Step 5 (배포 완료)
-- 레지스트리유형: DockerHub
-- IMG_REG: docker.io
-- IMG_ORG: hiondal
-- VM_HOST: azure
-- K8S_CLUSTER: aks-ondal
+- 레지스트리유형: GCR
+- GCR_PROJECT: lunchpick-489007
+- GCR_REGION: asia-northeast3
+- GCR_REPO: lunchpick
+- VM_HOST: gcp
+- K8S_CLUSTER: gke-ondal
 - K8S_NAMESPACE: lunchpick
-- SSL_DOMAIN: web.20.249.211.140.nip.io
-- 프론트엔드: https://web.20.249.211.140.nip.io
-- 백엔드 API: https://api.web.20.249.211.140.nip.io
+- SSL_DOMAIN: web.34.50.22.190.nip.io
+- 프론트엔드: https://web.34.50.22.190.nip.io
+- 백엔드 API: https://api.web.34.50.22.190.nip.io
 
 ### cicd
 - 진행 모드: 단계별 승인
-- CI_TOOL: GitHubActions
-- CLOUD: Azure
-- 레지스트리유형: DockerHub
+- CI_TOOL: Jenkins
+- CLOUD: GCP
+- 레지스트리유형: GCR
 - AI_SERVICE: ai-pipeline-service
 - MANIFEST_REPO_URL: https://github.com/hiondal/lunchpick-manifest.git
-- VM_HOST: azure
+- VM_HOST: gcp
 - ENVIRONMENTS: dev
-- K8S_CLUSTER: aks-ondal
+- K8S_CLUSTER: gke-ondal
 - K8S_NAMESPACE: lunchpick
-- 마지막 완료 Step: Step 4 (GitHub Actions 완료 보고서 작성 완료)
+- 마지막 완료 Step: Step 3 (CI/CD 파이프라인 작성)
 
 ## 프로젝트 네이밍
 - ORG (회사/조직명): unicorn

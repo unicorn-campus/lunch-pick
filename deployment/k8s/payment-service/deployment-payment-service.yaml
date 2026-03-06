@@ -17,7 +17,7 @@ spec:
       - name: lunchpick
       containers:
       - name: payment-service
-        image: hiondal/lunchpick-payment-service:dev-20260305132601
+        image: asia-northeast3-docker.pkg.dev/lunchpick-489007/lunchpick/payment-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8083
@@ -32,7 +32,7 @@ spec:
             name: secret-payment-service
         resources:
           requests:
-            cpu: "250m"
+            cpu: "500m"
             memory: "256Mi"
           limits:
             cpu: "1000m"
