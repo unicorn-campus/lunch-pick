@@ -18,6 +18,13 @@ podTemplate(
         spec:
           terminationGracePeriodSeconds: 3
           restartPolicy: Never
+          containers:
+          - name: kaniko
+            resources:
+              requests:
+                ephemeral-storage: "2Gi"
+              limits:
+                ephemeral-storage: "10Gi"
     ''',
     containers: [
         containerTemplate(
