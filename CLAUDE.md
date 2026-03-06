@@ -181,7 +181,7 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 
 ### cicd
 - 진행 모드: 단계별 승인
-- CI_TOOL: Jenkins
+- CI_TOOL: GitHubActions
 - CLOUD: GCP
 - 레지스트리유형: GCR
 - AI_SERVICE: ai-pipeline-service
@@ -190,7 +190,7 @@ SKILL.md 또는 대화에서 아래 키워드가 나오면 **반드시 Skill 도
 - ENVIRONMENTS: dev
 - K8S_CLUSTER: gke-ondal
 - K8S_NAMESPACE: lunchpick
-- 마지막 완료 Step: Step 3 (CI/CD 파이프라인 작성)
+- 마지막 완료 Step: Step 4 (완료 보고)
 
 ## 프로젝트 네이밍
 - ORG (회사/조직명): unicorn
