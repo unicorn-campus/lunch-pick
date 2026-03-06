@@ -18,6 +18,19 @@ podTemplate(
         spec:
           terminationGracePeriodSeconds: 3
           restartPolicy: Never
+          containers:
+          - name: kaniko
+            resources:
+              requests:
+                ephemeral-storage: "5Gi"
+              limits:
+                ephemeral-storage: "20Gi"
+          - name: python
+            resources:
+              requests:
+                ephemeral-storage: "2Gi"
+              limits:
+                ephemeral-storage: "10Gi"
     ''',
     containers: [
         containerTemplate(
@@ -140,12 +153,13 @@ podTemplate(
                                 passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
+                            sh '''
+                                printf '%s' "$IMG_PASSWORD" > /kaniko/sa.json
+                                export GOOGLE_APPLICATION_CREDENTIALS=/kaniko/sa.json
+                                printf '{"auths":{"https://index.docker.io/v1/":{"username":"%s","password":"%s"}}}' "$DOCKERHUB_USERNAME" "$DOCKERHUB_PASSWORD" > /kaniko/.docker/config.json
+                            '''
                             sh """
-                                DOCKERHUB_AUTH=\$(printf '%s:%s' "\$DOCKERHUB_USERNAME" "\$DOCKERHUB_PASSWORD" | /busybox/base64 | tr -d '\\n')
-                                GCR_AUTH=\$(printf '%s:%s' "\$IMG_USERNAME" "\$IMG_PASSWORD" | /busybox/base64 | tr -d '\\n')
-
-                                echo '{"auths":{"https://index.docker.io/v1/":{"auth":"'"\$DOCKERHUB_AUTH"'"},"asia-northeast3-docker.pkg.dev":{"auth":"'"\$GCR_AUTH"'"}}}' > /kaniko/.docker/config.json
-
+                                export GOOGLE_APPLICATION_CREDENTIALS=/kaniko/sa.json
                                 /kaniko/executor \\
                                     --dockerfile=deployment/container/Dockerfile-ai \\
                                     --context=dir://. \\
