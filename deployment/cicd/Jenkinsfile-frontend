@@ -1,4 +1,4 @@
-def PIPELINE_ID = "${env.BUILD_NUMBER}"
+def PIPELINE_ID = "frontend-${env.BUILD_NUMBER}"
 
 def getImageTag() {
     def dateFormat = new java.text.SimpleDateFormat('yyyyMMddHHmmss')
@@ -42,7 +42,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'git',
-            image: 'alpine/git:latest',
+            image: 'alpine/git:2.47.2',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '100m',
@@ -52,7 +52,7 @@ podTemplate(
         ),
         containerTemplate(
             name: 'sonar-scanner',
-            image: 'sonarsource/sonar-scanner-cli:latest',
+            image: 'sonarsource/sonar-scanner-cli:11',
             command: 'cat',
             ttyEnabled: true,
             resourceRequestCpu: '200m',
@@ -142,9 +142,14 @@ podTemplate(
                                 passwordVariable: 'DOCKERHUB_PASSWORD'
                             )
                         ]) {
+                            sh '''
+                                DOCKER_AUTH_DH=$(printf '%s:%s' "$DOCKERHUB_USERNAME" "$DOCKERHUB_PASSWORD" | base64 | tr -d '\\n')
+                                DOCKER_AUTH_GCR=$(printf '%s:%s' "$IMG_USERNAME" "$IMG_PASSWORD" | base64 | tr -d '\\n')
+                                cat > /kaniko/.docker/config.json <<EOFJSON
+{"auths":{"https://index.docker.io/v1/":{"auth":"${DOCKER_AUTH_DH}"},"asia-northeast3-docker.pkg.dev":{"auth":"${DOCKER_AUTH_GCR}"}}}
+EOFJSON
+                            '''
                             sh """
-                                echo '{"auths":{"https://index.docker.io/v1/":{"username":"'\$DOCKERHUB_USERNAME'","password":"'\$DOCKERHUB_PASSWORD'"},"asia-northeast3-docker.pkg.dev":{"username":"'\$IMG_USERNAME'","password":"'\$IMG_PASSWORD'"}}}' > /kaniko/.docker/config.json
-
                                 /kaniko/executor \\
                                     --dockerfile=deployment/container/Dockerfile-frontend \\
                                     --context=dir://. \\
