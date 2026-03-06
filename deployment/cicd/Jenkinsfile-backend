@@ -136,9 +136,12 @@ podTemplate(
                             )
                         ]) {
                             // Kaniko는 단일 sh 블록에서 모든 빌드를 실행해야 함
-                            // (executor 실행 후 컨테이너 파일시스템 변경으로 별도 sh 블록 실패)
-                            // printf %s를 사용하여 SA JSON 키의 특수문자/공백 안전 처리
-                            def kanikoCommands = """printf '{"auths":{"https://index.docker.io/v1/":{"username":"%s","password":"%s"},"asia-northeast3-docker.pkg.dev":{"username":"%s","password":"%s"}}}' "\$DOCKERHUB_USERNAME" "\$DOCKERHUB_PASSWORD" "\$IMG_USERNAME" "\$IMG_PASSWORD" > /kaniko/.docker/config.json\n"""
+                            // SA JSON을 파일로 저장 후 GOOGLE_APPLICATION_CREDENTIALS로 GCR 인증
+                            // DockerHub는 config.json으로 처리
+                            def kanikoCommands = """printf '%s' "\$IMG_PASSWORD" > /kaniko/sa.json
+export GOOGLE_APPLICATION_CREDENTIALS=/kaniko/sa.json
+printf '{"auths":{"https://index.docker.io/v1/":{"username":"%s","password":"%s"}}}' "\$DOCKERHUB_USERNAME" "\$DOCKERHUB_PASSWORD" > /kaniko/.docker/config.json
+"""
                             targetMap.each { service, imgName ->
                                 kanikoCommands += """/kaniko/executor \\
                                     --dockerfile=deployment/container/Dockerfile-backend \\
