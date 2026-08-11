@@ -37,3 +37,4 @@ Thumbs.db
 .dmap/
 .omc/
 .temp/
+.playwright-mcp/
